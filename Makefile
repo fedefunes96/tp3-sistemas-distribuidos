@@ -3,6 +3,10 @@ PWD := $(shell pwd)
 
 all:
 
+build:
+	cargo build --manifest-path ./processor/Cargo.toml
+.PHONY: build
+
 docker-image:
 	docker build -f ./python_base_image/Dockerfile -t rabbitmq-python-base:0.0.1 .
 	docker build -f ./rabbitmq/Dockerfile -t "rabbitmq:latest" .
