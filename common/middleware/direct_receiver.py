@@ -1,27 +1,12 @@
 import pika
-import sys
-import random
-import time
 
-class DirectReceiver:
-    def __init__(self, channel, from_where):
-        self.channel = channel
-        self.from_where = from_where
+from middleware.receiver import Receiver
 
-        self.channel.queue_declare(queue=self.from_where)
+class DirectReceiver(Receiver):
+    def initialize_channel(self):
+        self.channel.queue_declare(queue=self.from_where, durable=True)
 
-    def start_receiving(self, callback):
         self.channel.basic_consume(
             queue=self.from_where,
-            on_message_callback=self.data_received,
-            auto_ack=True
+            on_message_callback=self.data_received
         )
-
-        self.callback = callback
-        self.channel.start_consuming()
-    
-    def data_received(self, ch, method, properties, body):
-        self.callback(properties.type, body.decode('utf-8'))
-
-    def close(self):
-        self.channel.close()

@@ -14,6 +14,8 @@ class Protocol:
 
     def start_connection(self):
         self.receiver.start_receiving(self.data_read)
+        self.sender.send(EOF, '')
+        self.connection.close()
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
@@ -21,5 +23,4 @@ class Protocol:
 
             if self.pending_connections == 0:
                 self.receiver.close()
-                self.sender.send(EOF, '')
-                self.connection.close()
+

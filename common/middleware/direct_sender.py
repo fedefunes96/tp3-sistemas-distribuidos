@@ -8,7 +8,7 @@ class DirectSender:
         self.channel = channel
         self.where = where
 
-        self.channel.queue_declare(queue=self.where)
+        self.channel.queue_declare(queue=self.where, durable=True)
 
     def send(self, msg_type, msg):
         self.channel.basic_publish(
