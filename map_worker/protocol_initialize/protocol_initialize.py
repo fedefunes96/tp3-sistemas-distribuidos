@@ -17,10 +17,12 @@ class ProtocolInitialize:
     def start_connection(self):
         print("Starting to receive places")
         self.receiver.start_receiving(self.data_read)
+        self.connection.close()
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
-            self.connection.close()
+            self.receiver.close()
+            #self.connection.close()
         else:
             [region, latitude, longitude] = msg.split(",")
             self.callback(region, float(latitude), float(longitude))
