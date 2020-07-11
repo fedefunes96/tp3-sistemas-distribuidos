@@ -1,0 +1,1 @@
+class RPCTimeout(Exception): pass

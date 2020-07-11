@@ -9,6 +9,8 @@ from middleware.distributed_work_receiver import DistributedWorkReceiver
 from middleware.distributed_work_sender import DistributedWorkSender
 from middleware.topic_receiver import TopicReceiver
 from middleware.topic_sender import TopicSender
+from middleware.rpc_receiver import RpcReceiver
+from middleware.rpc_sender import RpcSender
 
 class Connection:
     def __init__(self):
@@ -54,6 +56,14 @@ class Connection:
         channel = self.connection.channel()
 
         return TopicReceiver(channel, from_where)
+
+    def create_rpc_receiver(self, from_where):
+        channel = self.connection.channel()
+
+        return RpcReceiver(channel, from_where)
+    
+    def create_rpc_sender(self, where):
+        return RpcSender(self.connection, where)        
 
     def close(self):
         self.connection.close()
