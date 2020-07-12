@@ -26,7 +26,9 @@ def main():
     p = Process(target=main_process)
     p.start()
 
-    checker = StatusChecker(p)
+    params = ConfigReader().parse_vars(["STATUS_QUEUE"])
+
+    checker = StatusChecker(p, params["STATUS_QUEUE"])
 
     checker.start()
 

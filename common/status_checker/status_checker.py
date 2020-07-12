@@ -4,16 +4,15 @@ from queue import Empty
 from communication.message_types import STATUS, ALIVE, DEAD
 import os
 
-STATUS_QUEUE_NAME = "status_node"
-
 class StatusChecker:
-    def __init__(self, process_to_check):
+    def __init__(self, process_to_check, queue):
         self.process = process_to_check
+        self.queue = queue
 
     def start(self):
         self.connection = Connection()
 
-        self.receiver = self.connection.create_rpc_receiver(STATUS_QUEUE_NAME)
+        self.receiver = self.connection.create_rpc_receiver(self.queue)
         self.receiver.start_receiving(self.request_received)
 
     def request_received(self, reply_to, cor_id, msg):
