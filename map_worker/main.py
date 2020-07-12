@@ -20,19 +20,24 @@ def main_process():
         config_params["TOPIC_PLACES"]
     )
 
-    worker.start()
+    worker.start()    
 
 def main():
-    p = Process(target=main_process)
-    p.start()
+    params = ConfigReader().parse_vars(["WORKERS", "STATUS_QUEUE"])
 
-    params = ConfigReader().parse_vars(["STATUS_QUEUE"])
+    processes = []
 
-    checker = StatusChecker(p, params["STATUS_QUEUE"])
+    for worker in range(0, int(params["WORKERS"])):
+        p = Process(target=main_process)
+        p.start()
+        processes.append(p)
+
+    checker = StatusChecker(processes, params["STATUS_QUEUE"])
 
     checker.start()
 
-    p.join()
+    for p in processes:
+        p.join()
 
 if __name__== "__main__":
     main()

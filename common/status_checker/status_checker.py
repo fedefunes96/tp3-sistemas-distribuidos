@@ -5,8 +5,8 @@ from communication.message_types import STATUS, ALIVE, DEAD
 import os
 
 class StatusChecker:
-    def __init__(self, process_to_check, queue):
-        self.process = process_to_check
+    def __init__(self, processes_to_check, queue):
+        self.processes = processes_to_check
         self.queue = queue
 
     def start(self):
@@ -19,9 +19,16 @@ class StatusChecker:
         from_where = msg
         
         if msg == STATUS:
-            #Since this runs in another process
-            #we will check if parent process is alive (AKA: The main process)
-            if self.process.is_alive():
+            all_alive = True
+            
+            if self.all_processes_alive(self.processes):
                 self.receiver.reply(cor_id, reply_to, ALIVE)
             else:
                 self.receiver.reply(cor_id, reply_to, DEAD)
+
+    def all_processes_alive(self, processes):
+        for p in processes:
+            if not p.is_alive():
+                return False
+
+        return True
