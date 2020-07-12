@@ -1,49 +1,79 @@
 use amiquip::{Connection, Channel, Queue, QueueDeclareOptions, Exchange, Publish, ExchangeType, ExchangeDeclareOptions};
 
 pub struct Protocol<'a> {
-    connection: Connection,
-    // channel: Channel,
-    direct_exchange: Exchange<'a>,
-    fanout_exchange: Exchange<'a>,
-    receiver: Queue<'a>,
-    map_queue: &'a str,
-    date_queue: &'a str,
-    count_queue: &'a str
+    connection: Option<Connection>,
+    channel: Option<Channel>,
+    direct_exchange: Option<Exchange<'a>>,
+    fanout_exchange: Option<Exchange<'a>>,
+    receiver: Option<Queue<'a>>,
+    host: String,
+    map_queue: String,
+    date_queue: String,
+    count_queue: String,
+    topic_places: String,
+    receiver_queue: String
 }
 
 impl Protocol<'static> {
 
-    pub fn new(host: &str,
-        receiver_queue: &str,
-        map_queue: &'static str,
-        date_queue: &'static str,
-        count_queue: &'static str,
-        topic_places: &'static str
+    pub fn new(host: String,
+        receiver_queue: String,
+        map_queue: String,
+        date_queue: String,
+        count_queue: String,
+        topic_places: String
     ) -> Protocol<'static> {
 
-        let mut connection = Connection::insecure_open(host).unwrap();
-        let channel = connection.open_channel(None).unwrap();
-        let direct_exchange = Exchange::direct(&channel);
-        let fanout_exchange = channel.exchange_declare(ExchangeType::Fanout, topic_places, ExchangeDeclareOptions::default()).unwrap();
-        let receiver = channel.queue_declare(receiver_queue, QueueDeclareOptions::default()).unwrap();
-
         Protocol {
-            connection,
-            // channel,
-            direct_exchange,
-            fanout_exchange,
-            receiver,
-            map_queue,
-            date_queue,
-            count_queue
+            host: host,
+            map_queue: map_queue,
+            date_queue: date_queue,
+            count_queue: count_queue,
+            topic_places: topic_places,
+            receiver_queue: receiver_queue,
+            ..Default::default()
         }
 
+    }
+
+    pub fn connect(&'static mut self) {
+        let mut connection = Connection::insecure_open(self.host.as_str()).unwrap();
+
+        self.channel = Some(connection.open_channel(None).unwrap());
+        self.connection = Some(connection);
+
+
+        self.direct_exchange = Some(Exchange::direct(self.channel.as_ref().unwrap()));
+
+        self.fanout_exchange = Some(self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap());
+        self.receiver = Some(self.channel.as_ref().unwrap().queue_declare(self.receiver_queue.as_str(), QueueDeclareOptions::default()).unwrap());
     }
 
     pub fn process_places(&self, region: String, latitude: String, longitude: String) {
         let message = format!("{},{},{}", region, latitude, longitude);
 
-        self.fanout_exchange.publish(Publish::new(message.as_bytes(), "")).unwrap();
+        match &self.fanout_exchange {
+            Some(exchange) => exchange.publish(Publish::new(message.as_bytes(), "")).unwrap(),
+            None => {}
+        }
     }
 
+}
+
+impl Default for Protocol<'static> {
+    fn default () -> Protocol<'static> {
+        Protocol {
+            connection: None,
+            channel: None,
+            direct_exchange: None,
+            fanout_exchange: None,
+            receiver: None,
+            map_queue: String::from(""),
+            date_queue: String::from(""),
+            count_queue: String::from(""),
+            host: String::from(""),
+            topic_places: String::from(""),
+            receiver_queue: String::from("")
+        }
+    }
 }
