@@ -42,9 +42,7 @@ impl Protocol<'static> {
         self.channel = Some(connection.open_channel(None).unwrap());
         self.connection = Some(connection);
 
-
         self.direct_exchange = Some(Exchange::direct(self.channel.as_ref().unwrap()));
-
         self.fanout_exchange = Some(self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap());
         self.receiver = Some(self.channel.as_ref().unwrap().queue_declare(self.receiver_queue.as_str(), QueueDeclareOptions::default()).unwrap());
     }
@@ -52,8 +50,32 @@ impl Protocol<'static> {
     pub fn process_places(&self, region: String, latitude: String, longitude: String) {
         let message = format!("{},{},{}", region, latitude, longitude);
 
+        self.send_places_message(message.as_str());
+    }
+
+    pub fn send_no_more_places(&self) {
+        self.send_places_message("EOF");
+    }
+
+    fn send_places_message(&self, message: &str) {
         match &self.fanout_exchange {
             Some(exchange) => exchange.publish(Publish::new(message.as_bytes(), "")).unwrap(),
+            None => {}
+        }
+    }
+
+    pub fn process_case(&self, date: &str, latitude: &str, longitude: &str, result: &str) {
+        self.send_message_to_queue(result, &self.count_queue);
+        let date_counter_message = format!("{}{}", if result == "positivi" {"P"} else {"D"}, date);
+        self.send_message_to_queue(&date_counter_message, &self.date_queue);
+        if result == "positivi" {
+            self.send_message_to_queue(&format!("{}//{}", latitude, longitude), &self.map_queue);
+        }
+    }
+
+    fn send_message_to_queue(&self, message: &str, queue: &str) {
+        match &self.direct_exchange {
+            Some(exchange) => exchange.publish(Publish::new(message.as_bytes(), queue)).unwrap(),
             None => {}
         }
     }
