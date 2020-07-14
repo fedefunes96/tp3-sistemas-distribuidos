@@ -1,4 +1,5 @@
 import os
+import json
 
 class ConfigReader:
     def parse_vars(self, evars):
@@ -13,3 +14,11 @@ class ConfigReader:
             raise ValueError("Key could not be parsed. Error: {}. Aborting server".format(e))
         
         return config_params	        
+
+    def parse_from_file(self, file):
+        config_params = {}
+
+        with open(file, 'r') as f:
+            config_params = json.load(f)
+        
+        return config_params
