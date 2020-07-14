@@ -5,7 +5,7 @@ use amiquip::{Connection, ConsumerMessage, ConsumerOptions, QueueDeclareOptions,
 extern crate log;
 extern crate simple_logger;
 mod protocol;
-
+mod processor;
 
 fn main() {
     load_properties();

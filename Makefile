@@ -5,6 +5,7 @@ all:
 
 build:
 	cargo build --manifest-path ./processor/Cargo.toml
+	cargo build --manifest-path ./reader/Cargo.toml
 .PHONY: build
 
 docker-image:
