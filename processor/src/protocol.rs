@@ -1,4 +1,5 @@
-use amiquip::{Connection, Channel, Queue, QueueDeclareOptions, Exchange, Publish, ExchangeType, ExchangeDeclareOptions};
+use std::sync::mpsc::Sender;
+use amiquip::{Connection, Channel, Queue, QueueDeclareOptions, ConsumerMessage, ConsumerOptions, Exchange, Publish, ExchangeType, ExchangeDeclareOptions};
 
 pub struct Protocol<'a> {
     connection: Option<Connection>,
@@ -10,6 +11,9 @@ pub struct Protocol<'a> {
     map_queue: String,
     date_queue: String,
     count_queue: String,
+    eof_map_queue: String,
+    eof_date_queue: String,
+    eof_count_queue: String,
     topic_places: String,
     receiver_queue: String
 }
@@ -17,20 +21,26 @@ pub struct Protocol<'a> {
 impl Protocol<'static> {
 
     pub fn new(host: String,
-        receiver_queue: String,
-        map_queue: String,
-        date_queue: String,
-        count_queue: String,
-        topic_places: String
+               receiver_queue: String,
+               map_queue: String,
+               date_queue: String,
+               count_queue: String,
+               eof_map_queue: String,
+               eof_date_queue: String,
+               eof_count_queue: String,
+               topic_places: String
     ) -> Protocol<'static> {
 
         Protocol {
-            host: host,
-            map_queue: map_queue,
-            date_queue: date_queue,
-            count_queue: count_queue,
-            topic_places: topic_places,
-            receiver_queue: receiver_queue,
+            host,
+            map_queue,
+            date_queue,
+            count_queue,
+            eof_map_queue,
+            eof_date_queue,
+            eof_count_queue,
+            topic_places,
+            receiver_queue,
             ..Default::default()
         }
 
@@ -47,36 +57,61 @@ impl Protocol<'static> {
         self.receiver = Some(self.channel.as_ref().unwrap().queue_declare(self.receiver_queue.as_str(), QueueDeclareOptions::default()).unwrap());
     }
 
-    pub fn process_places(&self, region: String, latitude: String, longitude: String) {
-        let message = format!("{},{},{}", region, latitude, longitude);
-
-        self.send_places_message(message.as_str());
+    pub fn process_places(&self, sender: Sender<String>) {
+        match &self.receiver {
+            Some(queue) => { self.read_from_queue(queue, sender) },
+            None => {}
+        }
     }
 
     pub fn send_no_more_places(&self) {
-        self.send_places_message("EOF");
+        self.send_places_message(String::from("EOF"));
     }
 
-    fn send_places_message(&self, message: &str) {
+    pub fn send_places_message(&self, message: String) {
         match &self.fanout_exchange {
             Some(exchange) => exchange.publish(Publish::new(message.as_bytes(), "")).unwrap(),
             None => {}
         }
     }
 
-    pub fn process_case(&self, date: &str, latitude: &str, longitude: &str, result: &str) {
-        self.send_message_to_queue(result, &self.count_queue);
-        let date_counter_message = format!("{}{}", if result == "positivi" {"P"} else {"D"}, date);
-        self.send_message_to_queue(&date_counter_message, &self.date_queue);
-        if result == "positivi" {
-            self.send_message_to_queue(&format!("{}//{}", latitude, longitude), &self.map_queue);
-        }
+    pub fn send_case_message(&self, message: String) {
+        self.send_message_to_queue(message.clone(), self.count_queue.clone());
+        self.send_message_to_queue(message.clone(), self.map_queue.clone());
+        self.send_message_to_queue(message.clone(), self.date_queue.clone());
     }
 
-    fn send_message_to_queue(&self, message: &str, queue: &str) {
+    pub fn send_no_more_cases(&self) {
+        self.send_message_to_queue(String::from("EOF"), self.eof_map_queue.clone());
+        self.send_message_to_queue(String::from("EOF"), self.eof_count_queue.clone());
+        self.send_message_to_queue(String::from("EOF"), self.eof_date_queue.clone());
+    }
+
+    fn send_message_to_queue(&self, message: String, queue: String) {
         match &self.direct_exchange {
             Some(exchange) => exchange.publish(Publish::new(message.as_bytes(), queue)).unwrap(),
             None => {}
+        }
+    }
+
+    fn read_from_queue(&self, queue: &Queue, sender: Sender<String>) {
+        let consumer = queue.consume(ConsumerOptions::default()).unwrap();
+        for (_, message) in consumer.receiver().iter().enumerate() {
+            match message {
+                ConsumerMessage::Delivery(delivery) => {
+                    let body = String::from_utf8_lossy(&delivery.body);
+                    sender.send(body.to_string()).unwrap();
+                    if body == "EOF" {
+                        consumer.ack(delivery).unwrap();
+                        break;
+                    }
+                    consumer.ack(delivery).unwrap();
+                }
+                other => {
+                    info!("Consumer ended: {:?}", other);
+                    break;
+                }
+            }
         }
     }
 
@@ -93,6 +128,9 @@ impl Default for Protocol<'static> {
             map_queue: String::from(""),
             date_queue: String::from(""),
             count_queue: String::from(""),
+            eof_map_queue: String::from(""),
+            eof_date_queue: String::from(""),
+            eof_count_queue: String::from(""),
             host: String::from(""),
             topic_places: String::from(""),
             receiver_queue: String::from("")

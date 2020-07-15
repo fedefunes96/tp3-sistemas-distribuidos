@@ -32,13 +32,13 @@ impl Protocol<'static> {
     }
 
     pub fn process_place(&self, region: String, latitude: f64, longitude: f64) {
-        let message = format!("{}//{}//{}", region, latitude, longitude);
+        let message = format!("{},{},{}", region, latitude, longitude);
 
         self.send_message_to_queue(message, self.processor_queue.as_str());
     }
 
     pub fn process_case(&self, tipo: String, latitude: f64, longitude: f64, date: String) {
-        let message = format!("{}//{}//{}//{}", tipo, latitude, longitude, date);
+        let message = format!("{},{},{},{}", date, latitude, longitude, tipo);
 
         self.send_message_to_queue(message, self.processor_queue.as_str());
     }
@@ -65,5 +65,13 @@ impl Default for Protocol<'static> {
             host: String::from(""),
             processor_queue: String::from("")
         }
+    }
+}
+
+impl Drop for Protocol {
+    fn drop(& mut self) {
+        drop(self.direct_exchange);
+        drop(self.channel);
+        drop(self.connection);
     }
 }

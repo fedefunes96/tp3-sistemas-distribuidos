@@ -19,6 +19,7 @@ fn main() {
     let processor_queue = env::var("PROCESSOR_QUEUE").unwrap();
     let host = env::var("RABBITMQ_ADDR").unwrap();
     let reader = reader::Reader::new(host, processor_queue, processor_quantity);
+    reader.connect();
     info!("Connected ro Rabbit!");
 
     reader.process_places("data/places.csv");
