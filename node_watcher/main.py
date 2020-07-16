@@ -6,6 +6,14 @@ from watcher.watcher import Watcher
 
 CONFIG_FILE = "config/start_config.txt"
 
+    def initialize_workers(config_file):
+        initial_workers = ConfigReader().parse_from_file(config_file)
+
+        for worker_type in initial_workers:
+            for number_workers in range(0, initial_workers[worker_type]):
+                self.raise_up_worker(worker_type)
+
+
 def health_process(queue):
     
 
