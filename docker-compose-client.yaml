@@ -1,21 +1,16 @@
 version: '3.5'
 services:
-  chunk_manager:
-    container_name: chunk_manager
-    image: chunk_manager:latest
-    entrypoint: python3 /main.py
+  reader:
+    container_name: reader
+    image: reader:latest
+    entrypoint: cargo run
     restart: on-failure
     environment:
-      - PYTHONUNBUFFERED=1
-      - QUEUE_MAP=map_city
-      - QUEUE_COUNT=count_controller_worker
-      - QUEUE_DATE=date_redirector_worker
-      - EOF_MAP=eof_map
-      - EOF_COUNT=eof_count
-      - EOF_DATE=eof_date
-      - TOPIC_PLACES=places
+      - PROCESSOR_QUANTITY=1
+      - RABBITMQ_ADDR=amqp://guest:guest@rabbitmq:5672
+      - READER_QUEUE=reader_q
     volumes:
-      - ./chunk_manager/data:/data
+      - ./reader/data:/data
     networks:
       - test-network      
 

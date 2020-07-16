@@ -3,11 +3,6 @@ PWD := $(shell pwd)
 
 all:
 
-build:
-	cargo build --manifest-path ./processor/Cargo.toml
-	cargo build --manifest-path ./reader/Cargo.toml
-.PHONY: build
-
 docker-image:
 	docker build -f ./python_base_image/Dockerfile -t rabbitmq-python-base:0.0.1 .
 	docker build -f ./rabbitmq/Dockerfile -t "rabbitmq:latest" .
@@ -22,11 +17,12 @@ docker-image:
 	docker build -f ./date_sorter/Dockerfile -t "date_sorter:latest" .
 	docker build -f ./count_controller/Dockerfile -t "count_controller_worker:latest" .
 	docker build -f ./count_summary_controller/Dockerfile -t "count_summary_controller:latest" .
+	docker build -f ./processor/Dockerfile -t "processor:latest" .
 .PHONY: docker-image
 
 client-image:
 	docker build -f ./python_base_image/Dockerfile -t rabbitmq-python-base:0.0.1 .
-	docker build -f ./chunk_manager/Dockerfile -t "chunk_manager:latest" .
+	docker build -f ./reader/Dockerfile -t "reader:latest" .
 .PHONY: client-image
 
 docker-compose-up: docker-image

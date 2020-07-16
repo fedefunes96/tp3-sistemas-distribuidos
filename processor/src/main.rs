@@ -1,4 +1,3 @@
-use std::{thread, time};
 use std::env;
 #[macro_use]
 extern crate log;
@@ -8,9 +7,6 @@ mod processor;
 
 fn main() {
     simple_logger::init_with_level(get_log_level_from_env()).unwrap();
-
-    let rabbit_sleep_time = env::var("RABBIT_SLEEP_TIME").unwrap().parse::<u64>().unwrap();
-    thread::sleep(time::Duration::from_millis(rabbit_sleep_time*1000));
 
     let host = env::var("RABBITMQ_ADDR").unwrap();
     let reader_queue = env::var("READER_QUEUE").unwrap();
