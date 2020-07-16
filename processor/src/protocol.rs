@@ -1,12 +1,9 @@
 use std::sync::mpsc::Sender;
 use amiquip::{Connection, Channel, Queue, QueueDeclareOptions, ConsumerMessage, ConsumerOptions, Exchange, Publish, ExchangeType, ExchangeDeclareOptions};
 
-pub struct Protocol<'a> {
+pub struct Protocol {
     connection: Option<Connection>,
     channel: Option<Channel>,
-    direct_exchange: Option<Exchange<'a>>,
-    fanout_exchange: Option<Exchange<'a>>,
-    receiver: Option<Queue<'a>>,
     host: String,
     map_queue: String,
     date_queue: String,
@@ -18,7 +15,7 @@ pub struct Protocol<'a> {
     receiver_queue: String
 }
 
-impl Protocol<'static> {
+impl Protocol {
 
     pub fn new(host: String,
                receiver_queue: String,
@@ -29,7 +26,7 @@ impl Protocol<'static> {
                eof_date_queue: String,
                eof_count_queue: String,
                topic_places: String
-    ) -> Protocol<'static> {
+    ) -> Protocol {
 
         Protocol {
             host,
@@ -46,22 +43,16 @@ impl Protocol<'static> {
 
     }
 
-    pub fn connect(&'static mut self) {
+    pub fn connect(& mut self) {
         let mut connection = Connection::insecure_open(self.host.as_str()).unwrap();
 
         self.channel = Some(connection.open_channel(None).unwrap());
         self.connection = Some(connection);
-
-        self.direct_exchange = Some(Exchange::direct(self.channel.as_ref().unwrap()));
-        self.fanout_exchange = Some(self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap());
-        self.receiver = Some(self.channel.as_ref().unwrap().queue_declare(self.receiver_queue.as_str(), QueueDeclareOptions::default()).unwrap());
     }
 
     pub fn process_places(&self, sender: Sender<String>) {
-        match &self.receiver {
-            Some(queue) => { self.read_from_queue(queue, sender) },
-            None => {}
-        }
+        let queue = self.channel.as_ref().unwrap().queue_declare(self.receiver_queue.as_str(), QueueDeclareOptions::default()).unwrap();
+        self.read_from_queue(&queue, sender)
     }
 
     pub fn send_no_more_places(&self) {
@@ -69,10 +60,8 @@ impl Protocol<'static> {
     }
 
     pub fn send_places_message(&self, message: String) {
-        match &self.fanout_exchange {
-            Some(exchange) => exchange.publish(Publish::new(message.as_bytes(), "")).unwrap(),
-            None => {}
-        }
+        let exchange = self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap();
+        exchange.publish(Publish::new(message.as_bytes(), "")).unwrap();
     }
 
     pub fn send_case_message(&self, message: String) {
@@ -88,10 +77,8 @@ impl Protocol<'static> {
     }
 
     fn send_message_to_queue(&self, message: String, queue: String) {
-        match &self.direct_exchange {
-            Some(exchange) => exchange.publish(Publish::new(message.as_bytes(), queue)).unwrap(),
-            None => {}
-        }
+        let exchange = Exchange::direct(self.channel.as_ref().unwrap());
+        exchange.publish(Publish::new(message.as_bytes(), queue)).unwrap();
     }
 
     fn read_from_queue(&self, queue: &Queue, sender: Sender<String>) {
@@ -117,14 +104,11 @@ impl Protocol<'static> {
 
 }
 
-impl Default for Protocol<'static> {
-    fn default () -> Protocol<'static> {
+impl Default for Protocol {
+    fn default () -> Protocol {
         Protocol {
             connection: None,
             channel: None,
-            direct_exchange: None,
-            fanout_exchange: None,
-            receiver: None,
             map_queue: String::from(""),
             date_queue: String::from(""),
             count_queue: String::from(""),

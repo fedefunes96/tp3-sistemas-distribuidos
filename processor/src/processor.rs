@@ -2,7 +2,7 @@ use std::sync::mpsc::channel;
 use crate::protocol::Protocol;
 
 pub struct Processor {
-    protocol: Protocol<'static>
+    protocol: Protocol
 }
 
 impl Processor {
@@ -31,11 +31,11 @@ impl Processor {
         }
     }
 
-    pub fn connect(&self) {
+    pub fn connect(& mut self) {
         self.protocol.connect();
     }
 
-    pub fn process_messages(&self) {
+    pub fn process_messages(&mut self) {
         let (sender, receiver) = channel();
         self.protocol.process_places(sender);
         for message in receiver.iter() {

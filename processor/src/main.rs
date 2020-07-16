@@ -23,7 +23,7 @@ fn main() {
     let eof_count_queue = env::var("EOF_COUNT").unwrap();
     let topic_places = env::var("TOPIC_PLACES").unwrap();
 
-    let processor = processor::Processor::new(
+    let mut processor = processor::Processor::new(
         host,
         reader_queue,
         map_queue,
