@@ -7,7 +7,6 @@ mod protocol;
 mod processor;
 
 fn main() {
-    load_properties();
     simple_logger::init_with_level(get_log_level_from_env()).unwrap();
 
     let rabbit_sleep_time = env::var("RABBIT_SLEEP_TIME").unwrap().parse::<u64>().unwrap();
@@ -39,20 +38,13 @@ fn main() {
     processor.process_messages();
 }
 
-fn load_properties() {
-    let properties = dotproperties::parse_from_file("./config/processor-config.properties").unwrap();
-    for (key, value) in properties {
-        env::set_var(key, value);
-    }
-}
-
 fn get_log_level_from_env() -> log::Level {
     let level = env::var("LOG_LEVEL").unwrap();
-    match level.as_str() {
-        "ERROR" => {return log::Level::Error},
-        "INFO" => {return log::Level::Info},
-        "DEBUG" => {return log::Level::Debug},
-        "TRACE" => {return log::Level::Trace},
-        _ =>  {return log::Level::Info}
+    return match level.as_str() {
+        "ERROR" => { log::Level::Error },
+        "INFO" => { log::Level::Info },
+        "DEBUG" => { log::Level::Debug },
+        "TRACE" => { log::Level::Trace },
+        _ => { log::Level::Info }
     }
 }

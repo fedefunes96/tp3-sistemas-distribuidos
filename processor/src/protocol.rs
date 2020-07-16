@@ -102,6 +102,10 @@ impl Protocol {
         }
     }
 
+    pub fn close(&mut self) {
+        drop(self.channel.as_ref());
+        drop(self.connection.as_ref());
+    }
 }
 
 impl Default for Protocol {

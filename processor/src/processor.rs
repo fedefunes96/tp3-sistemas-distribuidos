@@ -64,3 +64,9 @@ impl Processor {
         self.protocol.send_case_message(body.clone());
     }
 }
+
+impl Drop for Processor {
+    fn drop(&mut self) {
+        self.protocol.close();
+    }
+}

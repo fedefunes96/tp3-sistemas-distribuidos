@@ -5,7 +5,7 @@ use crate::region::Region;
 use crate::case::Case;
 
 pub struct Reader {
-    protocol: Protocol<'static>,
+    protocol: Protocol,
     processor_quantity: u32
 }
 
@@ -17,7 +17,7 @@ impl Reader {
         Reader { protocol: Protocol::new(host, processor_queue), processor_quantity }
     }
 
-    pub fn connect(&self) {
+    pub fn connect(&mut self) {
         self.protocol.connect();
     }
 
@@ -57,6 +57,6 @@ impl Reader {
 
 impl Drop for Reader {
     fn drop(&mut self) {
-        drop(self.protocol);
+        self.protocol.close();
     }
 }
