@@ -15,7 +15,9 @@ services:
     restart: on-failure
     environment:
       - RABBITMQ_ADDR=amqp://guest:guest@rabbitmq:5672
+      - LOG_LEVEL=INFO
       - READER_QUEUE=reader_q
+      - READER_PLACES_QUEUE=reader_places_q
       - QUEUE_MAP=map_city
       - QUEUE_DATE=date_redirector_worker
       - QUEUE_COUNT=count_controller_worker

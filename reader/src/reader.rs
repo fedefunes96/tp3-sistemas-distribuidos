@@ -13,8 +13,9 @@ impl Reader {
 
     pub fn new(host: String,
         processor_queue: String,
+        processor_places_queue: String,
         processor_quantity: u32) -> Reader {
-        Reader { protocol: Protocol::new(host, processor_queue), processor_quantity }
+        Reader { protocol: Protocol::new(host, processor_queue, processor_places_queue), processor_quantity }
     }
 
     pub fn connect(&mut self) {
@@ -33,7 +34,7 @@ impl Reader {
         }
         info!("Finished processing regions");
         for _ in 0..self.processor_quantity {
-            self.protocol.send_end_of_file();
+            self.protocol.send_places_end_of_file();
         }
         info!("Finished sending EOFs");
     }
@@ -49,7 +50,7 @@ impl Reader {
         }
         info!("Finished processing cases");
         for _ in 0..self.processor_quantity {
-            self.protocol.send_end_of_file();
+            self.protocol.send_cases_end_of_file();
         }
         info!("Finished sending EOFs");
     }

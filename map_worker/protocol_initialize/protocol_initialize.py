@@ -22,5 +22,6 @@ class ProtocolInitialize:
         if msg_type == EOF:
             self.connection.close()
         else:
+            print("Got message: " + msg)
             [region, latitude, longitude] = msg.split(",")
             self.callback(region, float(latitude), float(longitude))
