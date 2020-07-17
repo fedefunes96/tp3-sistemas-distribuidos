@@ -7,3 +7,6 @@ Para correr el programa, ejecutar:
 **make docker-compose-up map_workers=< TotalMapWorkers > date_workers=< TotalDateWorkers > count_workers=< TotalCountWorkers >  processors= < TotalProcessors >**
 
 Indicando la cantidad de trabajadores que se utilizarán.
+
+Además, el cliente se corre con:
+**make client-run processors=< TotalProcessors > && make client-logs**
