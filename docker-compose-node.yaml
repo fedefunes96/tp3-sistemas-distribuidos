@@ -1,0 +1,29 @@
+version: '3.5'
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    ports:
+      - 15672:15672
+    networks:
+      - test-network
+
+  node_watcher:
+    container_name: node_watcher
+    image: node_watcher:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PYTHONUNBUFFERED=1
+      - INIT_QUEUE=health_status_queue
+    networks:
+      - test-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock      
+
+networks:
+  test-network:

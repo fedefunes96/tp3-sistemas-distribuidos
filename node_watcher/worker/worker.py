@@ -11,7 +11,7 @@ class Worker:
         self.type = worker_type
         self.timestamp = time.time()
     
-    def update_timestamp(self, timestamp)
+    def update_timestamp(self, timestamp):
         self.timestamp = timestamp
 
     def __eq__(self, other): 

@@ -1,12 +1,11 @@
 from worker.worker import Worker
 
 class WorkerManager:
-    def __init__(self, types):
+    def __init__(self):
         self.workers = []
-        self.types = types
 
     def worker_exists(self, worker_id):
-        for worker in self.workers
+        for worker in self.workers:
             if worker.id == worker_id:
                 return True
         

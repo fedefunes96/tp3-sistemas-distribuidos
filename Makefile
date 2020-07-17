@@ -64,3 +64,20 @@ docker-compose-logs:
 	COMPOSE_PROJECT_NAME=server \
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-dev.yaml logs -f
 .PHONY: docker-compose-logs
+
+node-image:
+	docker build -f ./node_watcher/Dockerfile -t "node_watcher:latest" .
+.PHONY: node-image
+
+node-run: node-image
+	docker-compose -f docker-compose-node.yaml up -d --build
+.PHONY: node-run
+
+node-stop:
+	docker-compose -f docker-compose-node.yaml stop -t 1
+	docker-compose -f docker-compose-node.yaml down
+.PHONY: node-run
+
+node-logs:
+	docker-compose -f docker-compose-node.yaml logs -f
+.PHONY: node-logs

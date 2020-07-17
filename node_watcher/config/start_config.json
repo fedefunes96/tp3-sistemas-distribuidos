@@ -1,0 +1,14 @@
+{
+    "map_worker_1": "map_worker",
+    "map_worker_2": "map_worker",
+    "date_resumer": "date_resumer_jan",
+    "count_resumer": "count_resume",
+    "count_worker_1": "count_worker",
+    "date_worker_1": "date_worker",
+    "master_map_worker": "master_map_worker",
+    "master_date_worker": "master_date_worker",
+    "master_count_worker": "master_count_worker",
+    "date_sorter_worker": "date_sorter",
+    "top_cities_worker": "top_cities",
+    "summary_worker": "summary_worker"
+}

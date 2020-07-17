@@ -6,19 +6,13 @@ from watcher.watcher import Watcher
 from node_raiser.node_raiser import NodeRaiser
 from node_checker.node_checker import NodeChecker
 
-CONFIG_FILE = "config/start_config.txt"
-
-    def initialize_workers(config_file):
-        initial_workers = ConfigReader().parse_from_file(config_file)
-
-        for worker_type in initial_workers:
-            for number_workers in range(0, initial_workers[worker_type]):
-                self.raise_up_worker(worker_type)
+CONFIG_FILE = "config/start_config.json"
 
 def system_checker_process(update_queue, dead_queue):
     checker = NodeChecker(
         update_queue,
-        dead_queue
+        dead_queue,
+        CONFIG_FILE
     )
 
     checker.start()   
@@ -43,6 +37,7 @@ def health_process(update_queue):
     watcher.start()    
 
 def main():
+    print("Starting Watcher Node")
     update_queue = Queue()
     dead_queue = Queue()
 

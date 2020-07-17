@@ -1,5 +1,7 @@
 FROM rabbitmq-python-base:0.0.1
 
+RUN apt-get install -y docker
+
 COPY node_watcher /
 COPY common/middleware /middleware
 COPY common/config_reader /config_reader
