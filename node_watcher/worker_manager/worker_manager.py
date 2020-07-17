@@ -26,18 +26,3 @@ class WorkerManager:
         self.workers = [x for x in self.workers if x not in old_workers]
 
         return old_workers
-
-    def get_total_workers(self):
-        total_workers = {}
-
-        for w_type in self.workers_type:
-            total_workers[w_type] = len(self.workers_type[w_type])
-
-        return total_workers
-
-    def remove_worker(self, worker_id):
-        for worker_type in self.workers_type:
-            if worker_id in self.workers_type[worker_type]:
-                self.workers_type[worker_type].remove(worker_id)
-        
-        self.workers_

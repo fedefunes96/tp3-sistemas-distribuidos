@@ -5,7 +5,7 @@ class Watcher:
         self.protocol = Protocol(init_queue)
         self.update_queue = update_queue
     
-    def start(self, config_file):
+    def start(self):
         self.protocol.start_receiving(self.health_status_received)
 
     def health_status_received(self, worker_id, worker_type):
