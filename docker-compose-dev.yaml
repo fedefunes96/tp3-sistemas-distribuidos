@@ -43,6 +43,7 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=eof_map
       - SEND_QUEUE=map_city
+      - STATUS_QUEUE=master_status_queue
       - TOTAL_WORKERS=${TOTAL_MAP_WORKERS}
     networks:
       - test-network
@@ -60,7 +61,9 @@ services:
       - RECV_QUEUE=map_city
       - SEND_QUEUE=cities_resume
       - MASTER_SEND_QUEUE=master_map
+      - STATUS_QUEUE=worker_status_queue
       - TOPIC_PLACES=places
+      - WORKERS=2
     networks:
       - test-network
         
@@ -78,6 +81,7 @@ services:
       - RECV_QUEUE=cities_resume
       - SEND_QUEUE=top_cities
       - MASTER_SEND_QUEUE=resume_master
+      - STATUS_QUEUE=cities_resume_status_queue
     networks:
       - test-network
   
@@ -95,6 +99,7 @@ services:
       - RECV_QUEUE=master_map
       - SEND_QUEUE=cities_resume
       - TOTAL_WORKERS=${TOTAL_MAP_WORKERS}
+      - STATUS_QUEUE=resume_master_status_queue
     networks:
       - test-network
   
@@ -127,6 +132,7 @@ services:
       - RECV_QUEUE=top_cities
       - SEND_QUEUE=summary_resume
       - TOTAL_WORKERS=1
+      - STATUS_QUEUE=top_cities_status_queue
     networks:
       - test-network
   
@@ -142,6 +148,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=summary_resume
+      - STATUS_QUEUE=summary_status_queue
     volumes:
       - ./summary_controller/summary:/summary
     networks:
@@ -161,6 +168,7 @@ services:
       - RECV_QUEUE=eof_date
       - SEND_QUEUE=date_redirector_worker
       - TOTAL_WORKERS=${TOTAL_DATE_WORKERS}
+      - STATUS_QUEUE=date_redirector_master_status_queue
     networks:
       - test-network
   
@@ -177,6 +185,7 @@ services:
       - RECV_QUEUE=date_redirector_worker
       - SEND_QUEUE=dates_resume
       - MASTER_SEND_QUEUE=master_date
+      - STATUS_QUEUE=date_redirector_status_queue
     networks:
       - test-network
   
@@ -194,6 +203,7 @@ services:
       - RECV_QUEUE=master_date
       - SEND_QUEUE=dates_resume
       - TOTAL_WORKERS=${TOTAL_DATE_WORKERS}
+      - STATUS_QUEUE=resume_master_date_status_queue
     networks:
       - test-network
   
@@ -211,6 +221,7 @@ services:
       - RECV_QUEUE=dates_resume
       - SEND_QUEUE=date_sorter
       - MASTER_SEND_QUEUE=resume_date_master
+      - STATUS_QUEUE=dates_resume_status_queue
     networks:
       - test-network
   
@@ -243,6 +254,7 @@ services:
       - RECV_QUEUE=date_sorter
       - SEND_QUEUE=summary_resume
       - TOTAL_WORKERS=1
+      - STATUS_QUEUE=date_sorter_status_queue
     networks:
       - test-network
   
@@ -260,6 +272,7 @@ services:
       - RECV_QUEUE=eof_count
       - SEND_QUEUE=count_controller_worker
       - TOTAL_WORKERS=${TOTAL_COUNT_WORKERS}
+      - STATUS_QUEUE=count_master_status_queue
     networks:
       - test-network
   
@@ -276,6 +289,7 @@ services:
       - RECV_QUEUE=count_controller_worker
       - SEND_QUEUE=count_summary
       - MASTER_SEND_QUEUE=master_count
+      - STATUS_QUEUE=count_controller_status_queue
     networks:
       - test-network
   
@@ -293,6 +307,7 @@ services:
       - RECV_QUEUE=master_count
       - SEND_QUEUE=count_summary
       - TOTAL_WORKERS=${TOTAL_COUNT_WORKERS}
+      - STATUS_QUEUE=resume_master_count_status_queue
     networks:
       - test-network
   
@@ -309,6 +324,7 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=count_summary
       - SEND_QUEUE=summary_resume
+      - STATUS_QUEUE=count_summary_status_queue
     networks:
       - test-network
    

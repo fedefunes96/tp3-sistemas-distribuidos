@@ -18,13 +18,14 @@ class Protocol:
         self.callback_count = callback_count
 
         self.receiver.start_receiving(self.data_read)
+        self.connection.close()
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
             self.actual += 1
 
             if self.actual == self.expected:
-                self.connection.close()
+                self.receiver.close()
         elif msg_type == TOP_CITIES:
             self.callback_top(json.loads(msg))
         elif msg_type == DATE_RESULTS:

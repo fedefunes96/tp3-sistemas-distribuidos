@@ -2,8 +2,10 @@
 from worker.worker import Worker
 
 from config_reader.config_reader import ConfigReader
+from status_checker.status_checker import StatusChecker
+from multiprocessing import Process
 
-def main():
+def main_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_QUEUE",
         "SEND_QUEUE",
@@ -18,7 +20,24 @@ def main():
         config_params["TOPIC_PLACES"]
     )
 
-    worker.start()
+    worker.start()    
+
+def main():
+    params = ConfigReader().parse_vars(["WORKERS", "STATUS_QUEUE"])
+
+    processes = []
+
+    for worker in range(0, int(params["WORKERS"])):
+        p = Process(target=main_process)
+        p.start()
+        processes.append(p)
+
+    checker = StatusChecker(processes, params["STATUS_QUEUE"])
+
+    checker.start()
+
+    for p in processes:
+        p.join()
 
 if __name__== "__main__":
     main()

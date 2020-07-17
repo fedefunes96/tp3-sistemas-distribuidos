@@ -22,6 +22,9 @@ class Protocol:
         self.callback_eof = callback_eof
 
         self.receiver.start_receiving(self.data_read)
+
+        self.send_master_ended()
+        self.connection.close()
     
     def send_data(self, data, where):
         self.senders[where].send(NORMAL, data)
@@ -29,13 +32,14 @@ class Protocol:
     def send_master_ended(self):
         self.master_sender.send(EOF, "")
 
-    def data_read(self, method, msg_type, msg):
+    def data_read(self, msg_type, msg):
         if msg_type == EOF:
             self.callback_eof()
-            self.receiver.send_ack(method)
+            #self.receiver.send_ack(method)
+            print("THis is not called now")
             self.receiver.close()
-            self.send_master_ended()
-            self.connection.close()
+            #self.send_master_ended()
+            #self.connection.close()
         else:            
             self.callback(msg)
-            self.receiver.send_ack(method)
+            #self.receiver.send_ack(method)

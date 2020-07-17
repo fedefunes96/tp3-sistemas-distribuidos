@@ -3,8 +3,10 @@
 from date_sorter.date_sorter import DateSorter
 
 from config_reader.config_reader import ConfigReader
+from status_checker.status_checker import StatusChecker
+from multiprocessing import Process
 
-def main():
+def main_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_QUEUE",
         "SEND_QUEUE",
@@ -18,6 +20,18 @@ def main():
     )
 
     worker.start()
+
+def main():
+    p = Process(target=main_process)
+    p.start()
+
+    params = ConfigReader().parse_vars(["STATUS_QUEUE"])
+
+    checker = StatusChecker([p], params["STATUS_QUEUE"])
+
+    checker.start()
+
+    p.join()
 
 if __name__== "__main__":
     main()
