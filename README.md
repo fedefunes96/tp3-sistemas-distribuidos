@@ -4,6 +4,6 @@ Para utilizar este sistema, basta con ingresar el archivo de datos nombrado **da
 
 Para correr el programa, ejecutar:
 
-**make docker-compose-up map_workers=< TotalMapWorkers > date_workers=< TotalDateWorkers > count_workers=< TotalCountWorkers >**
+**make docker-compose-up map_workers=< TotalMapWorkers > date_workers=< TotalDateWorkers > count_workers=< TotalCountWorkers >  processors= < TotalProcessors >**
 
 Indicando la cantidad de trabajadores que se utilizarán.

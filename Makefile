@@ -31,16 +31,19 @@ docker-compose-up: docker-image
 	TOTAL_MAP_WORKERS=$(map_workers) \
 	TOTAL_DATE_WORKERS=$(date_workers) \
 	TOTAL_COUNT_WORKERS=$(count_workers) \
+	TOTAL_PROCESSORS=$(processors) \
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-dev.yaml up \
 	--scale map_worker=$(map_workers) \
 	--scale date_redirector_worker=$(date_workers) \
 	--scale count_controller_worker=$(count_workers) \
+	--scale processor=$(processors) \
 	-d --build
 .PHONY: docker-compose-up
 
 client-run: client-image
 	COMPOSE_PROJECT_NAME=client \
 	SERVER_NAME=server \
+	TOTAL_PROCESSORS=$(processors) \
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-client.yaml up -d --build
 .PHONY: client-run
 
