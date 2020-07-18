@@ -27,13 +27,13 @@ class NodeChecker:
                     #(TODO) Remove worker so that it raises up eventually
                     pass
 
-                print("Updating timestamp: {} {}".format(worker_id, worker_type))
+                #print("Updating timestamp: {} {}".format(worker_id, worker_type))
 
                 if not self.worker_manager.worker_exists(worker_id):
                     print("Adding node: {} {}".format(worker_id, worker_type))
                     self.worker_manager.add_worker(worker_id, worker_type)
                 else:
-                    print("Updating node: {} {}".format(worker_id, worker_type))
+                    #print("Updating node: {} {}".format(worker_id, worker_type))
                     self.worker_manager.update_timestamp_worker(
                         worker_id,
                         actual_time

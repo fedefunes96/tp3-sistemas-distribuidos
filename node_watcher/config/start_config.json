@@ -1,7 +1,7 @@
 {
     "map_worker_1": "map_worker",
-    "map_worker_2": "map_worker",
     "date_resumer": "date_resumer_jan",
+    "city_resumer": "city_resumer_am",
     "count_resumer": "count_resume",
     "count_worker_1": "count_worker",
     "date_worker_1": "date_worker",

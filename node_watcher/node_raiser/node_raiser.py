@@ -23,5 +23,5 @@ class NodeRaiser:
             stderr=subprocess.PIPE
         )'''
 
-        result = subprocess.run(['echo', 'world'], check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(['docker', 'ps'], check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print('Command executed. Result={}. Output={}. Error={}'.format(result.returncode, result.stdout, result.stderr))

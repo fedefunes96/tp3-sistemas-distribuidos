@@ -24,10 +24,15 @@ def main_process():
 def main():
     p = Process(target=main_process)
     p.start()
+    
+    params = ConfigReader().parse_vars(["STATUS_QUEUE", "WORKER_ID", "WORKER_TYPE"])
 
-    params = ConfigReader().parse_vars(["STATUS_QUEUE"])
-
-    checker = StatusChecker([p], params["STATUS_QUEUE"])
+    checker = StatusChecker(
+        params["WORKER_ID"],
+        params["WORKER_TYPE"],
+        [p], 
+        params["STATUS_QUEUE"]
+    )
 
     checker.start()
 

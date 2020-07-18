@@ -1,7 +1,7 @@
 from multiprocessing import Process, Queue
 from middleware.connection import Connection
 from queue import Empty
-from communication.message_types import STATUS, ALIVE, DEAD
+from communication.message_types import ALIVE, DEAD
 from status_checker.protocol.protocol import Protocol
 import os
 import time
@@ -29,9 +29,9 @@ class StatusChecker:
 
     def send_status(self):
         if self.all_processes_alive(self.processes):
-            self.protocol.send(STATUS, ALIVE, self.worker_id, self.worker_type)
+            self.protocol.send_status(ALIVE, self.worker_id, self.worker_type)
         else:
-            self.protocol.send(STATUS, DEAD, self.worker_id, self.worker_type)
+            self.protocol.send_status(DEAD, self.worker_id, self.worker_type)
 
     '''def request_received(self, reply_to, cor_id, msg):
         from_where = msg
