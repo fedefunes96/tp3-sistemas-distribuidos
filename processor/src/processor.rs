@@ -40,7 +40,7 @@ impl Processor {
         let (sender, receiver) = channel();
         self.protocol.process_places(sender);
         for message in receiver.iter() {
-            if message == "EOF" {
+            if message == "STOP" {
                 self.protocol.send_no_more_places();
                 break;
             }
@@ -53,7 +53,7 @@ impl Processor {
         let (sender, receiver) = channel();
         self.protocol.process_cases(sender);
         for message in receiver.iter() {
-            if message == "EOF" {
+            if message == "STOP" {
                 self.protocol.send_no_more_cases();
                 break;
             }
@@ -64,11 +64,19 @@ impl Processor {
 
     fn process_place(&self, body: String) {
         info!("Got region: {}", body);
-        self.protocol.send_places_message(body.clone(), String::from("NORMAL"));
+        if body == "EOF" {
+            self.protocol.send_no_more_places();
+        } else {
+            self.protocol.send_places_message(body.clone(), String::from("NORMAL"));
+        }
     }
 
     fn process_case(&self, body: String) {
-        self.protocol.send_case_message(body.clone(), String::from("NORMAL"));
+        if body == "EOF" {
+            self.protocol.send_no_more_cases();
+        } else {
+            self.protocol.send_case_message(body.clone(), String::from("NORMAL"));
+        }
     }
 }
 
