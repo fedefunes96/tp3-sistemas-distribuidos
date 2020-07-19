@@ -1,0 +1,1 @@
+class TimeoutRequest(Exception): pass
