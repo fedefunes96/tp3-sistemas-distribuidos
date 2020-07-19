@@ -16,12 +16,32 @@ class NodeRaiser:
 
     def raise_node(self, worker_id, worker_type):
         #process = "dockerfromdocker_" + worker_id
-        '''result = subprocess.run(
+        process = worker_id
+        print("Trying to raise: {}".format(process))
+
+        result = subprocess.run(
+            ['docker', 'ps'],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
+        print('Command executed. Result={}. Output=\n{}.\n Error={}'.format(result.returncode, result.stdout, result.stderr))
+
+        result = subprocess.run(
             ['docker', 'stop', process],
             check=False,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
-        )'''
+        )
 
-        result = subprocess.run(['docker', 'ps'], check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print('Command executed. Result={}. Output={}. Error={}'.format(result.returncode, result.stdout, result.stderr))
+
+        result = subprocess.run(
+            ['docker', 'start', process],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
         print('Command executed. Result={}. Output={}. Error={}'.format(result.returncode, result.stdout, result.stderr))

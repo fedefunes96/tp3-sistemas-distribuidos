@@ -27,8 +27,11 @@ class Protocol:
             if self.actual == self.expected:
                 self.receiver.close()
         elif msg_type == TOP_CITIES:
+            print("Received TOP CITIES")
             self.callback_top(json.loads(msg))
         elif msg_type == DATE_RESULTS:
+            print("Received DATE RESULTS")
             self.callback_date(json.loads(msg))
         elif msg_type == TOTAL_COUNT:
+            print("Received COUNT TOTAL")
             self.callback_count(float(msg))
