@@ -3,8 +3,13 @@ class BullyLeader:
         self.my_id = my_id
         self.port = port
         self.nodes_ids = sorted(nodes_ids)
-        self.in_election = False
-        self.protocol = Protocol(self.my_id, self.port, self.nodes_ids)
+
+        self.protocol = Protocol(
+            self.my_id,
+            self.port,
+            self.nodes_ids,
+            self.new_leader
+        )
 
     def msg_received(self, msg_type, msg):
         if msg_type == "Status":

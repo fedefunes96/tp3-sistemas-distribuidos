@@ -1,12 +1,15 @@
 import socket
 
 class Socket:
-    def __init__(self, sock=None, address=None):
+    def __init__(self, sock=None, address=None, timeout=None):
         if sock == None:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         else:
             self.socket = sock
             self.address = address
+
+        if timeout != None:
+            self.socket.settimeout(timeout)
     
     def connect(self, ip, port):
         server_address = (ip, port)
