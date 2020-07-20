@@ -1,4 +1,6 @@
 use std::sync::mpsc::channel;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use crate::protocol::Protocol;
 
 pub struct Processor {
@@ -36,47 +38,56 @@ impl Processor {
         self.protocol.connect();
     }
 
-    pub fn process_places(&mut self) {
+    pub fn process_places(&mut self, should_stop: Arc<AtomicBool>) {
         let (sender, receiver) = channel();
         self.protocol.process_places(sender);
         for message in receiver.iter() {
-            if message == "STOP" {
-                self.protocol.send_no_more_places();
+            if !self.process_place(message.clone()) {
+                should_stop.store(true, Ordering::Relaxed);
                 break;
             }
-            self.process_place(message.clone());
         }
         info!("Finished processing regions");
     }
 
-    pub fn process_cases(&mut self) {
+    pub fn process_cases(&mut self, should_stop: Arc<AtomicBool>) {
         let (sender, receiver) = channel();
         self.protocol.process_cases(sender);
         for message in receiver.iter() {
-            if message == "STOP" {
-                self.protocol.send_no_more_cases();
+            if !self.process_case(message.clone()) {
+                should_stop.store(true, Ordering::Relaxed);
                 break;
             }
-            self.process_case(message.clone());
         }
         info!("Finished processing cases");
     }
 
-    fn process_place(&self, body: String) {
-        info!("Got region: {}", body);
+    fn process_place(&self, body: String) -> bool {
+        info!("Got this meesage: {}", body.clone());
+        if body == "STOP" {
+            self.protocol.send_stop_places();
+            return false;
+        }
         if body == "EOF" {
             self.protocol.send_no_more_places();
         } else {
             self.protocol.send_places_message(body.clone(), String::from("NORMAL"));
         }
+        return true;
     }
 
-    fn process_case(&self, body: String) {
+    fn process_case(&self, body: String) -> bool {
+        info!("Got this meesage: {}", body.clone());
+        if body == "STOP" {
+            self.protocol.send_stop_cases();
+            return false;
+        }
         if body == "EOF" {
             self.protocol.send_no_more_cases();
         } else {
             self.protocol.send_case_message(body.clone(), String::from("NORMAL"));
         }
+        return true;
     }
 }
 

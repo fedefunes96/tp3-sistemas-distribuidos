@@ -75,6 +75,10 @@ impl Protocol {
         self.send_places_message(String::from("EOF"), String::from("EOF"));
     }
 
+    pub fn send_stop_places(&self) {
+        self.send_places_message(String::from("STOP"), String::from("STOP"));
+    }
+
     pub fn send_places_message(&self, message: String, type_: String) {
         let exchange = self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap();
         let properties = AmqpProperties::default().with_type_(type_);
@@ -93,6 +97,12 @@ impl Protocol {
         self.send_message_to_queue(String::from("EOF"), self.eof_date_queue.clone(), String::from("EOF"));
     }
 
+    pub fn send_stop_cases(&self) {
+        self.send_message_to_queue(String::from("STOP"), self.eof_map_queue.clone(), String::from("STOP"));
+        self.send_message_to_queue(String::from("STOP"), self.eof_count_queue.clone(), String::from("STOP"));
+        self.send_message_to_queue(String::from("STOP"), self.eof_date_queue.clone(), String::from("STOP"));
+    }
+
     fn send_message_to_queue(&self, message: String, queue: String, type_: String) {
         let exchange = Exchange::direct(self.channel.as_ref().unwrap());
         let properties = AmqpProperties::default().with_type_(type_);
@@ -106,7 +116,7 @@ impl Protocol {
                 ConsumerMessage::Delivery(delivery) => {
                     let body = String::from_utf8_lossy(&delivery.body);
                     sender.send(body.to_string()).unwrap();
-                    if body == "EOF" {
+                    if body == "STOP" {
                         consumer.ack(delivery).unwrap();
                         break;
                     }

@@ -1,4 +1,6 @@
 use std::env;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 #[macro_use]
 extern crate log;
 extern crate simple_logger;
@@ -32,12 +34,23 @@ fn main() {
         topic_places
     );
 
+    let should_stop = Arc::new(AtomicBool::new(false));
     processor.connect();
     info!("Connected to RabbitMQ");
-    processor.process_places();
-    info!("Finished processing places");
-    processor.process_cases();
-    info!("Finished processing cases");
+    loop {
+        if should_stop.load(Ordering::Relaxed) {
+            break;
+        }
+        info!("Starting to process places");
+        processor.process_places(Arc::clone(&should_stop));
+        info!("Finished processing places");
+        processor.process_cases(Arc::clone(&should_stop));
+        info!("Finished processing cases");
+        if should_stop.load(Ordering::Relaxed) {
+            break;
+        }
+    }
+    info!("Finished processing. Disconnecting");
 }
 
 fn get_log_level_from_env() -> log::Level {

@@ -1,0 +1,20 @@
+version: '3.5'
+services:
+  stopper:
+    container_name: stopper
+    image: stopper:latest
+    entrypoint: cargo run
+    restart: on-failure
+    environment:
+      - PROCESSOR_QUANTITY=${TOTAL_PROCESSORS}
+      - LOG_LEVEL=INFO
+      - RABBITMQ_ADDR=amqp://guest:guest@rabbitmq:5672
+      - PROCESSOR_QUEUE=reader_q
+      - PROCESSOR_PLACES_QUEUE=reader_places_q
+    networks:
+      - test-network      
+
+networks:
+  test-network:
+    external:
+      name: ${SERVER_NAME}-network

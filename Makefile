@@ -25,6 +25,11 @@ client-image:
 	docker build -f ./reader/Dockerfile -t "reader:latest" .
 .PHONY: client-image
 
+stopper-image:
+	docker build -f ./python_base_image/Dockerfile -t rabbitmq-python-base:0.0.1 .
+	docker build -f ./stopper/Dockerfile -t "stopper:latest" .
+.PHONY: stopper-image
+
 docker-compose-up: docker-image
 	COMPOSE_PARALLEL_LIMIT=20 \
 	COMPOSE_PROJECT_NAME=server \
@@ -57,6 +62,25 @@ client-logs:
 	COMPOSE_PROJECT_NAME=client \
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-client.yaml logs -f
 .PHONY: client-logs
+
+
+stopper-run: stopper-image
+	COMPOSE_PROJECT_NAME=client \
+	SERVER_NAME=server \
+	TOTAL_PROCESSORS=$(processors) \
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-stop.yaml up -d --build
+.PHONY: stopper-run
+
+stopper-stop:
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-stop.yaml stop -t 1
+	COMPOSE_PROJECT_NAME=client \
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-stop.yaml down
+.PHONY: stopper-stop
+
+stopper-logs:
+	COMPOSE_PROJECT_NAME=client \
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-stop.yaml logs -f
+.PHONY: stopper-logs
 
 docker-compose-down:
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-dev.yaml stop -t 1
