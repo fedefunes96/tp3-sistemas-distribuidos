@@ -7,15 +7,14 @@ import time
 WAIT_NEW_ELECTION = 30 #In seconds
 TIMEOUT_SOCKET = 10 #In seconds
 
-class Protocol:
-    def __init__(self, my_id, port, nodes_ids, callback_newleader, callback_timer):
+class Protocol(threading.Thread):
+    def __init__(self, my_id, port, nodes_ids, callback_newleader):
         self.my_id = my_id
         self.port = port
         self.nodes_ids = nodes_ids
         self.connections = {}
         self.threads = []
         self.callback_newleader = callback_newleader
-        self.callback_timer = callback_timer
 
         self.leader = None
         self.in_election = False
@@ -37,6 +36,9 @@ class Protocol:
             #If there was no leader, start election
             if node_id == self.leader:
                 self.start_election()
+
+    def run(self):
+        self.start_receiving()
 
     def start_receiving(self):
         self.listen_socket.bind(self.my_ip, self.port)
@@ -71,6 +73,9 @@ class Protocol:
                 pass
         
         self.threads = [x for x in self.threads if x[0] not in to_remove]
+
+    def broadcast_all(self, msg_type):
+        self.broadcast_message(self.nodes_ids, msg_type)
 
     def broadcast_message(self, nodes, msg_type):
         total_responses = 0

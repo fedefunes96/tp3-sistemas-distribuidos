@@ -1,3 +1,9 @@
+from protocol.protocol import Protocol
+import random
+import time
+
+WAIT_TIME_PER_CHECK = [3, 6] #Seconds
+
 class BullyLeader:
     def __init__(self, my_id, port, nodes_ids):
         self.my_id = my_id
@@ -11,30 +17,21 @@ class BullyLeader:
             self.new_leader
         )
 
-    def msg_received(self, msg_type, msg):
-        if msg_type == "Status":
-            self.protocol
-            #self.protocol.send_status_check()
-        elif msg_type == "Election":
-            self.election_received(msg)
-        elif msg_type == "Leader":
-            self.leader_received(msg)
-
-    def leader_received(self, node_id):
+    def new_leader(self, node_id):
         self.leader = node_id
-        self.in_election = False        
-
-    def election_received(self, node_id):
-        if node_id
-        # Select new leader
-        if self.my_id in nodes_ids:
-            self.leader = max(nodes_ids)
-            self.send_new_leader(self.leader)
-        elif not self.in_election:
-            self.send_election(nodes_ids + self.my_id)
 
     def start(self):
-        #Start receiving messages
-        self.protocol.start_receiving(self.msg_received)
-        #First start with an election
-        self.start_election()
+        #First start receiving messages
+        self.protocol.start()
+
+        while True:
+            self.protocol.broadcast_all("Status")
+
+            time_to_wait = random.randint(
+                WAIT_TIME_PER_CHECK[0],
+                WAIT_TIME_PER_CHECK[1] + 1
+            )
+
+            time.sleep(time_to_wait)
+
+        self.protocol.join()
