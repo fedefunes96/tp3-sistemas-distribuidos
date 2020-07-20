@@ -1,5 +1,7 @@
 import socket
 
+BUFFER_RECV = 128
+
 class Socket:
     def __init__(self, sock=None, address=None, timeout=None):
         if sock == None:
@@ -12,18 +14,18 @@ class Socket:
             self.socket.settimeout(timeout)
     
     def connect(self, ip, port):
-        server_address = (ip, port)
-        self.socket.connect(server_address)
+        self.address= (ip, port)
+        self.socket.connect(self.address)
 
     def bind(self, ip, port):
         self.address = (ip, port)
-        self.socket.bind(server_address)
+        self.socket.bind(self.address)
         self.socket.listen(1)
 
-    def accept(self):
+    def accept(self, timeout=None):
         sock, client_address = self.socket.accept()
 
-        return Socket(sock, client_address)
+        return Socket(sock, client_address, timeout)
 
     def recv_int(self):
         integer = self.socket.recv(4)

@@ -8,24 +8,101 @@ services:
   #  networks:
   #    - test-network
 
-  node_watcher:
-    container_name: node_watcher
+  node_watcher_a:
+    container_name: node_watcher_a
     image: node_watcher:latest
     entrypoint: python3 /main.py
     restart: on-failure
-    #depends_on:
-    #  - rabbitmq
-    #links: 
-    #  - rabbitmq
     environment:
       - PYTHONUNBUFFERED=1
       - INIT_QUEUE=health_status_queue
+      - MY_DIR=node_watcher_a
+      - PORT=43343
+      - NODE_A=node_watcher_b
+      - NODE_B=node_watcher_c
+      - NODE_C=node_watcher_d
+      - NODE_D=node_watcher_e
     networks:
       - test-network
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock      
+      - /var/run/docker.sock:/var/run/docker.sock
 
+  node_watcher_b:
+    container_name: node_watcher_b
+    image: node_watcher:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1
+      - INIT_QUEUE=health_status_queue
+      - MY_DIR=node_watcher_b
+      - PORT=43343
+      - NODE_A=node_watcher_a
+      - NODE_B=node_watcher_c
+      - NODE_C=node_watcher_d
+      - NODE_D=node_watcher_e      
+    networks:
+      - test-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  node_watcher_c:
+    container_name: node_watcher_c
+    image: node_watcher:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1
+      - INIT_QUEUE=health_status_queue
+      - MY_DIR=node_watcher_c
+      - PORT=43343
+      - NODE_A=node_watcher_a
+      - NODE_B=node_watcher_b
+      - NODE_C=node_watcher_d
+      - NODE_D=node_watcher_e      
+    networks:
+      - test-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  node_watcher_d:
+    container_name: node_watcher_d
+    image: node_watcher:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1
+      - INIT_QUEUE=health_status_queue
+      - MY_DIR=node_watcher_d
+      - PORT=43343
+      - NODE_A=node_watcher_a
+      - NODE_B=node_watcher_c
+      - NODE_C=node_watcher_b
+      - NODE_D=node_watcher_e    
+    networks:
+      - test-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock   
+      
+  node_watcher_e:
+    container_name: node_watcher_e
+    image: node_watcher:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1
+      - INIT_QUEUE=health_status_queue
+      - MY_DIR=node_watcher_e
+      - PORT=43343
+      - NODE_A=node_watcher_a
+      - NODE_B=node_watcher_c
+      - NODE_C=node_watcher_d
+      - NODE_D=node_watcher_b      
+    networks:
+      - test-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock        
 networks:
   test-network:
-    external:
-      name: ${SERVER_NAME}-network
+#    external:
+#      name: ${SERVER_NAME}-network
