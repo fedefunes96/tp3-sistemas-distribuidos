@@ -19,7 +19,7 @@ class Receiver:
         self.channel.start_consuming()
     
     def data_received(self, ch, method, properties, body):
-        self.callback(properties.type, body.decode('utf-8'))
+        should_stop = self.callback(properties.type, body.decode('utf-8'))
         self.send_ack(method)
 
         if not self.running:

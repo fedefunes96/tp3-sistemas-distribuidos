@@ -26,7 +26,7 @@ class StatusChecker:
             else:
                 self.receiver.reply(cor_id, reply_to, DEAD)
         elif msg == FINISHED:
-            print("Got a FINISHED")
+            print("Finishing checker")
             # self.receiver.reply(cor_id, reply_to, FINISHED)
             self.receiver.close()
 

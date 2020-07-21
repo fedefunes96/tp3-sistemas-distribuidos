@@ -1,12 +1,12 @@
 from redirector.redirector import Redirector
 
 class CountRedirector(Redirector):
-    def __init__(self, recv_queue, send_queue, master_send_queue, callback, callback_eof):
+    def __init__(self, recv_queue, send_queue, master_send_queue, callback, callback_eof, status_queue):
         self.send_queue = send_queue
         self.callback = callback
         self.callback_eof = callback_eof
 
-        Redirector.__init__(self, recv_queue, [send_queue], master_send_queue)
+        Redirector.__init__(self, recv_queue, [send_queue], master_send_queue, status_queue)
 
     def data_received(self, data):
         [date, latitude, longitude, result] = data.split(",")

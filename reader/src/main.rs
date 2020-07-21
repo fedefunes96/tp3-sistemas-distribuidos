@@ -1,4 +1,5 @@
 use std::env;
+use std::{thread, time};
 mod reader;
 mod case;
 mod protocol;
@@ -20,6 +21,7 @@ fn main() {
 
     reader.process_places("data/places.csv");
     info!("Finished processing regions");
+    thread::sleep(time::Duration::from_millis(2*1000));
     reader.process_cases("data/data.csv");
     info!("Finished processing data");
 }

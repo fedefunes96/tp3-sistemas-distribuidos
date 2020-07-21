@@ -20,12 +20,10 @@ class Protocol:
     def data_read(self, msg_type, msg):
         print("Got a message!")
         if msg_type == STOP:
-            print("Got a STOP")
             self.send_stop()
             self.status_sender.send(FINISHED, FINISHED)
             self.close()
         elif msg_type == EOF:
-            print("Got a EOF")
             self.send_eof()
 
     def send_eof(self):

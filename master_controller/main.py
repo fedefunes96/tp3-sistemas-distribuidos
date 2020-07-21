@@ -25,16 +25,15 @@ def main_process():
 def main():
     p = Process(target=main_process)
     p.start()
-    print("Started")
+
     params = ConfigReader().parse_vars(["STATUS_QUEUE"])
 
     checker = StatusChecker([p], params["STATUS_QUEUE"])
-    print("Checker created")
+
     checker.start()
-    print("Checker finished")
-    print("Going to join process")
+
     p.join()
-    print("Bye")
+
 
 if __name__== "__main__":
     main()

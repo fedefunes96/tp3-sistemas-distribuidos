@@ -21,10 +21,17 @@ class ProtocolInitialize:
 
     def data_read(self, msg_type, msg):
         if msg_type == STOP:
-            self.connection.close()
+            self.receiver.close()
+            return True
         elif msg_type == EOF:
             self.receiver.close()
+            return False
         else:
             print("Got message: " + msg)
             [region, latitude, longitude] = msg.split(",")
             self.callback(region, float(latitude), float(longitude))
+            return False
+
+    def close(self):
+        self.receiver.close()
+        self.connection.close()
