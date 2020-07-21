@@ -16,12 +16,17 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - INIT_QUEUE=health_status_queue
+      - MY_ID=A
       - MY_DIR=node_watcher_a
       - PORT=43343
       - NODE_A=node_watcher_b
       - NODE_B=node_watcher_c
       - NODE_C=node_watcher_d
       - NODE_D=node_watcher_e
+      - ID_A=B
+      - ID_B=C
+      - ID_C=D
+      - ID_D=E
     networks:
       - test-network
     volumes:
@@ -35,12 +40,17 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - INIT_QUEUE=health_status_queue
+      - MY_ID=B
       - MY_DIR=node_watcher_b
       - PORT=43343
       - NODE_A=node_watcher_a
       - NODE_B=node_watcher_c
       - NODE_C=node_watcher_d
-      - NODE_D=node_watcher_e      
+      - NODE_D=node_watcher_e
+      - ID_A=A
+      - ID_B=C
+      - ID_C=D
+      - ID_D=E        
     networks:
       - test-network
     volumes:
@@ -54,12 +64,17 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - INIT_QUEUE=health_status_queue
+      - MY_ID=C
       - MY_DIR=node_watcher_c
       - PORT=43343
       - NODE_A=node_watcher_a
       - NODE_B=node_watcher_b
       - NODE_C=node_watcher_d
-      - NODE_D=node_watcher_e      
+      - NODE_D=node_watcher_e   
+      - ID_A=A
+      - ID_B=B
+      - ID_C=D
+      - ID_D=E            
     networks:
       - test-network
     volumes:
@@ -73,12 +88,17 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - INIT_QUEUE=health_status_queue
+      - MY_ID=D
       - MY_DIR=node_watcher_d
       - PORT=43343
       - NODE_A=node_watcher_a
       - NODE_B=node_watcher_c
       - NODE_C=node_watcher_b
-      - NODE_D=node_watcher_e    
+      - NODE_D=node_watcher_e   
+      - ID_A=A
+      - ID_B=C
+      - ID_C=B
+      - ID_D=E
     networks:
       - test-network
     volumes:
@@ -92,12 +112,17 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - INIT_QUEUE=health_status_queue
+      - MY_ID=E
       - MY_DIR=node_watcher_e
       - PORT=43343
       - NODE_A=node_watcher_a
       - NODE_B=node_watcher_c
       - NODE_C=node_watcher_d
-      - NODE_D=node_watcher_b      
+      - NODE_D=node_watcher_b
+      - ID_A=A
+      - ID_B=C
+      - ID_C=D
+      - ID_D=B            
     networks:
       - test-network
     volumes:

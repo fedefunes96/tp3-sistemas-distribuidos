@@ -6,6 +6,7 @@ from watcher.watcher import Watcher
 from node_raiser.node_raiser import NodeRaiser
 from node_checker.node_checker import NodeChecker
 from synchronization.bully_leader import BullyLeader
+from synchronization.node.node import Node
 
 CONFIG_FILE = "config/start_config.json"
 
@@ -55,18 +56,19 @@ def main():
     #raiser_p.start()
 
     config_params = ConfigReader().parse_vars(
-        ["MY_DIR", "PORT", "NODE_A", "NODE_B", "NODE_C", "NODE_D"]
+        ["MY_ID", "MY_DIR", "PORT", "NODE_A", "NODE_B", "NODE_C", "NODE_D",
+        "ID_A", "ID_B", "ID_C", "ID_D"]
     )
 
     nodes_ids = [
-        config_params["NODE_A"],
-        config_params["NODE_B"],
-        config_params["NODE_C"],
-        config_params["NODE_D"]
+        Node(config_params["ID_A"], config_params["NODE_A"]),
+        Node(config_params["ID_B"], config_params["NODE_B"]),
+        Node(config_params["ID_C"], config_params["NODE_C"]),
+        Node(config_params["ID_D"], config_params["NODE_D"])
     ]
 
     bully_leader = BullyLeader(
-        config_params["MY_DIR"],
+        Node(config_params["MY_ID"], config_params["MY_DIR"]),
         int(config_params["PORT"]),
         nodes_ids,
         new_leader

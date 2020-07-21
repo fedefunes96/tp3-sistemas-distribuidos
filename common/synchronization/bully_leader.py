@@ -39,10 +39,10 @@ class BullyLeader:
             else:
                 self.protocol.broadcast_all("Status")
 
-                time_to_wait = random.randint(
-                    WAIT_TIME_PER_CHECK[0],
-                    WAIT_TIME_PER_CHECK[1] + 1
-                )
+            time_to_wait = random.randint(
+                WAIT_TIME_PER_CHECK[0],
+                WAIT_TIME_PER_CHECK[1] + 1
+            )
 
             time.sleep(time_to_wait)
 

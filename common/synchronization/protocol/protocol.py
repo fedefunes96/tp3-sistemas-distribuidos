@@ -2,6 +2,7 @@ from synchronization.protocol.socket import Socket
 from socket import error, timeout
 import threading
 from queue import Queue, Empty
+from synchronization.node.node import Node
 import time
 
 WAIT_NEW_ELECTION = 20 #In seconds
@@ -10,11 +11,11 @@ WAIT_CONNECT = 2 #In seconds
 RETRY_CONNECTS = 3
 
 class Protocol(threading.Thread):
-    def __init__(self, my_id, port, nodes_ids, callback_newleader):
+    def __init__(self, my_node, port, nodes, callback_newleader):
         super(Protocol, self).__init__()
-        self.my_id = my_id
+        self.my_node = my_node
         self.port = port
-        self.nodes_ids = nodes_ids
+        self.nodes = nodes
         self.connections = {}
         self.threads = []
         self.callback_newleader = callback_newleader
@@ -28,11 +29,11 @@ class Protocol(threading.Thread):
     
     def initialize_connections(self):
         print("Creating all connections")
-        for node in self.nodes_ids:
+        for node in self.nodes:
             self.create_connection(node)  
     
-    def create_connection(self, node_id):
-        if node_id in self.connections:
+    def create_connection(self, node):
+        if node in self.connections:
             return
         
         sock = Socket(timeout=TIMEOUT_SOCKET)
@@ -41,8 +42,8 @@ class Protocol(threading.Thread):
 
         while (connected == False):
             try:
-                sock.connect(node_id, self.port)
-                self.connections[node_id] = sock
+                sock.connect(node.addr, self.port)
+                self.connections[node] = sock
                 connected = True
             except error:
                 #Retry at least RETRY_CONNECTS times
@@ -53,9 +54,9 @@ class Protocol(threading.Thread):
                 if attemps_to_connect > 0:
                     continue
 
-                print("Error on connecting to: {}".format(node_id))
-                if node_id == self.leader:
-                    print("Error on connecting to leader: {}".format(node_id))
+                print("Error on connecting to: {}".format(node))
+                if node == self.leader:
+                    print("Error on connecting to leader: {}".format(node))
                     self.start_election()
                 
                 break
@@ -65,7 +66,7 @@ class Protocol(threading.Thread):
 
     def start_receiving(self):
         print("Starting to receive msgs")
-        self.listen_socket.bind(self.my_id, self.port)
+        self.listen_socket.bind(self.my_node.addr, self.port)
 
         total_cons = 0
 
@@ -113,23 +114,25 @@ class Protocol(threading.Thread):
 
         print("Sending message: {} to {}".format(msg_type, nodes))
 
-        for node_id in nodes:
+        for node in nodes:
             try:
-                self.send_msg(self.connections[node_id], msg_type)
+                self.send_msg(self.connections[node], msg_type)
 
-                #self.handle_reply(self.connections[node_id])
+                self.handle_reply(self.connections[node])
+
+                #print("It replied: {}".format(node))
 
                 total_responses += 1
-            except timeout:
+            except (timeout, error):
                 #Node failed to answer, remove its socket
                 #If it was the leader or there was no leader, start election
-                conn = self.connections.pop(node_id)
+                conn = self.connections.pop(node)
                 conn.close()
 
-                print("Timeout on node: {}".format(node_id))
+                print("Timeout on node: {}".format(node))
                 
-                if node_id == self.leader:# and not self.in_election:
-                    print("Timeout on leader node: {}".format(node_id))
+                if node == self.leader:# and not self.in_election:
+                    print("Timeout on leader node: {}".format(node))
                     self.start_election()
         
         return total_responses
@@ -138,19 +141,19 @@ class Protocol(threading.Thread):
         print("Starting new election")
         nodes = []
 
-        for node_id in self.connections:
-            if node_id < self.my_id:
+        for node in self.connections:
+            if node < self.my_node:
                 continue
 
-            nodes.append(node_id)
+            nodes.append(node)
 
         total_responses = self.broadcast_message(nodes, "Election")
 
         if total_responses == 0:
-            print("No one answered, im the new leader: {}".format(self.my_id))
+            print("No one answered, im the new leader: {}".format(self.my_node))
             self.in_election = False
-            self.leader = self.my_id
-            self.callback_newleader(self.my_id)
+            self.leader = self.my_node
+            self.callback_newleader(self.my_node)
             self.broadcast_message([*self.connections], "Leader")
         else:
             self.timer = True
@@ -167,45 +170,53 @@ class Protocol(threading.Thread):
         #self.in_election = False
 
     def handle_reply(self, sock):
-        [node_id, cmd] = self.recv_msg(sock)
+        [node, cmd] = self.recv_msg(sock)
 
-        if node_id not in self.nodes_ids:
-            return
+        if node not in self.nodes:
+            print("invalid is node: {}".format(node))
+            raise error
+
+        #print("Printing {}".format(node))
 
         #print("Reply to: {} {}".format(node_id, cmd))
 
-        if node_id not in self.connections:
+        if node not in self.connections:
             #Received connection from a node which came up
-            print("Received connection from {}".format(node_id))
-            self.create_connection(node_id)
+            print("Received connection from {}".format(node))
+            self.create_connection(node)
 
         #Commands for replying msg
         if cmd == "Status":
-            print("Received status from: {}".format(node_id))
-            pass
-            #self.send_msg(sock, "Alive")
+            #print("Received status from: {}".format(node))
+            #pass
+            self.send_msg(sock, "Alive")
         elif cmd == "Election":
-            print("Received election from: {}".format(node_id))
-            #self.send_msg(sock, "Ack")
+            #print("Received election from: {}".format(node))
+            self.send_msg(sock, "Ack")
             self.in_election = True
         elif cmd == "Leader":
-            print("Received new leader: {}".format(node_id))
-            self.leader = node_id
+            print("Received new leader: {}".format(node))
+            self.leader = node
             self.timer = False
-            self.callback_newleader(node_id)
+            self.callback_newleader(node)
             self.in_election = False
+            self.send_msg(sock, "Ack")
         #Commands for sending msg
         #elif 
-        #elif command == "Alive":
-        #    pass
+        #elif cmd == "Alive":
+        #    print("{} send me alive".format(node))
         
 
     def send_msg(self, sock, msg_type):
-        sock.send_string(self.my_id)
+        sock.send_string(self.my_node.id)
+        sock.send_string(self.my_node.addr)
         sock.send_string(msg_type)
 
     def recv_msg(self, sock):
-        return [sock.recv_string(), sock.recv_string()]
+        return [
+            Node(sock.recv_string(), sock.recv_string()),
+            sock.recv_string()
+        ]
 
     def handle_connection(self, sock, queue):
         while True:
@@ -214,6 +225,9 @@ class Protocol(threading.Thread):
             except timeout:
                 #Connection broke, just stop handling this connection
                 print("Receiver broke, who sends me died")
+                break
+            except error:
+                print("Invalid connection")
                 break
         
         queue.put_nowait(0)
