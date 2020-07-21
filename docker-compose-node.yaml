@@ -129,5 +129,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock        
 networks:
   test-network:
-#    external:
-#      name: ${SERVER_NAME}-network
+    external:
+      name: ${SERVER_NAME}-network

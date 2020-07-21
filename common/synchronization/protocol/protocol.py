@@ -22,8 +22,6 @@ class Protocol(threading.Thread):
 
         self.leader = None
         self.in_election = True
-
-        self.timer = False
         
         self.listen_socket = Socket()
     
@@ -163,23 +161,15 @@ class Protocol(threading.Thread):
             time.sleep(WAIT_NEW_ELECTION)
             
             #No leader selected, start new election
-            #if self.timer == True:
             if self.in_election == True:
                 print("No leader selected, start again")
                 self.start_election()
-
-        #self.in_election = False
 
     def handle_reply(self, sock):
         [node, cmd] = self.recv_msg(sock)
 
         if node not in self.nodes:
-            print("invalid is node: {}".format(node))
             raise error
-
-        #print("Printing {}".format(node))
-
-        #print("Reply to: {} {}".format(node_id, cmd))
 
         if node not in self.connections:
             #Received connection from a node which came up
@@ -188,11 +178,8 @@ class Protocol(threading.Thread):
 
         #Commands for replying msg
         if cmd == "Status":
-            #print("Received status from: {}".format(node))
-            #pass
             self.send_msg(sock, "Alive")
         elif cmd == "Election":
-            #print("Received election from: {}".format(node))
             self.send_msg(sock, "Ack")
             self.in_election = True
         elif cmd == "Leader":
@@ -202,13 +189,7 @@ class Protocol(threading.Thread):
             self.in_election = False
             #Before sending ACK, stop my work if im the leader
             self.callback_newleader(node)
-            self.send_msg(sock, "Ack")
-
-        #Commands for sending msg
-        #elif 
-        #elif cmd == "Alive":
-        #    print("{} send me alive".format(node))
-        
+            self.send_msg(sock, "Ack")    
 
     def send_msg(self, sock, msg_type):
         sock.send_string(self.my_node.id)

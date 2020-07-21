@@ -59,29 +59,26 @@ class ProcessManager:
         self.processes = []
 
     def system_checker_process(self, update_queue, dead_queue):
-        '''checker = NodeChecker(
+        print("Starting checker process")
+        checker = NodeChecker(
             update_queue,
             dead_queue,
             CONFIG_FILE
         )
 
-        checker.start() '''  
-        while True:
-            print("System checker working")
-            time.sleep(3)
+        checker.start()
 
     def raiser_process(self, dead_queue):
-        '''raiser = NodeRaiser(
+        print("Starting raiser process")
+        raiser = NodeRaiser(
             dead_queue
         )
 
-        raiser.start()'''
-        while True:  
-            print("System raiser working")
-            time.sleep(3)        
+        raiser.start()       
 
     def health_process(self, update_queue):
-        '''config_params = ConfigReader().parse_vars(
+        print("Starting health process")
+        config_params = ConfigReader().parse_vars(
             ["INIT_QUEUE"]
         )
         
@@ -90,7 +87,5 @@ class ProcessManager:
             update_queue
         )
 
-        watcher.start()'''
-        while True:  
-            print("Health working")
-            time.sleep(3)            
+        watcher.start()
+ 

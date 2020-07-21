@@ -10,5 +10,4 @@ class Watcher:
         self.protocol.start_receiving(self.health_status_received)
 
     def health_status_received(self, status, worker_id, worker_type):
-        #print("Health status received: {} {} {}".format(status, worker_id, worker_type))
         self.update_queue.put([status, worker_id, worker_type])

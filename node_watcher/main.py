@@ -3,7 +3,6 @@
 from config_reader.config_reader import ConfigReader
 from synchronization.bully_leader import BullyLeader
 from synchronization.node.node import Node
-#from synchronization.leader_manager import LeaderManager
 from process_manager.process_manager import ProcessManager
 
 def main():
@@ -28,8 +27,6 @@ def main():
         int(config_params["PORT"]),
         nodes_ids
     )
-
-    #leader_manager = LeaderManager(my_node, bully_leader)
 
     process_manager = ProcessManager(bully_leader)
 
