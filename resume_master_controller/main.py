@@ -21,16 +21,17 @@ def main_process():
     master_controller.start()
 
 def main():
-    p = Process(target=main_process)
-    p.start()
+    #p = Process(target=main_process)
+    #p.start()
 
-    params = ConfigReader().parse_vars(["STATUS_QUEUE"])
+    #params = ConfigReader().parse_vars(["STATUS_QUEUE"])
 
-    checker = StatusChecker([p], params["STATUS_QUEUE"])
+    #checker = StatusChecker([p], params["STATUS_QUEUE"])
 
-    checker.start()
+    #checker.start()
 
-    p.join()
+    #p.join()
+    main_process()
 
 if __name__== "__main__":
     main()

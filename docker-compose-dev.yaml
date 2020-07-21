@@ -9,7 +9,7 @@ services:
       - test-network
 
   map_master_controller:
-    container_name: map_master_controller
+    container_name: master_map_worker
     image: master_controller:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -21,8 +21,10 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=eof_map
       - SEND_QUEUE=map_city
-      - STATUS_QUEUE=master_status_queue
+      - STATUS_QUEUE=health_status_queue
       - TOTAL_WORKERS=${TOTAL_MAP_WORKERS}
+      - WORKER_ID=master_map_worker
+      - WORKER_TYPE=master_map_worker
     networks:
       - test-network
 
@@ -39,14 +41,16 @@ services:
       - RECV_QUEUE=map_city
       - SEND_QUEUE=cities_resume
       - MASTER_SEND_QUEUE=master_map
-      - STATUS_QUEUE=worker_status_queue
+      - STATUS_QUEUE=health_status_queue
       - TOPIC_PLACES=places
       - WORKERS=2
+      - WORKER_ID=map_worker_1
+      - WORKER_TYPE=map_worker      
     networks:
       - test-network
         
   cities_resume1:  
-    container_name: cities_resume1
+    container_name: city_resumer
     image: cities_resume:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -59,7 +63,9 @@ services:
       - RECV_QUEUE=cities_resume
       - SEND_QUEUE=top_cities
       - MASTER_SEND_QUEUE=resume_master
-      - STATUS_QUEUE=cities_resume_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=city_resumer
+      - WORKER_TYPE=city_resumer_am         
     networks:
       - test-network
   
@@ -77,7 +83,7 @@ services:
       - RECV_QUEUE=master_map
       - SEND_QUEUE=cities_resume
       - TOTAL_WORKERS=${TOTAL_MAP_WORKERS}
-      - STATUS_QUEUE=resume_master_status_queue
+      - STATUS_QUEUE=health_status_queue
     networks:
       - test-network
   
@@ -97,7 +103,7 @@ services:
   #    - TOTAL_WORKERS=1
 
   top_cities_controller:  
-    container_name: top_cities_controller
+    container_name: top_cities_worker
     image: top_cities_controller:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -110,12 +116,14 @@ services:
       - RECV_QUEUE=top_cities
       - SEND_QUEUE=summary_resume
       - TOTAL_WORKERS=1
-      - STATUS_QUEUE=top_cities_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=top_cities_worker
+      - WORKER_TYPE=top_cities
     networks:
       - test-network
   
   summary_controller:  
-    container_name: summary_controller
+    container_name: summary_worker
     image: summary_controller:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -126,14 +134,16 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=summary_resume
-      - STATUS_QUEUE=summary_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=summary_worker
+      - WORKER_TYPE=summary_worker
     volumes:
       - ./summary_controller/summary:/summary
     networks:
       - test-network
   
   date_redirector_master_controller:
-    container_name: date_redirector_master_controller
+    container_name: master_date_worker
     image: master_controller:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -146,7 +156,9 @@ services:
       - RECV_QUEUE=eof_date
       - SEND_QUEUE=date_redirector_worker
       - TOTAL_WORKERS=${TOTAL_DATE_WORKERS}
-      - STATUS_QUEUE=date_redirector_master_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=master_date_worker
+      - WORKER_TYPE=master_date_worker
     networks:
       - test-network
   
@@ -163,7 +175,9 @@ services:
       - RECV_QUEUE=date_redirector_worker
       - SEND_QUEUE=dates_resume
       - MASTER_SEND_QUEUE=master_date
-      - STATUS_QUEUE=date_redirector_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=date_worker_1
+      - WORKER_TYPE=date_worker
     networks:
       - test-network
   
@@ -181,12 +195,12 @@ services:
       - RECV_QUEUE=master_date
       - SEND_QUEUE=dates_resume
       - TOTAL_WORKERS=${TOTAL_DATE_WORKERS}
-      - STATUS_QUEUE=resume_master_date_status_queue
+      - STATUS_QUEUE=health_status_queue
     networks:
       - test-network
   
   dates_resume1:  
-    container_name: dates_resume1
+    container_name: date_resumer
     image: dates_resume:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -199,7 +213,9 @@ services:
       - RECV_QUEUE=dates_resume
       - SEND_QUEUE=date_sorter
       - MASTER_SEND_QUEUE=resume_date_master
-      - STATUS_QUEUE=dates_resume_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=date_resumer
+      - WORKER_TYPE=date_resumer_jan      
     networks:
       - test-network
   
@@ -219,7 +235,7 @@ services:
   #    - TOTAL_WORKERS=1
 
   date_sorter:  
-    container_name: date_sorter
+    container_name: date_sorter_worker
     image: date_sorter:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -232,12 +248,14 @@ services:
       - RECV_QUEUE=date_sorter
       - SEND_QUEUE=summary_resume
       - TOTAL_WORKERS=1
-      - STATUS_QUEUE=date_sorter_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=date_sorter_worker
+      - WORKER_TYPE=date_sorter     
     networks:
       - test-network
   
   count_master_controller:
-    container_name: count_master_controller
+    container_name: master_count_worker
     image: master_controller:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -250,7 +268,9 @@ services:
       - RECV_QUEUE=eof_count
       - SEND_QUEUE=count_controller_worker
       - TOTAL_WORKERS=${TOTAL_COUNT_WORKERS}
-      - STATUS_QUEUE=count_master_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=master_count_worker
+      - WORKER_TYPE=master_count_worker
     networks:
       - test-network
   
@@ -267,7 +287,9 @@ services:
       - RECV_QUEUE=count_controller_worker
       - SEND_QUEUE=count_summary
       - MASTER_SEND_QUEUE=master_count
-      - STATUS_QUEUE=count_controller_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=count_worker_1
+      - WORKER_TYPE=count_worker
     networks:
       - test-network
   
@@ -285,12 +307,12 @@ services:
       - RECV_QUEUE=master_count
       - SEND_QUEUE=count_summary
       - TOTAL_WORKERS=${TOTAL_COUNT_WORKERS}
-      - STATUS_QUEUE=resume_master_count_status_queue
+      - STATUS_QUEUE=health_status_queue
     networks:
       - test-network
   
   count_summary_controller:  
-    container_name: count_summary_controller
+    container_name: count_resumer
     image: count_summary_controller:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -302,7 +324,9 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=count_summary
       - SEND_QUEUE=summary_resume
-      - STATUS_QUEUE=count_summary_status_queue
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=count_resumer
+      - WORKER_TYPE=count_resume      
     networks:
       - test-network
    

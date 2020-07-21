@@ -10,9 +10,9 @@ class Worker:
         self.positives_per_city = {}
 
     def start(self):
-        self.protocol.start_connection(self.data_read)
+        self.protocol.start_connection(self.data_read, self.process_results)
 
-        self.process_results()
+        #self.process_results()
 
     def data_read(self, place):
         if place not in self.positives_per_city:

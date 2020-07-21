@@ -36,9 +36,10 @@ class Protocol:
         if msg_type == EOF:
             self.callback_eof()
             #self.receiver.send_ack(method)
-            print("THis is not called now")
-            self.receiver.close()
-            #self.send_master_ended()
+            #print("THis is not called now")
+            #self.receiver.close()
+            print("Ended processing")
+            self.send_master_ended()
             #self.connection.close()
         else:            
             self.callback(msg)

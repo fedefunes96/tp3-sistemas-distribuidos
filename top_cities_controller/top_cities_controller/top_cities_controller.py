@@ -8,8 +8,8 @@ class TopCitiesController:
         self.top_cities = {}
 
     def start(self):
-        self.protocol.start_connection(self.data_read)
-        self.process_results()
+        self.protocol.start_connection(self.data_read, self.process_results)
+        #self.process_results()
 
     def data_read(self, data):
         self.cities_data.update(data)

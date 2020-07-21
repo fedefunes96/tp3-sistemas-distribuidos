@@ -22,5 +22,7 @@ class Protocol:
             self.pending_connections -= 1
 
             if self.pending_connections == 0:
-                self.receiver.close()
+                print("Ended processing")
+                self.sender.send(EOF, '')
+                #self.receiver.close()
 

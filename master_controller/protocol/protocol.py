@@ -16,13 +16,15 @@ class Protocol:
         #self.callback = callback
 
         self.receiver.start_receiving(self.data_read)
-        self.send_eof()
-        self.connection.close()   
+        #self.send_eof()
+        #self.connection.close()   
     #def send_data(self, data):
     #    self.sender.send(NORMAL, data)
 
     def data_read(self, msg_type, msg):
-        self.receiver.close()
+        self.send_eof()
+        print("Ended processing")
+        #self.receiver.close()
         #self.send_eof()
         #self.connection.close()        
         '''if msg_type == "EOF":

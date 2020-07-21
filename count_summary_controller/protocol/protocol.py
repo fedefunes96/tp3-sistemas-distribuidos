@@ -13,13 +13,16 @@ class Protocol:
         self.receiver = self.connection.create_direct_receiver(recv_queue)
         self.sender = self.connection.create_direct_sender(send_queue)
 
-    def start_connection(self, callback):
+    def start_connection(self, callback, callback_eof):
         self.callback = callback
+        self.callback_eof = callback_eof
         self.receiver.start_receiving(self.data_read)
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
-            self.receiver.close()
+            #self.receiver.close()
+            print("Ended processing")
+            self.callback_eof()
         else:
             [positivi, deceduti] = msg.split(',')
             self.callback(int(positivi), int(deceduti))
