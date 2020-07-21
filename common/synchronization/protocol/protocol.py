@@ -153,8 +153,9 @@ class Protocol(threading.Thread):
             print("No one answered, im the new leader: {}".format(self.my_node))
             self.in_election = False
             self.leader = self.my_node
+            self.broadcast_all("Leader")
+            #This is called when all process send ACK
             self.callback_newleader(self.my_node)
-            self.broadcast_message([*self.connections], "Leader")
         else:
             self.timer = True
             print("Someone receiving my election, wait")
@@ -198,9 +199,11 @@ class Protocol(threading.Thread):
             print("Received new leader: {}".format(node))
             self.leader = node
             self.timer = False
-            self.callback_newleader(node)
             self.in_election = False
+            #Before sending ACK, stop my work if im the leader
+            self.callback_newleader(node)
             self.send_msg(sock, "Ack")
+
         #Commands for sending msg
         #elif 
         #elif cmd == "Alive":

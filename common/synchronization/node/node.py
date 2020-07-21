@@ -37,7 +37,7 @@ class Node:
         if type(other) is type(self):
             return self.id != other.id
         
-        raise NotImplementedError 
+        return True 
 
     def __hash__(self):
         return hash(self.id)

@@ -1,30 +1,41 @@
 from synchronization.protocol.protocol import Protocol
 import random
 import time
+import threading
+from socket import error, timeout
 
 WAIT_TIME_PER_CHECK = [3, 6] #Seconds
 
 class BullyLeader:
-    def __init__(self, my_id, port, nodes_ids):#, callback_leader):
-        self.my_id = my_id
+    def __init__(self, my_node, port, nodes_ids):#, callback_leader):
+        self.my_node = my_node
         self.port = port
         self.nodes_ids = sorted(nodes_ids)
+        self.lock = threading.Lock()
+        self.last_leader = None
 
         self.protocol = Protocol(
-            self.my_id,
+            self.my_node,
             self.port,
             self.nodes_ids,
             self.new_leader
         )
+        
+    def new_leader(self, node):
+        #Locking because an election could be raised while im processing this
+        with self.lock:
+            #Im the new leader
+            if node == self.my_node and self.last_leader != self.my_node:
+                self.callback_new_leader()
+            #Someone took my role
+            elif node != self.my_node and self.last_leader == self.my_node:
+                self.callback_disposed_leader()
 
-        #self.callback_leader = callback_leader
+            self.last_leader = node            
 
-    def new_leader(self, node_id):
-        self.leader = node_id
-        self.callback_leader(node_id)
-
-    def start(self, callback_leader):
-        self.callback_leader = callback_leader
+    def start(self, callback_new_leader, callback_disposed_leader):
+        self.callback_new_leader = callback_new_leader
+        self.callback_disposed_leader = callback_disposed_leader
         #First start receiving messages
         self.protocol.start()
 
