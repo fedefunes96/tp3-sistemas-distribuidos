@@ -5,7 +5,7 @@ import time
 WAIT_TIME_PER_CHECK = [3, 6] #Seconds
 
 class BullyLeader:
-    def __init__(self, my_id, port, nodes_ids, callback_leader):
+    def __init__(self, my_id, port, nodes_ids):#, callback_leader):
         self.my_id = my_id
         self.port = port
         self.nodes_ids = sorted(nodes_ids)
@@ -17,13 +17,14 @@ class BullyLeader:
             self.new_leader
         )
 
-        self.callback_leader = callback_leader
+        #self.callback_leader = callback_leader
 
     def new_leader(self, node_id):
         self.leader = node_id
         self.callback_leader(node_id)
 
-    def start(self):
+    def start(self, callback_leader):
+        self.callback_leader = callback_leader
         #First start receiving messages
         self.protocol.start()
 

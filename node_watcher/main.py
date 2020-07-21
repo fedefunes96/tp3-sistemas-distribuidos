@@ -7,6 +7,7 @@ from node_raiser.node_raiser import NodeRaiser
 from node_checker.node_checker import NodeChecker
 from synchronization.bully_leader import BullyLeader
 from synchronization.node.node import Node
+from synchronization.leader_manager import LeaderManager
 
 CONFIG_FILE = "config/start_config.json"
 
@@ -46,6 +47,10 @@ def main():
     update_queue = Queue()
     dead_queue = Queue()
 
+    #health_p_leader_queue = Queue()
+    #checker_p_leader_queue = Queue()
+    #raiser_p_leader_queue = Queue()
+
     #health_p = Process(target=health_process, args=(update_queue, ))
     #health_p.start()
 
@@ -70,11 +75,14 @@ def main():
     bully_leader = BullyLeader(
         Node(config_params["MY_ID"], config_params["MY_DIR"]),
         int(config_params["PORT"]),
-        nodes_ids,
-        new_leader
+        nodes_ids
     )
 
-    bully_leader.start()
+    processes = [health_p, checker_p, raiser_p]
+
+    leader_manager = LeaderManager(bully_leader, processes)
+
+    leader_manager.start()
 
     #health_p.join()
     #checker_p.join()
