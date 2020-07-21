@@ -1,7 +1,7 @@
 from multiprocessing import Process, Queue
 from middleware.connection import Connection
 from queue import Empty
-from communication.message_types import STATUS, ALIVE, DEAD
+from communication.message_types import STATUS, ALIVE, DEAD, FINISHED
 import os
 
 class StatusChecker:
@@ -25,6 +25,10 @@ class StatusChecker:
                 self.receiver.reply(cor_id, reply_to, ALIVE)
             else:
                 self.receiver.reply(cor_id, reply_to, DEAD)
+        elif msg == FINISHED:
+            print("Got a FINISHED")
+            # self.receiver.reply(cor_id, reply_to, FINISHED)
+            self.receiver.close()
 
     def all_processes_alive(self, processes):
         for p in processes:

@@ -37,6 +37,7 @@ impl Protocol {
 
     pub fn stop_cases(&self) {
         self.send_message_to_queue(String::from("STOP"), self.processor_queue.as_str());
+        self.send_message_to_queue(String::from("STOP"), self.processor_queue.as_str());
     }
 
     fn send_message_to_queue(&self, message: String, queue: &str) {

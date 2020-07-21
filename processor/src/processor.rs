@@ -63,7 +63,6 @@ impl Processor {
     }
 
     fn process_place(&self, body: String) -> bool {
-        info!("Got this meesage: {}", body.clone());
         if body == "STOP" {
             self.protocol.send_stop_places();
             return false;
@@ -77,7 +76,6 @@ impl Processor {
     }
 
     fn process_case(&self, body: String) -> bool {
-        info!("Got this meesage: {}", body.clone());
         if body == "STOP" {
             self.protocol.send_stop_cases();
             return false;

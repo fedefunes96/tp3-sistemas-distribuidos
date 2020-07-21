@@ -116,7 +116,7 @@ impl Protocol {
                 ConsumerMessage::Delivery(delivery) => {
                     let body = String::from_utf8_lossy(&delivery.body);
                     sender.send(body.to_string()).unwrap();
-                    if body == "STOP" {
+                    if body == "STOP" || body == "EOF" {
                         consumer.ack(delivery).unwrap();
                         break;
                     }

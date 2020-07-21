@@ -1,3 +1,4 @@
+use std::{thread, time};
 use crate::protocol::Protocol;
 
 pub struct Stopper {
@@ -22,6 +23,7 @@ impl Stopper {
         info!("Finished processing regions");
         for _ in 0..self.processor_quantity {
             self.protocol.stop_places();
+            thread::sleep(time::Duration::from_millis(2*1000));
             self.protocol.stop_cases();
         }
         info!("Finished sending STOPs");
