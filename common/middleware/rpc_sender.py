@@ -28,7 +28,7 @@ class RpcSender:
         if self.corr_id == props.correlation_id:
             self.response = body
 
-    def send(self, msg, timeout=10):
+    def send(self, msg, timeout=None):
         self.response = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
@@ -43,8 +43,8 @@ class RpcSender:
 
         start_time = time.time()
 
-        while self.response is None:
-            if (start_time + timeout) < time.time():
+        while self.response is None:                
+            if timeout != None and (start_time + timeout) < time.time():
                 raise RPCTimeout()
 
             self.connection.process_data_events()
