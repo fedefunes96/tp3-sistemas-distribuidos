@@ -1,16 +1,17 @@
 from middleware.connection import Connection
 import json
 
-from communication.message_types import EOF, TOP_CITIES, DATE_RESULTS, TOTAL_COUNT
+from communication.message_types import EOF, TOP_CITIES, DATE_RESULTS, TOTAL_COUNT, STOP, FINISHED
 
 class Protocol:
-    def __init__(self, recv_queue):
+    def __init__(self, recv_queue, status_queue):
         self.connection = Connection()
 
         self.expected = 3
         self.actual = 0
 
         self.receiver = self.connection.create_direct_receiver(recv_queue)
+        self.status_sender = self.connection.create_direct_sender(status_queue)
 
     def start_connection(self, callback_top, callback_date, callback_count):
         self.callback_top = callback_top
@@ -32,3 +33,6 @@ class Protocol:
             self.callback_date(json.loads(msg))
         elif msg_type == TOTAL_COUNT:
             self.callback_count(float(msg))
+        elif msg_type == STOP:
+            self.receiver.close()
+            self.status_sender.send(FINISHED, FINISHED)

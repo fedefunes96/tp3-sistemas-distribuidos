@@ -10,13 +10,15 @@ def main_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_QUEUE",
         "SEND_QUEUE",
-        "TOTAL_WORKERS"]
+        "TOTAL_WORKERS",
+        "STATUS_QUEUE"]
     )
 
     worker = DateSorter(
         config_params["RECV_QUEUE"],
         config_params["SEND_QUEUE"],
-        int(config_params["TOTAL_WORKERS"])
+        int(config_params["TOTAL_WORKERS"]),
+        config_params["STATUS_QUEUE"]
     )
 
     worker.start()
