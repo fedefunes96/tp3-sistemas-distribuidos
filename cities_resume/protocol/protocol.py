@@ -15,8 +15,9 @@ class Protocol:
         self.master_sender = self.connection.create_direct_sender(master_queue)
         self.status_sender = self.connection.create_direct_sender(status_queue)
 
-    def start_connection(self, callback):
+    def start_connection(self, callback, callback_eof):
         self.callback = callback
+        self.callback_eof = callback_eof
         self.receiver.start_receiving(self.data_read)
 
     def send_data(self, data):
@@ -27,7 +28,8 @@ class Protocol:
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
-            self.receiver.close()
+            print("Ended processing")
+            self.callback_eof()
         elif msg_type == STOP:
             self.receiver.close()
             self.sender.send(STOP, STOP)

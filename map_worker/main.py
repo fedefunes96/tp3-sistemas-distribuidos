@@ -25,7 +25,7 @@ def main_process():
     worker.start()    
 
 def main():
-    params = ConfigReader().parse_vars(["WORKERS", "STATUS_QUEUE"])
+    params = ConfigReader().parse_vars(["STATUS_QUEUE", "WORKERS", "WORKER_ID", "WORKER_TYPE"])
 
     processes = []
 
@@ -34,8 +34,12 @@ def main():
         p.start()
         processes.append(p)
 
-    checker = StatusChecker(processes, params["STATUS_QUEUE"])
-
+    checker = StatusChecker(
+        params["WORKER_ID"],
+        params["WORKER_TYPE"],
+        processes, 
+        params["STATUS_QUEUE"]
+    )
     checker.start()
     print("Joining processes")
     for p in processes:

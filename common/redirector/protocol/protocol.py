@@ -41,7 +41,7 @@ class Protocol:
         if msg_type == EOF:
             self.callback_eof()
             self.send_master_ended()
-            self.receiver.close()
+            print("Ended processing")
         elif msg_type == STOP:
             self.receiver.close()
             self.send_master_stop()

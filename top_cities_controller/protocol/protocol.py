@@ -19,8 +19,9 @@ class Protocol:
         self.sender = self.connection.create_direct_sender(send_queue)
         self.status_sender = self.connection.create_direct_sender(status_queue)
 
-    def start_connection(self, callback):
+    def start_connection(self, callback, callback_eof):
         self.callback = callback
+        self.callback_eof = callback_eof
         self.receiver.start_receiving(self.data_read)
 
     def data_read(self, msg_type, msg):
@@ -29,6 +30,9 @@ class Protocol:
             self.pending_connections -= 1
 
             if self.pending_connections == 0:
+                self.callback_eof()
+                print("Ended processing")
+                #self.receiver.close()
                 self.receiver.close()
         elif msg_type == STOP:
             self.receiver.close()

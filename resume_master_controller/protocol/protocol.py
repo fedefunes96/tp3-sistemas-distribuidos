@@ -21,8 +21,8 @@ class Protocol:
         if msg_type == EOF:
             self.pending_connections -= 1
             if self.pending_connections == 0:
-                self.receiver.close()
-            self.sender.send(EOF, '')
+                print("Ended processing")
+                self.sender.send(EOF, '')
         elif msg_type == STOP:
             self.receiver.close()
             self.sender.send(STOP, '')

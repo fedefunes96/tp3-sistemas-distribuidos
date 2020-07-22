@@ -1,0 +1,1 @@
+class InvalidWorkerType(Exception): pass
