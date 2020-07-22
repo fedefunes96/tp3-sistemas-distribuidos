@@ -10,3 +10,7 @@ Indicando la cantidad de trabajadores que se utilizarán.
 
 Además, el cliente se corre con:
 **make client-run processors=< TotalProcessors > && make client-logs**
+
+
+El Stopper se corre con:
+**make stopper-run processors=< TotalProcessors > && make stopper-logs**
