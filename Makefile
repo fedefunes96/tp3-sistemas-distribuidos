@@ -85,3 +85,24 @@ node-logs:
 	COMPOSE_PROJECT_NAME=node \
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-node.yaml logs -f
 .PHONY: node-logs
+
+data-node-image:
+	docker build -f ./cluster_manager/Dockerfile -t "data_node:latest" .
+.PHONY: data-node-image
+
+data-node-run: data-node-image
+	COMPOSE_PROJECT_NAME=data_node \
+	SERVER_NAME=server \
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-cluster.yaml up -d --build
+.PHONY: data-node-run
+
+data-node-stop:
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-cluster.yaml stop -t 1
+	COMPOSE_PROJECT_NAME=data_node \
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-cluster.yaml down
+.PHONY: data-node-stop
+
+data-node-logs:
+	COMPOSE_PROJECT_NAME=data_node \
+	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-cluster.yaml logs -f
+.PHONY: data-node-logs
