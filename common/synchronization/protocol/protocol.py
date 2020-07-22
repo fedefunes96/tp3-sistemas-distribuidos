@@ -4,6 +4,7 @@ import threading
 from queue import Queue, Empty
 from synchronization.node.node import Node
 import time
+from communication.message_types import STATUS, ELECTION, LEADER, ACK
 
 WAIT_NEW_ELECTION = 20 #In seconds
 TIMEOUT_SOCKET = 40 #In seconds
@@ -145,13 +146,13 @@ class Protocol(threading.Thread):
 
             nodes.append(node)
 
-        total_responses = self.broadcast_message(nodes, "Election")
+        total_responses = self.broadcast_message(nodes, ELECTION)
 
         if total_responses == 0:
             print("No one answered, im the new leader: {}".format(self.my_node))
             self.in_election = False
             self.leader = self.my_node
-            self.broadcast_all("Leader")
+            self.broadcast_all(LEADER)
             #This is called when all process send ACK
             self.callback_newleader(self.my_node)
         else:
@@ -177,19 +178,19 @@ class Protocol(threading.Thread):
             self.create_connection(node)
 
         #Commands for replying msg
-        if cmd == "Status":
-            self.send_msg(sock, "Alive")
-        elif cmd == "Election":
-            self.send_msg(sock, "Ack")
+        if cmd == STATUS:
+            self.send_msg(sock, ACK)
+        elif cmd == ELECTION:
+            self.send_msg(sock, ACK)
             self.in_election = True
-        elif cmd == "Leader":
+        elif cmd == LEADER:
             print("Received new leader: {}".format(node))
             self.leader = node
             self.timer = False
             self.in_election = False
             #Before sending ACK, stop my work if im the leader
             self.callback_newleader(node)
-            self.send_msg(sock, "Ack")    
+            self.send_msg(sock, ACK)    
 
     def send_msg(self, sock, msg_type):
         sock.send_string(self.my_node.id)
