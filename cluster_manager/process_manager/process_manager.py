@@ -69,7 +69,7 @@ class ProcessManager:
         write_manager = WriteManager(
             ROUTE, 
             config_params["RECV_WRITE_QUEUE"],
-            [config_params["REPLICA_A"], config_params["REPLICA_B"]]
+            [config_params["RECV_REPLICA_A"], config_params["RECV_REPLICA_B"]]
         )
 
         write_manager.start()
