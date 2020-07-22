@@ -25,6 +25,8 @@ services:
       - TOTAL_WORKERS=${TOTAL_MAP_WORKERS}
       - WORKER_ID=master_map_worker
       - WORKER_TYPE=master_map_worker
+      - RECV_RESUME_QUEUE=master_map
+      - SEND_RESUME_QUEUE=cities_resume
     networks:
       - test-network
 
@@ -69,39 +71,6 @@ services:
     networks:
       - test-network
   
-  resume_master_controller:  
-    container_name: resume_master_controller
-    image: resume_master_controller:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - PYTHONUNBUFFERED=1
-      - RECV_QUEUE=master_map
-      - SEND_QUEUE=cities_resume
-      - TOTAL_WORKERS=${TOTAL_MAP_WORKERS}
-      - STATUS_QUEUE=health_status_queue
-    networks:
-      - test-network
-  
-  #resume_master_controller2:  
-  #  container_name: resume_master_controller2
-  #  image: resume_master_controller:latest
-  #  entrypoint: python3 /main.py
-  #  restart: on-failure
-  #  depends_on:
-  #    - rabbitmq
-  #  links: 
-  #    - rabbitmq
-  #  environment:
-  #    - PYTHONUNBUFFERED=1
-  #    - RECV_QUEUE=resume_master
-  #    - SEND_QUEUE=top_cities
-  #    - TOTAL_WORKERS=1
-
   top_cities_controller:  
     container_name: top_cities_worker
     image: top_cities_controller:latest
@@ -159,6 +128,8 @@ services:
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=master_date_worker
       - WORKER_TYPE=master_date_worker
+      - RECV_RESUME_QUEUE=master_date
+      - SEND_RESUME_QUEUE=dates_resume      
     networks:
       - test-network
   
@@ -181,24 +152,6 @@ services:
     networks:
       - test-network
   
-  resume_date_master_controller:  
-    container_name: resume_date_master_controller
-    image: resume_master_controller:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - PYTHONUNBUFFERED=1
-      - RECV_QUEUE=master_date
-      - SEND_QUEUE=dates_resume
-      - TOTAL_WORKERS=${TOTAL_DATE_WORKERS}
-      - STATUS_QUEUE=health_status_queue
-    networks:
-      - test-network
-  
   dates_resume1:  
     container_name: date_resumer
     image: dates_resume:latest
@@ -218,21 +171,6 @@ services:
       - WORKER_TYPE=date_resumer_jan      
     networks:
       - test-network
-  
-  #resume_date_master_controller2:  
-  #  container_name: resume_date_master_controller2
-  #  image: resume_master_controller:latest
-  #  entrypoint: python3 /main.py
-  #  restart: on-failure
-  #  depends_on:
-  #    - rabbitmq
-  #  links: 
-  #    - rabbitmq
-  #  environment:
-  #    - PYTHONUNBUFFERED=1
-  #    - RECV_QUEUE=resume_date_master
-  #    - SEND_QUEUE=date_sorter
-  #    - TOTAL_WORKERS=1
 
   date_sorter:  
     container_name: date_sorter_worker
@@ -271,6 +209,8 @@ services:
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=master_count_worker
       - WORKER_TYPE=master_count_worker
+      - RECV_RESUME_QUEUE=master_count
+      - SEND_RESUME_QUEUE=count_summary      
     networks:
       - test-network
   
@@ -290,24 +230,6 @@ services:
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=count_worker_1
       - WORKER_TYPE=count_worker
-    networks:
-      - test-network
-  
-  resume_count_master_controller:  
-    container_name: resume_count_master_controller
-    image: resume_master_controller:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - PYTHONUNBUFFERED=1
-      - RECV_QUEUE=master_count
-      - SEND_QUEUE=count_summary
-      - TOTAL_WORKERS=${TOTAL_COUNT_WORKERS}
-      - STATUS_QUEUE=health_status_queue
     networks:
       - test-network
   
