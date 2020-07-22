@@ -10,7 +10,7 @@ class Protocol:
 
         self.total_workers = total_workers
 
-        self.status_sender = self.connection.create_distributed_work_sender(status_queue)
+        self.status_sender = self.connection.create_direct_sender(status_queue)
         self.receiver = self.connection.create_direct_receiver(recv_queue)
         self.sender = self.connection.create_distributed_work_sender(send_queue)
 

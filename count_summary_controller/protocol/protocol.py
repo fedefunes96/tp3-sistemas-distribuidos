@@ -5,13 +5,14 @@ import time
 import json
 
 from middleware.connection import Connection
-from communication.message_types import NORMAL, EOF, TOTAL_COUNT
+from communication.message_types import NORMAL, EOF, TOTAL_COUNT, STOP, FINISHED
 
 class Protocol:
-    def __init__(self, recv_queue, send_queue):
+    def __init__(self, recv_queue, send_queue, status_queue):
         self.connection = Connection()
         self.receiver = self.connection.create_direct_receiver(recv_queue)
         self.sender = self.connection.create_direct_sender(send_queue)
+        self.status_sender = self.connection.create_direct_sender(status_queue)
 
     def start_connection(self, callback):
         self.callback = callback
@@ -20,6 +21,10 @@ class Protocol:
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
             self.receiver.close()
+        elif msg_type == STOP:
+            self.receiver.close()
+            self.sender.send(STOP, '')
+            self.status_sender.send(FINISHED, FINISHED)
         else:
             [positivi, deceduti] = msg.split(',')
             self.callback(int(positivi), int(deceduti))

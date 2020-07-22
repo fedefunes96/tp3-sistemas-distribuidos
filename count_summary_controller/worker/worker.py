@@ -2,8 +2,8 @@ from protocol.protocol import Protocol
 from collections import Counter
 
 class Worker:
-    def __init__(self, recv_queue, send_queue):
-        self.protocol = Protocol(recv_queue, send_queue)
+    def __init__(self, recv_queue, send_queue, status_queue):
+        self.protocol = Protocol(recv_queue, send_queue, status_queue)
         self.total_positivi = 0
         self.total_deceduti = 0
 
