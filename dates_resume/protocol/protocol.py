@@ -23,7 +23,7 @@ class Protocol:
     def send_data(self, data):
         self.sender.send(NORMAL, json.dumps(data))
 
-        self.sender.send(EOF, "")
+        # self.sender.send(EOF, "")
         #self.master_sender.send(EOF, "")
 
     def data_read(self, msg_type, msg):
