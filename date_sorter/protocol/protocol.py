@@ -24,12 +24,14 @@ class Protocol:
         self.receiver.start_receiving(self.data_read)
 
     def data_read(self, msg_type, msg):
+        print("Msg received" + msg)
         if msg_type == EOF:
             # self.receiver.close()
             self.pending_connections -= 1
 
             if self.pending_connections == 0:
                 self.callback_eof()
+                # self.receiver.close()
                 print("Ended processing")
         elif msg_type == STOP:
             self.receiver.close()
@@ -39,5 +41,6 @@ class Protocol:
             self.callback(json.loads(msg))
 
     def send_data(self, date_data):
+        print("Sending Dates results")
         self.sender.send(DATE_RESULTS, json.dumps(date_data))
         self.sender.send(EOF, '')

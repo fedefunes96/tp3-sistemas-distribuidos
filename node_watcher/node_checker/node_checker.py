@@ -1,7 +1,7 @@
 from worker_manager.worker_manager import WorkerManager
 from worker.worker import Worker
 import time
-from communication.message_types import DEAD
+from communication.message_types import DEAD, FINISHED
 from config_reader.config_reader import ConfigReader
 
 IDLE_TIME_DEAD = 60 #1 minute
@@ -25,6 +25,10 @@ class NodeChecker:
                 #Status says process is dead
                 if status == DEAD:
                     #(TODO) Remove worker so that it raises up eventually
+                    pass
+
+                if status == FINISHED:
+                    # self.dead_queue.close()
                     pass
 
                 #print("Updating timestamp: {} {}".format(worker_id, worker_type))
