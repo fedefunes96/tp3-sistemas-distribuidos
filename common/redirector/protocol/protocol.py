@@ -24,13 +24,9 @@ class Protocol:
 
         self.receiver.start_receiving(self.data_read)
 
-        self.send_master_ended()
-        self.status_sender.send(FINISHED, FINISHED)
-        print("Sent finished to status checker")
-        self.receiver.close()
-        print("Closed receiver")
-        self.connection.close()
-        print("Connection closed. should return?")
+        # self.send_master_ended()
+        # self.receiver.close()
+        # self.connection.close()
     
     def send_data(self, data, where):
         self.senders[where].send(NORMAL, data)
@@ -44,10 +40,12 @@ class Protocol:
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
             self.callback_eof()
+            self.send_master_ended()
             self.receiver.close()
         elif msg_type == STOP:
             self.receiver.close()
             self.send_master_stop()
+            self.status_sender.send(FINISHED, FINISHED)
         else:            
             self.callback(msg)
             #self.receiver.send_ack(method)
