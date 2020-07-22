@@ -9,13 +9,15 @@ def main_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_QUEUE",
         "SEND_QUEUE",
-        "MASTER_SEND_QUEUE"]
+        "MASTER_SEND_QUEUE",
+        "STATUS_QUEUE"]
     )
 
     worker = Worker(
         config_params["RECV_QUEUE"],
         config_params["SEND_QUEUE"],
-        config_params["MASTER_SEND_QUEUE"]
+        config_params["MASTER_SEND_QUEUE"],
+        config_params["STATUS_QUEUE"]
     )
 
     worker.start()

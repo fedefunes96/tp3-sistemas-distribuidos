@@ -10,14 +10,16 @@ def main_process():
         ["RECV_QUEUE",
         "SEND_QUEUE",
         "MASTER_SEND_QUEUE",
-        "TOPIC_PLACES"]
+        "TOPIC_PLACES",
+        "STATUS_QUEUE"]
     )
 
     worker = Worker(
         config_params["RECV_QUEUE"],
         [config_params["SEND_QUEUE"]],
         config_params["MASTER_SEND_QUEUE"],
-        config_params["TOPIC_PLACES"]
+        config_params["TOPIC_PLACES"],
+        config_params["STATUS_QUEUE"]
     )
 
     worker.start()    
@@ -39,9 +41,11 @@ def main():
         params["STATUS_QUEUE"]
     )
     checker.start()
-
+    print("Joining processes")
     for p in processes:
+        print("joining one process")
         p.join()
+        print("Process joined")
 
 if __name__== "__main__":
     main()

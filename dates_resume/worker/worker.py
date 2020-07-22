@@ -1,11 +1,12 @@
 from protocol.protocol import Protocol
 
 class Worker:
-    def __init__(self, recv_queue, send_queue, master_queue):
+    def __init__(self, recv_queue, send_queue, master_queue, status_queue):
         self.protocol = Protocol(
             recv_queue,
             send_queue,
-            master_queue
+            master_queue,
+            status_queue
         )
 
         self.results_per_date = {}

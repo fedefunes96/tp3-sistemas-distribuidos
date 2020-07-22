@@ -10,6 +10,7 @@ TOP_CITIES = "TOP_CITIES"
 STATUS = "STATUS"
 ALIVE = "ALIVE"
 DEAD = "DEAD"
+FINISHED = "FINISHED"
 
 #General purpose messages
 STOP = "STOP"

@@ -8,6 +8,28 @@ services:
     networks:
       - test-network
 
+  processor:
+    image: processor:latest
+    entrypoint: cargo run
+    restart: on-failure
+    environment:
+      - RABBITMQ_ADDR=amqp://guest:guest@rabbitmq:5672
+      - LOG_LEVEL=INFO
+      - READER_QUEUE=reader_q
+      - READER_PLACES_QUEUE=reader_places_q
+      - QUEUE_MAP=map_city
+      - QUEUE_DATE=date_redirector_worker
+      - QUEUE_COUNT=count_controller_worker
+      - EOF_MAP=count_controller_worker
+      - EOF_MAP=eof_map
+      - EOF_COUNT=eof_count
+      - EOF_DATE=eof_date
+      - TOPIC_PLACES=places
+    depends_on:
+      - rabbitmq
+    networks:
+      - test-network
+
   map_master_controller:
     container_name: master_map_worker
     image: master_controller:latest

@@ -4,8 +4,8 @@ import json
 WRITE_FILE = 'summary/summary.txt'
 
 class SummaryController:
-    def __init__(self, recv_queue):
-        self.protocol = Protocol(recv_queue)
+    def __init__(self, recv_queue, status_queue):
+        self.protocol = Protocol(recv_queue, status_queue)
 
     def start(self):
         self.protocol.start_connection(

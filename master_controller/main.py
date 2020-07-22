@@ -10,13 +10,15 @@ def master_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_QUEUE",
         "SEND_QUEUE",
-        "TOTAL_WORKERS"]
+        "TOTAL_WORKERS",
+        "STATUS_QUEUE"]
     )
 
     master_controller = MasterController(
         config_params["RECV_QUEUE"],
         config_params["SEND_QUEUE"],
-        int(config_params["TOTAL_WORKERS"])
+        int(config_params["TOTAL_WORKERS"]),
+        config_params["STATUS_QUEUE"]
     )
 
     master_controller.start()
@@ -56,6 +58,7 @@ def main():
 
     master.join()
     resume_master.join()
+
 
 if __name__== "__main__":
     main()

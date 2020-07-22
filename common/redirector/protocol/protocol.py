@@ -4,12 +4,13 @@ import random
 import time
 
 from middleware.connection import Connection
-from communication.message_types import NORMAL, EOF
+from communication.message_types import NORMAL, EOF, STOP, FINISHED
 
 class Protocol:
-    def __init__(self, recv_queue, send_queues, master_send_queue):
+    def __init__(self, recv_queue, send_queues, master_send_queue, status_queue):
         self.connection = Connection()
         self.receiver = self.connection.create_distributed_work_receiver(recv_queue)
+        self.status_sender = self.connection.create_direct_sender(status_queue)
         self.senders = {}
 
         for queue in send_queues:
@@ -23,8 +24,9 @@ class Protocol:
 
         self.receiver.start_receiving(self.data_read)
 
-        self.send_master_ended()
-        self.connection.close()
+        # self.send_master_ended()
+        # self.receiver.close()
+        # self.connection.close()
     
     def send_data(self, data, where):
         self.senders[where].send(NORMAL, data)
@@ -32,15 +34,18 @@ class Protocol:
     def send_master_ended(self):
         self.master_sender.send(EOF, "")
 
+    def send_master_stop(self):
+        self.master_sender.send(STOP, "")
+
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
             self.callback_eof()
-            #self.receiver.send_ack(method)
-            #print("THis is not called now")
-            #self.receiver.close()
-            print("Ended processing")
             self.send_master_ended()
-            #self.connection.close()
+            print("Ended processing")
+        elif msg_type == STOP:
+            self.receiver.close()
+            self.send_master_stop()
+            self.status_sender.send(FINISHED, FINISHED)
         else:            
             self.callback(msg)
             #self.receiver.send_ack(method)
