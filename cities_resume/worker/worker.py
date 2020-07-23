@@ -31,7 +31,7 @@ class Worker:
             print("Duplicated message: " + message_id)
             return
         if connection_id != self.connection_id:
-            self.positives_per_city = self.secure_data.read_file(connection_id, REDUCER_NAME)
+            self.positives_per_city = json.loads(self.secure_data.read_file(connection_id, REDUCER_NAME))
         self.connection_id = connection_id
         if place not in self.positives_per_city:
             self.positives_per_city[place] = 0
