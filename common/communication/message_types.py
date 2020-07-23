@@ -13,3 +13,8 @@ DEAD = "DEAD"
 
 #General purpose messages
 STOP = "STOP"
+
+#Places message
+READY = "READY"
+RESTART = "RESTART"
+REQUEST_PLACES = "REQUEST_PLACES"
