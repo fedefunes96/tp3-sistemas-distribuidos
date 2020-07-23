@@ -1,5 +1,6 @@
 from middleware.connection import Connection
 from communication.message_types import WRITE_OK, FAILED, APPEND, WRITE
+import os
 
 class WriteProtocol:
     def __init__(self, recv_queue, send_queues):
