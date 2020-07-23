@@ -21,7 +21,7 @@ class Protocol:
         self.receiver.start_receiving(self.data_read)
 
     def send_data(self, data):
-        self.sender.send(NORMAL, json.dumps(data))
+        self.sender.send(NORMAL, data)
 
         self.sender.send(EOF, "")
         #self.master_sender.send(EOF, "")
@@ -36,5 +36,4 @@ class Protocol:
             self.master_sender.send(STOP, "")
             self.status_sender.send(FINISHED, FINISHED)
         else:
-            [date, result] = msg.split(',')
-            self.callback(date, result)
+            self.callback(msg)

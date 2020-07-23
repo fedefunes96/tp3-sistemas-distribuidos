@@ -22,10 +22,12 @@ def main_process():
             [config_params["SEND_QUEUE"]],
             config_params["MASTER_SEND_QUEUE"],
             config_params["SEND_REQUEST_QUEUE"],
-            config_params["STATUS_QUEUE"]
+            config_params["STATUS_QUEUE"],
+            config_params["DATA_CLUSTER_WRITE"],
+            config_params["DATA_CLUSTER_READ"]
         )
 
-        working = worker.start()    
+        working = worker.start()
 
 def main():
     params = ConfigReader().parse_vars(["STATUS_QUEUE", "WORKERS", "WORKER_ID", "WORKER_TYPE"])

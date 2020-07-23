@@ -1,4 +1,5 @@
 use amiquip::{Connection, Channel, Exchange, Publish};
+use uuid::Uuid;
 
 pub struct Protocol {
     connection: Option<Connection>,
@@ -31,14 +32,16 @@ impl Protocol {
         self.connection = Some(connection);
     }
 
-    pub fn process_place(&self, region: String, latitude: f64, longitude: f64) {
-        let message = format!("{},{},{}", region, latitude, longitude);
+    pub fn process_place(&self, region: String, latitude: f64, longitude: f64, connection_id: String) {
+        let message_id = Uuid::new_v4();
+        let message = format!("{},{},{},{},{}", connection_id, message_id, region, latitude, longitude);
 
         self.send_message_to_queue(message, self.processor_places_queue.as_str());
     }
 
-    pub fn process_case(&self, tipo: String, latitude: f64, longitude: f64, date: String) {
-        let message = format!("{},{},{},{}", date, latitude, longitude, tipo);
+    pub fn process_case(&self, tipo: String, latitude: f64, longitude: f64, date: String, connection_id: String) {
+        let message_id = Uuid::new_v4();
+        let message = format!("{},{},{},{},{},{}", connection_id, message_id, date, latitude, longitude, tipo);
 
         self.send_message_to_queue(message, self.processor_queue.as_str());
     }

@@ -28,9 +28,8 @@ class Protocol:
             self.sender.send(STOP, '')
             self.status_sender.send(FINISHED, FINISHED)
         else:
-            [positivi, deceduti] = msg.split(',')
-            self.callback(int(positivi), int(deceduti))
+            self.callback(msg)
 
-    def send_data(self, percentage):
-        self.sender.send(TOTAL_COUNT, str(percentage))
+    def send_data(self, msg):
+        self.sender.send(TOTAL_COUNT, msg)
         self.sender.send(EOF, '')

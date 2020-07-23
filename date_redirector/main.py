@@ -10,14 +10,18 @@ def main_process():
         ["RECV_QUEUE",
         "SEND_QUEUE",
         "MASTER_SEND_QUEUE",
-        "STATUS_QUEUE"]
+        "STATUS_QUEUE",
+         "DATA_CLUSTER_WRITE",
+         "DATA_CLUSTER_READ"]
     )
 
     worker = Worker(
         config_params["RECV_QUEUE"],
         [config_params["SEND_QUEUE"]],
         config_params["MASTER_SEND_QUEUE"],
-        config_params["STATUS_QUEUE"]
+        config_params["STATUS_QUEUE"],
+        config_params["DATA_CLUSTER_WRITE"],
+        config_params["DATA_CLUSTER_READ"]
     )
 
     worker.start()

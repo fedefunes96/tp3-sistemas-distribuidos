@@ -52,6 +52,6 @@ class WriteManager:
         except FileNotFoundError:
             pass
 
-        self.writer.write_file(write_in, tmp_file, 'a')
+        self.writer.write_file(write_in, tmp_file, data, 'a')
 
         return self.protocol.replicate_data(folder_to_write, file_to_write, data, APPEND)
