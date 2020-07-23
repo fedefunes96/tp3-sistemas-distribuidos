@@ -24,14 +24,14 @@ class Worker:
             return
         self.connection_id = connection_id
 
-        self.total_positivi += positivi
-        self.total_deceduti += deceduti
+        self.total_positivi += int(positivi)
+        self.total_deceduti += int(deceduti)
 
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
 
     def process_results(self):
         result = self.total_deceduti / self.total_positivi
 
-        msg = self.connection_id + "@@" + str(uuid.uuid4()) + str(result)
+        msg = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + str(result)
 
         self.protocol.send_data(msg)

@@ -32,7 +32,7 @@ class Worker:
         if self.duplicate_filter.message_exists(connection_id, message_id):
             print("Duplicated message: " + message_id)
             return
-        point = NamedPoint(region, longitude, latitude)
+        point = NamedPoint(region, float(longitude), float(latitude))
         self.places.append(point)
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
 

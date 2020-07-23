@@ -31,6 +31,6 @@ class TopCitiesController:
     
     def process_results(self):
         self.top_cities = dict(Counter(self.cities_data).most_common(3))
-        data = self.connection_id + "@@" + str(uuid.uuid4()) + json.dumps(self.top_cities)
+        data = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + json.dumps(self.top_cities)
 
         self.protocol.send_data(data)
