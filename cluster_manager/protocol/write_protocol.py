@@ -1,9 +1,18 @@
 from middleware.connection import Connection
-from communication.message_types import REPLICA, WRITE_OK, FAILED, APPEND, WRITE
+from communication.message_types import WRITE_OK, FAILED, APPEND, WRITE
 
 class WriteProtocol:
     def __init__(self, recv_queue, send_queues):
-        self.connection = Connection()
+        #Temp solution
+        conn = False
+
+        while conn == False:
+            try:
+                self.connection = Connection()
+                conn = True
+            except:
+                pass    
+
         self.receiver = self.connection.create_rpc_receiver(recv_queue)
         self.senders = []
 

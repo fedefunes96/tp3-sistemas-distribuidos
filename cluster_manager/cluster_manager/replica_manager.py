@@ -1,5 +1,6 @@
 import os
 from shutil import copyfile
+from writer.writer import Writer
 from communication.message_types import WRITE_OK, FAILED
 from protocol.replica_protocol import ReplicaProtocol
 

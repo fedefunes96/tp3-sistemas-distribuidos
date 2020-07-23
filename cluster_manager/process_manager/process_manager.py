@@ -82,7 +82,7 @@ class ProcessManager:
         )
 
         read_manager = ReadManager(
-            FOLDER,
+            ROUTE,
             config_params["RECV_READ_QUEUE"]
         )
 
@@ -96,7 +96,7 @@ class ProcessManager:
         )
 
         replica_manager = ReplicaManager(
-            FOLDER,
+            ROUTE,
             config_params["RECV_REPLICA"]
         )
 

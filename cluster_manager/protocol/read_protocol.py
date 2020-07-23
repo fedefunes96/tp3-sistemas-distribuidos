@@ -2,7 +2,16 @@ from middleware.connection import Connection
 
 class ReadProtocol:
     def __init__(self, recv_queue):
-        self.connection = Connection()
+        #Temp solution
+        conn = False
+
+        while conn == False:
+            try:
+                self.connection = Connection()
+                conn = True
+            except:
+                pass   
+            
         self.receiver = self.connection.create_rpc_receiver(recv_queue)
 
     def start_receiving(self, callback):

@@ -3,7 +3,16 @@ from communication.message_types import APPEND, WRITE, WRITE_OK, FAILED
 
 class ReplicaProtocol:
     def __init__(self, recv_queue):
-        self.connection = Connection()
+        #Temp solution
+        conn = False
+
+        while conn == False:
+            try:
+                self.connection = Connection()
+                conn = True
+            except:
+                pass  
+                  
         self.receiver = self.connection.create_rpc_receiver(recv_queue)
 
     def start_receiving(self, callback_app, callback_wr):
