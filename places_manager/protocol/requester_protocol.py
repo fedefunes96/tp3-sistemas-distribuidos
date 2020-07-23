@@ -16,6 +16,7 @@ class RequesterProtocol:
         if msg == RESTART:
             #Close and it will be raised eternally
             self.receiver.close()
+            self.receiver.reply(cor_id, reply_to, RESTART)
         elif msg == REQUEST_PLACES:
             reply = self.callback()
 
