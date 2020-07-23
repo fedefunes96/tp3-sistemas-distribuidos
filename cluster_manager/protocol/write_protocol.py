@@ -54,6 +54,7 @@ class WriteProtocol:
         return FAILED
 
     def data_read(self, reply_to, cor_id, msg):
+        print("Received {}".format(msg))
         [folder_to_read, file_to_read, data, operation] = msg.split('@@')
 
         if operation == APPEND:

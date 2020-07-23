@@ -10,8 +10,9 @@ class SecureData:
         self.sender_read = self.connection.create_rpc_sender(cluster_r_dir)
     
     def write_to_file(self, folder_to_write, file_to_write, data):
+        print("Sending data: {}".format(data))
         msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + WRITE
-
+        print("Sending msg: {}".format(msg))
         recv_msg = self.sender_write.send(msg)
 
         if recv_msg == FAILED:
