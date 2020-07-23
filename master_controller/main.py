@@ -27,13 +27,15 @@ def resume_master_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_RESUME_QUEUE",
         "SEND_RESUME_QUEUE",
-        "TOTAL_WORKERS"]
+        "TOTAL_WORKERS",
+        "STATUS_QUEUE"]
     )
 
     master_controller = ResumeMasterController(
         config_params["RECV_RESUME_QUEUE"],
         config_params["SEND_RESUME_QUEUE"],
-        int(config_params["TOTAL_WORKERS"])
+        int(config_params["TOTAL_WORKERS"]),
+        config_params["STATUS_QUEUE"]
     )
 
     master_controller.start()    
