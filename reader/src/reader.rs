@@ -22,15 +22,15 @@ impl Reader {
         self.protocol.connect();
     }
 
-    pub fn process_places(&self, route: &str) {
+    pub fn process_places(&self, route: &str, connection_id: String) {
         let mut file = File::open(route).unwrap();
         let mut contents = String::new();
         file.read_to_string(&mut contents).unwrap();
         let mut reader = csv::Reader::from_reader(contents.as_bytes());
         for record in reader.deserialize() {
             let record: Region = record.unwrap();
-            info!("{}: ({}, {})", record.denominazione_regione, record.lat, record.long);
-            self.protocol.process_place(record.denominazione_regione, record.lat, record.long);
+            info!("[{}] {}: ({}, {})", connection_id.clone(), record.denominazione_regione, record.lat, record.long);
+            self.protocol.process_place(record.denominazione_regione, record.lat, record.long, connection_id.clone());
         }
         info!("Finished processing regions");
         for _ in 0..self.processor_quantity {
@@ -39,14 +39,14 @@ impl Reader {
         info!("Finished sending EOFs");
     }
 
-    pub fn process_cases(&self, route: &str) {
+    pub fn process_cases(&self, route: &str, connection_id: String) {
         let mut cases_file = File::open(route).unwrap();
         let mut cases_contents = String::new();
         cases_file.read_to_string(&mut cases_contents).unwrap();
         let mut cases_reader = csv::Reader::from_reader(cases_contents.as_bytes());
         for record in cases_reader.deserialize() {
             let record: Case = record.unwrap();
-            self.protocol.process_case(record.tipo, record.lat, record.long, record.data);
+            self.protocol.process_case(record.tipo, record.lat, record.long, record.data, connection_id.clone());
         }
         info!("Finished processing cases");
         for _ in 0..self.processor_quantity {
