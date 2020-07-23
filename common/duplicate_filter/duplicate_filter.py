@@ -7,7 +7,7 @@ class DuplicateFilter:
 
     def message_exists(self, connection_id, message_id):
         response = self.secure_data.read_file(connection_id, message_id)
-        return response is not None or response != ""
+        return response is not None and response != ""
 
     def insert_message(self, connection_id, message_id, content):
         self.secure_data.append_to_file(connection_id, message_id, content)

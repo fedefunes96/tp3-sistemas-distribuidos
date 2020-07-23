@@ -28,8 +28,7 @@ class ProtocolInitialize:
             return False
         else:
             print("Got message: " + msg)
-            [region, latitude, longitude] = msg.split(",")
-            self.callback(region, float(latitude), float(longitude))
+            self.callback(msg)
             return False
 
     def close(self):
