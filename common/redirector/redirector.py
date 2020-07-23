@@ -1,8 +1,8 @@
 from redirector.protocol.protocol import Protocol
 
 class Redirector:
-    def __init__(self, recv_queue, send_queues, master_send_queue):
-        self.protocol = Protocol(recv_queue, send_queues, master_send_queue)
+    def __init__(self, recv_queue, send_queues, master_send_queue, status_queue):
+        self.protocol = Protocol(recv_queue, send_queues, master_send_queue, status_queue)
 
     def start(self):
         self.protocol.start_connection(self.data_received, self.eof_received)

@@ -6,5 +6,6 @@ COPY common/redirector /redirector
 COPY common/config_reader /config_reader
 COPY common/communication /communication
 COPY common/status_checker /status_checker
+COPY common/secure_data /secure_data
 
 ENTRYPOINT ["/bin/sh"]

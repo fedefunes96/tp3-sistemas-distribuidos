@@ -5,18 +5,22 @@ from config_reader.config_reader import ConfigReader
 from status_checker.status_checker import StatusChecker
 from multiprocessing import Process
 
+
 def main_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_QUEUE",
-        "SEND_QUEUE"]
+         "SEND_QUEUE",
+         "STATUS_QUEUE"]
     )
 
     worker = Worker(
         config_params["RECV_QUEUE"],
-        config_params["SEND_QUEUE"]
+        config_params["SEND_QUEUE"],
+        config_params["STATUS_QUEUE"]
     )
 
     worker.start()
+
 
 def main():
     p = Process(target=main_process)
@@ -35,5 +39,6 @@ def main():
 
     p.join()
 
-if __name__== "__main__":
+
+if __name__ == "__main__":
     main()

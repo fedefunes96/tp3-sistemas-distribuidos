@@ -2,8 +2,8 @@ from protocol.protocol import Protocol
 from collections import OrderedDict
 
 class DateSorter:
-    def __init__(self, recv_queue, send_queue, total_workers):
-        self.protocol = Protocol(recv_queue, send_queue, total_workers)
+    def __init__(self, recv_queue, send_queue, total_workers, status_queue):
+        self.protocol = Protocol(recv_queue, send_queue, total_workers, status_queue)
         self.date_data = OrderedDict()
 
     def start(self):

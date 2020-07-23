@@ -4,7 +4,7 @@ import random
 import time
 
 from middleware.connection import Connection
-from communication.message_types import NORMAL, EOF
+from communication.message_types import NORMAL, EOF, STOP
 
 class ProtocolInitialize:
     def __init__(self, recv_queue, callback):
@@ -20,9 +20,18 @@ class ProtocolInitialize:
         self.connection.close()
 
     def data_read(self, msg_type, msg):
-        if msg_type == EOF:
+        if msg_type == STOP:
             self.receiver.close()
-            #self.connection.close()
+            return True
+        elif msg_type == EOF:
+            self.receiver.close()
+            return False
         else:
+            print("Got message: " + msg)
             [region, latitude, longitude] = msg.split(",")
             self.callback(region, float(latitude), float(longitude))
+            return False
+
+    def close(self):
+        self.receiver.close()
+        self.connection.close()

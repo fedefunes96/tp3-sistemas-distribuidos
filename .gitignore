@@ -1,3 +1,6 @@
 map_worker/data
 chunk_manager/data
+reader/data
 summary_controller/summary
+.idea
+*/target

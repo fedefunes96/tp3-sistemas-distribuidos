@@ -7,11 +7,12 @@ from multiprocessing import Process
 
 def main_process():
     config_params = ConfigReader().parse_vars(
-        ["RECV_QUEUE"]
+        ["RECV_QUEUE", "STATUS_QUEUE"]
     )
 
     master_controller = SummaryController(
         config_params["RECV_QUEUE"],
+        config_params["STATUS_QUEUE"],
     )
 
     master_controller.start()
