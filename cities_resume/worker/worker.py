@@ -3,7 +3,7 @@ import json
 
 from protocol.protocol import Protocol
 
-from common.duplicate_filter.duplicate_filter import DuplicateFilter
+from duplicate_filter.duplicate_filter import DuplicateFilter
 
 
 class Worker:

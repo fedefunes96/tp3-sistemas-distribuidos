@@ -4,7 +4,7 @@ import uuid
 from protocol.protocol import Protocol
 from collections import Counter
 
-from common.duplicate_filter.duplicate_filter import DuplicateFilter
+from duplicate_filter.duplicate_filter import DuplicateFilter
 
 
 class TopCitiesController:

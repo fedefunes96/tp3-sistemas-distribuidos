@@ -1,7 +1,7 @@
 from protocol.protocol import Protocol
 import json
 
-from common.duplicate_filter.duplicate_filter import DuplicateFilter
+from duplicate_filter.duplicate_filter import DuplicateFilter
 
 WRITE_FILE = 'summary/summary.txt'
 

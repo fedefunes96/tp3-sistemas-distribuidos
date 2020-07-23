@@ -2,7 +2,7 @@ import uuid
 
 from redirector.redirector import Redirector
 
-from common.duplicate_filter.duplicate_filter import DuplicateFilter
+from duplicate_filter.duplicate_filter import DuplicateFilter
 
 
 class CountRedirector(Redirector):

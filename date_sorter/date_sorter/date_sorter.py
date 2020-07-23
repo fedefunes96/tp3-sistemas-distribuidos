@@ -4,7 +4,7 @@ import uuid
 from protocol.protocol import Protocol
 from collections import OrderedDict
 
-from common.duplicate_filter.duplicate_filter import DuplicateFilter
+from duplicate_filter.duplicate_filter import DuplicateFilter
 
 
 class DateSorter:
