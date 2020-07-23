@@ -20,7 +20,6 @@ services:
       - QUEUE_MAP=map_city
       - QUEUE_DATE=date_redirector_worker
       - QUEUE_COUNT=count_controller_worker
-      - EOF_MAP=count_controller_worker
       - EOF_MAP=eof_map
       - EOF_COUNT=eof_count
       - EOF_DATE=eof_date
@@ -252,6 +251,8 @@ services:
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=count_worker_1
       - WORKER_TYPE=count_worker
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
   

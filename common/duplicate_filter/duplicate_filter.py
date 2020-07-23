@@ -10,4 +10,4 @@ class DuplicateFilter:
         return response is not None or response != ""
 
     def insert_message(self, connection_id, message_id, content):
-        self.secure_data.write_to_file(connection_id, message_id, content)
+        self.secure_data.append_to_file(connection_id, message_id, content)
