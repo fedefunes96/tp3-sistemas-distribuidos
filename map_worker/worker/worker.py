@@ -3,9 +3,10 @@ from map_controller.map_controller import MapController
 from named_point.named_point import NamedPoint
 from point.point import Point
 from protocol_initialize.protocol_initialize import ProtocolInitialize
+from secure_data.secure_data import SecureData
 
 class Worker:
-    def __init__(self, recv_queue, send_queue, master_queue, recv_init_queue, status_queue):
+    def __init__(self, recv_queue, send_queue, master_queue, send_init_queue, status_queue):
         self.map_controller = MapController(
             recv_queue,
             send_queue,
@@ -15,19 +16,29 @@ class Worker:
         )
 
         self.initialize_protocol = ProtocolInitialize(
-            recv_init_queue,
+            send_init_queue,
             self.process_places
         )
+
+        self.cluster_reader = SecureData()
 
         self.places = []
 
     def process_places(self, region, latitude, longitude):
         point = NamedPoint(region, longitude, latitude)
         self.places.append(point)
+    
+    def read_places(self):
+        print("Should read places")
+        result = self.cluster_reader.read_file("tmp", "places.txt")
+        print(result)
 
     def start(self):
+        #Block until places has been saved
         self.initialize_protocol.start_connection()
-        print("All places received")
+        #Read places
+        self.read_places()
+        #print("All places received")
         self.map_controller.start()
 
     def process_data(self, latitude, longitude):

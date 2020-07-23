@@ -66,7 +66,8 @@ services:
       - SEND_QUEUE=cities_resume
       - MASTER_SEND_QUEUE=master_map
       - STATUS_QUEUE=health_status_queue
-      - TOPIC_PLACES=places
+      - SEND_REQUEST_QUEUE=place_manager_request
+      #- TOPIC_PLACES=places
       - WORKERS=2
       - WORKER_ID=map_worker_1
       - WORKER_TYPE=map_worker      
@@ -273,7 +274,27 @@ services:
       - WORKER_TYPE=count_resume      
     networks:
       - test-network
+
+  place_manager:
+    container_name: place_manager
+    image: places_manager:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PYTHONUNBUFFERED=1
+      - RECV_REQUEST_QUEUE=place_manager_request
+      - STATUS_QUEUE=health_status_queue
+      - RECV_QUEUE=places
+      - WORKER_ID=place_manager
+      - WORKER_TYPE=place_manager
+    networks:
+      - test-network    
    
 networks:
   test-network:
-    name: ${COMPOSE_PROJECT_NAME}-network
+    external:
+      name: ${COMPOSE_PROJECT_NAME}-network

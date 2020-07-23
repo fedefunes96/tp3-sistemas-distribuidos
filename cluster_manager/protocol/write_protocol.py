@@ -39,7 +39,7 @@ class WriteProtocol:
                 pending_ack -= 1
         
         if pending_ack == 0:
-            return msg
+            return WRITE_OK
         
         return FAILED
 

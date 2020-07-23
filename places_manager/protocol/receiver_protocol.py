@@ -5,7 +5,10 @@ class ReceiverProtocol:
     def __init__(self, recv_queue):
         self.connection = Connection()
 
-        self.receiver = self.connection.create_direct_receiver(recv_queue)
+        #self.receiver = self.connection.create_direct_receiver(recv_queue)
+
+        #Should use direct receiver, dont need to use topic
+        self.receiver = self.connection.create_topic_receiver(recv_queue)
     
     def start_connection(self, callback, callback_eof):
         print("Starting to receive places")

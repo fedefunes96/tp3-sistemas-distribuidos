@@ -36,7 +36,7 @@ def requester_process(queue):
 def main():
     queue = Queue()
 
-    receiver_p = Process(target=main_process, args=(queue, ))
+    receiver_p = Process(target=receiver_process, args=(queue, ))
     receiver_p.start()
 
     requester_p = Process(target=requester_process, args=(queue, ))
