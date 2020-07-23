@@ -7,7 +7,7 @@ from middleware.connection import Connection
 from communication.message_types import NORMAL, EOF, STOP
 
 class ProtocolInitialize:
-    def __init__(self, recv_queue, callback):
+    def __init__(self, recv_queue, callback, data_cluster_write, data_cluster_read):
         self.connection = Connection()
 
         self.callback = callback

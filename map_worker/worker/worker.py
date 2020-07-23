@@ -18,7 +18,9 @@ class Worker:
 
         self.initialize_protocol = ProtocolInitialize(
             recv_init_queue,
-            self.process_places
+            self.process_places,
+            data_cluster_write,
+            data_cluster_read
         )
 
         self.places = []

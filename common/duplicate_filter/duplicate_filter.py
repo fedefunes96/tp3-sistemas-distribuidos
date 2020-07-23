@@ -1,4 +1,4 @@
-from common.secure_data.secure_data import SecureData
+from secure_data.secure_data import SecureData
 
 
 class DuplicateFilter:

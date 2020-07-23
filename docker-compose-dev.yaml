@@ -68,7 +68,9 @@ services:
       - TOPIC_PLACES=places
       - WORKERS=2
       - WORKER_ID=map_worker_1
-      - WORKER_TYPE=map_worker      
+      - WORKER_TYPE=map_worker
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
         
@@ -88,7 +90,9 @@ services:
       - MASTER_SEND_QUEUE=resume_master
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=city_resumer
-      - WORKER_TYPE=city_resumer_am         
+      - WORKER_TYPE=city_resumer_am
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
   
@@ -109,6 +113,8 @@ services:
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=top_cities_worker
       - WORKER_TYPE=top_cities
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
   
@@ -127,6 +133,8 @@ services:
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=summary_worker
       - WORKER_TYPE=summary_worker
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     volumes:
       - ./summary_controller/summary:/summary
     networks:
@@ -170,6 +178,8 @@ services:
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=date_worker_1
       - WORKER_TYPE=date_worker
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
   
@@ -189,7 +199,9 @@ services:
       - MASTER_SEND_QUEUE=resume_date_master
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=date_resumer
-      - WORKER_TYPE=date_resumer_jan      
+      - WORKER_TYPE=date_resumer_jan
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
 
@@ -209,7 +221,9 @@ services:
       - TOTAL_WORKERS=1
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=date_sorter_worker
-      - WORKER_TYPE=date_sorter     
+      - WORKER_TYPE=date_sorter
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
   
@@ -271,7 +285,9 @@ services:
       - SEND_QUEUE=summary_resume
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=count_resumer
-      - WORKER_TYPE=count_resume      
+      - WORKER_TYPE=count_resume
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
    
