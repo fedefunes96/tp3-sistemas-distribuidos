@@ -5,6 +5,9 @@ from protocol.protocol import Protocol
 
 from duplicate_filter.duplicate_filter import DuplicateFilter
 
+from secure_data.secure_data import SecureData
+
+REDUCER_NAME = "cities_resume"
 
 class Worker:
     def __init__(self, recv_queue, send_queue, master_queue, status_queue, data_cluster_write, data_cluster_read):
@@ -16,6 +19,7 @@ class Worker:
         )
         self.positives_per_city = {}
         self.duplicate_filter = DuplicateFilter(data_cluster_write, data_cluster_read)
+        self.secure_data = SecureData(data_cluster_write, data_cluster_read)
         self.connection_id = ""
 
     def start(self):
@@ -26,6 +30,8 @@ class Worker:
         if self.duplicate_filter.message_exists(connection_id, message_id):
             print("Duplicated message: " + message_id)
             return
+        if connection_id != self.connection_id:
+            self.positives_per_city = self.secure_data.read_file(connection_id, REDUCER_NAME)
         self.connection_id = connection_id
         if place not in self.positives_per_city:
             self.positives_per_city[place] = 0
@@ -33,6 +39,7 @@ class Worker:
         self.positives_per_city[place] += 1
 
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.secure_data.write_to_file(connection_id, REDUCER_NAME, json.dumps(self.positives_per_city))
     
     def process_results(self):
         data = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + json.dumps(self.positives_per_city)
