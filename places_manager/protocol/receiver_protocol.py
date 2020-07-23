@@ -19,7 +19,9 @@ class ReceiverProtocol:
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
+            print("Eof received")
             self.callback_eof()
         else:
             [region, latitude, longitude] = msg.split(",")
+            print("Place received: {}".format(msg))
             self.callback(region, latitude, longitude)

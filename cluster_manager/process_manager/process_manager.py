@@ -5,7 +5,7 @@ from cluster_manager.read_manager import ReadManager
 from cluster_manager.write_manager import WriteManager
 import time
 
-ROUTE = "data/"
+ROUTE = "data"
 
 class ProcessManager:
     def __init__(self, leader_manager):

@@ -38,6 +38,8 @@ class WriteProtocol:
             except:
                 pending_ack -= 1
         
+        print("Data replicated")
+        
         if pending_ack == 0:
             return WRITE_OK
         
