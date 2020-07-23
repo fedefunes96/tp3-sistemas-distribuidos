@@ -1,5 +1,6 @@
 use std::env;
 use std::{thread, time};
+use uuid::Uuid;
 mod reader;
 mod case;
 mod protocol;
@@ -18,11 +19,12 @@ fn main() {
     let mut reader = reader::Reader::new(host, processor_queue, processor_places_queue, processor_quantity);
     reader.connect();
     info!("Connected ro Rabbit!");
+    let connection_id = Uuid::new_v4().to_string();
 
-    reader.process_places("data/places.csv");
+    reader.process_places("data/places.csv", connection_id.clone());
     info!("Finished processing regions");
     thread::sleep(time::Duration::from_millis(2*1000));
-    reader.process_cases("data/data.csv");
+    reader.process_cases("data/data.csv", connection_id.clone());
     info!("Finished processing data");
 }
 

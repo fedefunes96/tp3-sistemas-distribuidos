@@ -11,14 +11,18 @@ def main_process():
         ["RECV_QUEUE",
          "SEND_QUEUE",
          "TOTAL_WORKERS",
-         "STATUS_QUEUE"]
+         "STATUS_QUEUE",
+         "DATA_CLUSTER_WRITE",
+         "DATA_CLUSTER_READ"]
     )
 
     worker = TopCitiesController(
         config_params["RECV_QUEUE"],
         config_params["SEND_QUEUE"],
         int(config_params["TOTAL_WORKERS"]),
-        config_params["STATUS_QUEUE"]
+        config_params["STATUS_QUEUE"],
+        config_params["DATA_CLUSTER_WRITE"],
+        config_params["DATA_CLUSTER_READ"]
     )
 
     worker.start()

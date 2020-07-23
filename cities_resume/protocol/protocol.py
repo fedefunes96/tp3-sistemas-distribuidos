@@ -21,7 +21,7 @@ class Protocol:
         self.receiver.start_receiving(self.data_read)
 
     def send_data(self, data):
-        self.sender.send(NORMAL, json.dumps(data))
+        self.sender.send(NORMAL, data)
 
         self.sender.send(EOF, "")
         #self.master_sender.send(EOF, "")

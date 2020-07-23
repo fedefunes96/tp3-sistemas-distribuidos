@@ -7,7 +7,7 @@ from middleware.connection import Connection
 from communication.message_types import NORMAL, EOF, STOP
 
 class ProtocolInitialize:
-    def __init__(self, recv_queue, callback):
+    def __init__(self, recv_queue, callback, data_cluster_write, data_cluster_read):
         self.connection = Connection()
 
         self.callback = callback
@@ -22,15 +22,11 @@ class ProtocolInitialize:
     def data_read(self, msg_type, msg):
         if msg_type == STOP:
             self.receiver.close()
-            return True
         elif msg_type == EOF:
             self.receiver.close()
-            return False
         else:
             print("Got message: " + msg)
-            [region, latitude, longitude] = msg.split(",")
-            self.callback(region, float(latitude), float(longitude))
-            return False
+            self.callback(msg)
 
     def close(self):
         self.receiver.close()

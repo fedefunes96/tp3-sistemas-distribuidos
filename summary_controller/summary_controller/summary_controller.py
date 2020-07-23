@@ -1,11 +1,14 @@
 from protocol.protocol import Protocol
 import json
 
+from duplicate_filter.duplicate_filter import DuplicateFilter
+
 WRITE_FILE = 'summary/summary.txt'
 
 class SummaryController:
-    def __init__(self, recv_queue, status_queue):
+    def __init__(self, recv_queue, status_queue, data_cluster_write, data_cluster_read):
         self.protocol = Protocol(recv_queue, status_queue)
+        self.duplicate_filter = DuplicateFilter(data_cluster_write, data_cluster_read)
 
     def start(self):
         self.protocol.start_connection(
@@ -16,14 +19,32 @@ class SummaryController:
 
         self.write_summary()
 
-    def top_cities_read(self, top_cities):
-        self.top_cities = top_cities
+    def top_cities_read(self, msg):
+        [connection_id, message_id, top_cities_str] = msg.split("@@")
+        if self.duplicate_filter.message_exists(connection_id, message_id):
+            print("Duplicated message: " + message_id)
+            return
+        self.top_cities = json.loads(top_cities_str)
 
-    def date_data_read(self, date_data):
-        self.date_data = date_data
+        self.duplicate_filter.insert_message(connection_id, message_id, msg)
 
-    def count_read(self, percentage):
-        self.percentage = percentage * 100
+    def date_data_read(self, msg):
+        [connection_id, message_id, date_data_str] = msg.split("@@")
+        if self.duplicate_filter.message_exists(connection_id, message_id):
+            print("Duplicated message: " + message_id)
+            return
+        self.date_data = json.loads(date_data_str)
+
+        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+
+    def count_read(self, msg):
+        [connection_id, message_id, percentage] = msg.split("@@")
+        if self.duplicate_filter.message_exists(connection_id, message_id):
+            print("Duplicated message: " + message_id)
+            return
+        self.percentage = float(percentage) * 100
+
+        self.duplicate_filter.insert_message(connection_id, message_id, msg)
     
     def write_summary(self):
         print("Starting to write file")

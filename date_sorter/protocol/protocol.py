@@ -38,9 +38,9 @@ class Protocol:
             self.sender.send(STOP, '')
             self.status_sender.send(FINISHED, FINISHED)
         else:
-            self.callback(json.loads(msg))
+            self.callback(msg)
 
-    def send_data(self, date_data):
+    def send_data(self, data):
         print("Sending Dates results")
-        self.sender.send(DATE_RESULTS, json.dumps(date_data))
+        self.sender.send(DATE_RESULTS, data)
         self.sender.send(EOF, '')
