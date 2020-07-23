@@ -23,6 +23,6 @@ class MapController(Redirector):
 
         place = self.apply_func(float(latitude), float(longitude))
 
-        new_data = connection_id + "," + str(uuid.uuid4()) + "," + result
+        new_data = connection_id + "," + str(uuid.uuid4()) + "," + place
         self.redirect_data(new_data, self.send_queues[0])
         self.duplicate_filter.insert_message(connection_id, message_id, data)
