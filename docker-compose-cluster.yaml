@@ -1,0 +1,78 @@
+version: '3.5'
+services:
+  data_node_a:
+    container_name: data_node_a
+    image: data_node:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MY_ID=A
+      - MY_DIR=data_node_a
+      - PORT=43343
+      - NODE_A=data_node_b
+      - NODE_B=data_node_c
+      - ID_A=B
+      - ID_B=C
+      - RECV_WRITE_QUEUE=write_data_node
+      - RECV_READ_QUEUE=read_data_node
+      - RECV_REPLICA=replica_data_node_a
+      - RECV_REPLICA_A=replica_data_node_b
+      - RECV_REPLICA_B=replica_data_node_c
+    networks:
+      - test-network
+    volumes:
+      - /cluster_manager/data:/data
+
+  data_node_b:
+    container_name: data_node_b
+    image: data_node:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MY_ID=B
+      - MY_DIR=data_node_b
+      - PORT=43343
+      - NODE_A=data_node_a
+      - NODE_B=data_node_c
+      - ID_A=A
+      - ID_B=C
+      - RECV_WRITE_QUEUE=write_data_node
+      - RECV_READ_QUEUE=read_data_node
+      - RECV_REPLICA=replica_data_node_b
+      - RECV_REPLICA_A=replica_data_node_a
+      - RECV_REPLICA_B=replica_data_node_c
+    networks:
+      - test-network
+    volumes:
+      - /cluster_manager/data:/data
+
+  data_node_c:
+    container_name: data_node_c
+    image: data_node:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MY_ID=C
+      - MY_DIR=data_node_c
+      - PORT=43343
+      - NODE_A=data_node_a
+      - NODE_B=data_node_b
+      - ID_A=B
+      - ID_B=A
+      - RECV_WRITE_QUEUE=write_data_node
+      - RECV_READ_QUEUE=read_data_node
+      - RECV_REPLICA=replica_data_node_c
+      - RECV_REPLICA_A=replica_data_node_a
+      - RECV_REPLICA_B=replica_data_node_b
+    networks:
+      - test-network
+    volumes:
+      - /cluster_manager/data:/data
+   
+networks:
+  test-network:
+    external:
+      name: ${SERVER_NAME}-network

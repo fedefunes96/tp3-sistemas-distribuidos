@@ -27,3 +27,11 @@ class RpcReceiver(Receiver):
             properties=pika.BasicProperties(correlation_id = id),
             body=str(msg)
         )
+
+    def restart_queue(self):
+        #Restart queue if it exists
+        try:
+            self.channel.delete_queue(self.from_where)
+            self.channel.queue_declare(queue=self.from_where, durable=True)
+        except:
+            pass

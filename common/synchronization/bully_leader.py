@@ -1,4 +1,5 @@
 from synchronization.protocol.protocol import Protocol
+from communication.message_types import STATUS
 import random
 import time
 import threading
@@ -49,7 +50,7 @@ class BullyLeader:
             if self.protocol.in_election:
                 self.protocol.start_election()
             else:
-                self.protocol.broadcast_all("Status")
+                self.protocol.broadcast_all(STATUS)
 
             time_to_wait = random.randint(
                 WAIT_TIME_PER_CHECK[0],

@@ -14,3 +14,14 @@ FINISHED = "FINISHED"
 
 #General purpose messages
 STOP = "STOP"
+
+#Leadership
+ELECTION = "ELECTION"
+LEADER = "LEADER"
+ACK = "ACK"
+
+#Replication
+FAILED = "FAILED"
+WRITE = "WRITE"
+APPEND = "APPEND"
+WRITE_OK = "WRITE_OK"
