@@ -22,14 +22,11 @@ class ProtocolInitialize:
     def data_read(self, msg_type, msg):
         if msg_type == STOP:
             self.receiver.close()
-            return True
         elif msg_type == EOF:
             self.receiver.close()
-            return False
         else:
             print("Got message: " + msg)
             self.callback(msg)
-            return False
 
     def close(self):
         self.receiver.close()
