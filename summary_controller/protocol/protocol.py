@@ -30,13 +30,13 @@ class Protocol:
                 self.receiver.close()
         elif msg_type == TOP_CITIES:
             print("Received TOP CITIES")
-            self.callback_top(json.loads(msg))
+            self.callback_top(msg)
         elif msg_type == DATE_RESULTS:
             print("Received DATE RESULTS")
-            self.callback_date(json.loads(msg))
+            self.callback_date(msg)
         elif msg_type == TOTAL_COUNT:
             print("Received COUNT TOTAL")
-            self.callback_count(float(msg))
+            self.callback_count(msg)
         elif msg_type == STOP:
             print("Received STOP")
             self.receiver.close()

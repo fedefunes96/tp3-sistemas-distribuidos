@@ -11,7 +11,9 @@ def main_process():
         "SEND_QUEUE",
         "MASTER_SEND_QUEUE",
         "TOPIC_PLACES",
-        "STATUS_QUEUE"]
+        "STATUS_QUEUE",
+         "DATA_CLUSTER_WRITE",
+         "DATA_CLUSTER_READ"]
     )
 
     worker = Worker(
@@ -19,7 +21,9 @@ def main_process():
         [config_params["SEND_QUEUE"]],
         config_params["MASTER_SEND_QUEUE"],
         config_params["TOPIC_PLACES"],
-        config_params["STATUS_QUEUE"]
+        config_params["STATUS_QUEUE"],
+        config_params["DATA_CLUSTER_WRITE"],
+        config_params["DATA_CLUSTER_READ"]
     )
 
     worker.start()    

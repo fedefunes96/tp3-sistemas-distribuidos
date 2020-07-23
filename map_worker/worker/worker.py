@@ -5,13 +5,15 @@ from point.point import Point
 from protocol_initialize.protocol_initialize import ProtocolInitialize
 
 class Worker:
-    def __init__(self, recv_queue, send_queue, master_queue, recv_init_queue, status_queue):
+    def __init__(self, recv_queue, send_queue, master_queue, recv_init_queue, status_queue, data_cluster_write, data_cluster_read):
         self.map_controller = MapController(
             recv_queue,
             send_queue,
             master_queue,
             self.process_data,
-            status_queue
+            status_queue,
+            data_cluster_write,
+            data_cluster_read
         )
 
         self.initialize_protocol = ProtocolInitialize(

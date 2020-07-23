@@ -2,7 +2,6 @@ import pika
 import sys
 import random
 import time
-import json
 
 from middleware.connection import Connection
 
@@ -32,15 +31,15 @@ class Protocol:
             if self.pending_connections == 0:
                 self.callback_eof()
                 print("Ended processing")
-                #self.receiver.close()
+                # self.receiver.close()
                 self.receiver.close()
         elif msg_type == STOP:
             self.receiver.close()
             self.status_sender.send(FINISHED, FINISHED)
             self.sender.send(STOP, '')
         else:
-            self.callback(json.loads(msg))
+            self.callback(msg)
 
-    def send_data(self, top_cities):
-        self.sender.send(TOP_CITIES, json.dumps(top_cities))
+    def send_data(self, data):
+        self.sender.send(TOP_CITIES, data)
         self.sender.send(EOF, '')
