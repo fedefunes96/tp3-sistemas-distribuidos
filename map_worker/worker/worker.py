@@ -4,6 +4,7 @@ from named_point.named_point import NamedPoint
 from point.point import Point
 from protocol_initialize.protocol_initialize import ProtocolInitialize
 from secure_data.secure_data import SecureData
+import json
 
 class Worker:
     def __init__(self, recv_queue, send_queue, master_queue, send_init_queue, status_queue):
@@ -29,9 +30,10 @@ class Worker:
         self.places.append(point)
     
     def read_places(self):
-        print("Should read places")
         result = self.cluster_reader.read_file("tmp", "places.txt")
-        print(result)
+
+        for row in json.loads(result):
+            self.process_places(row[0], float(row[1]), float(row[2]))
 
     def start(self):
         #Block until places has been saved

@@ -18,6 +18,7 @@ class WriteProtocol:
         self.senders = []
 
         for queue in send_queues:
+            print("Linking senders to: {}".format(queue))
             self.senders.append(self.connection.create_rpc_sender(queue))
 
     def start_receiving(self, callback_app, callback_wr):
@@ -31,16 +32,22 @@ class WriteProtocol:
         msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + mode
         
         for sender in self.senders:
+            print("Sending replica to: {}".format(sender))
             try:
                 answer = sender.send(msg)
 
+                print("Received answer: {}".format(answer))
+
                 if answer == WRITE_OK:
                     pending_ack -= 1
+                
+                print("Received replica from {}".format(sender))
             except:
                 pending_ack -= 1
+                print("Exception in replica")
         
         print("Data replicated")
-        
+
         if pending_ack == 0:
             return WRITE_OK
         

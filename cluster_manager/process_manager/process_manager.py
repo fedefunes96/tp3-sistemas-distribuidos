@@ -63,13 +63,14 @@ class ProcessManager:
         print("Starting write manager")
 
         config_params = ConfigReader().parse_vars(
-            ["RECV_WRITE_QUEUE", "RECV_REPLICA_A", "RECV_REPLICA_B"]
+            ["RECV_WRITE_QUEUE"]#, "RECV_REPLICA_A", "RECV_REPLICA_B"]
         )
 
         write_manager = WriteManager(
             ROUTE, 
             config_params["RECV_WRITE_QUEUE"],
-            [config_params["RECV_REPLICA_A"], config_params["RECV_REPLICA_B"]]
+            #[config_params["RECV_REPLICA_A"], config_params["RECV_REPLICA_B"]]
+            []
         )
 
         write_manager.start()

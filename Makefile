@@ -21,7 +21,6 @@ docker-image:
 .PHONY: docker-image
 
 client-image:
-	docker build -f ./python_base_image/Dockerfile -t rabbitmq-python-base:0.0.1 .
 	docker build -f ./reader/Dockerfile -t "reader:latest" .
 .PHONY: client-image
 

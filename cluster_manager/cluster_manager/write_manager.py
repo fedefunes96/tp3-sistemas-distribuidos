@@ -22,13 +22,19 @@ class WriteManager:
         write_in = self.folder + "/" + folder_to_write + "/" + file_to_write
         tmp_file = self.folder + "/" + folder_to_write + "/" + TMP_FILE_NAME
 
+        print("Requested write")
+
         try:
             os.mkdir(self.folder + "/" + folder_to_write)
+            print("Directory created (Didnt exist)")
         except OSError as error:
             pass
 
         #Only one write request
+        print("Writing file")
         self.writer.write_file(write_in, tmp_file, data, 'w')
+
+        print("Replicating to other nodes")
 
         return self.protocol.replicate_data(folder_to_write, file_to_write, data, WRITE)
 
