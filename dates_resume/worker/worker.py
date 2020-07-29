@@ -43,9 +43,9 @@ class Worker:
         else:
             self.results_per_date[date][1] += 1
 
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
         self.secure_data.write_to_file(connection_id, REDUCER_NAME, json.dumps(self.results_per_date))
-    
+        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+
     def process_results(self):
         msg = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + json.dumps(self.results_per_date)
         self.protocol.send_data(msg)

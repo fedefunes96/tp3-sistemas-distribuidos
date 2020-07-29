@@ -2,8 +2,6 @@ import uuid
 
 from redirector.redirector import Redirector
 
-from duplicate_filter.duplicate_filter import DuplicateFilter
-
 
 class CountRedirector(Redirector):
     def __init__(self, recv_queue, send_queue, master_send_queue, callback, callback_eof, status_queue,

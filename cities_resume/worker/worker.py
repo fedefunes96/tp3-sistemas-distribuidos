@@ -38,9 +38,9 @@ class Worker:
             
         self.positives_per_city[place] += 1
 
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
         self.secure_data.write_to_file(connection_id, REDUCER_NAME, json.dumps(self.positives_per_city))
-    
+        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+
     def process_results(self):
         data = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + json.dumps(self.positives_per_city)
         self.protocol.send_data(data)
