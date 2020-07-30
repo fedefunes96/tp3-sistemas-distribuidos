@@ -3,13 +3,13 @@ class SecureReceiver:
         self.queue = queue
         self.connection = connection
 
-    def start_receiving(self):
+    def start_receiving(self, data_read):
         receiving = True
 
         while receiving:
             try:
                 self.receiver = self.create_channel()
-                self.receiver.start_receiving(self.data_read)
+                self.receiver.start_receiving(data_read)
                 receiving = False
             except:
                 self.connection.force_connection()

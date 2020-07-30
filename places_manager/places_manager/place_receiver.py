@@ -3,10 +3,10 @@ from secure_data.secure_data import SecureData
 import json
 
 class PlaceReceiver:
-    def __init__(self, recv_queue, accept_request_queue):
+    def __init__(self, recv_queue, accept_request_queue, cluster_w_dir, cluster_r_dir):
         self.protocol = ReceiverProtocol(recv_queue)
 
-        self.cluster_reader = SecureData()
+        self.cluster_reader = SecureData(cluster_w_dir, cluster_r_dir)
 
         self.accept_request_queue = accept_request_queue
 

@@ -8,12 +8,18 @@ from multiprocessing import Process, Queue
 
 def receiver_process(queue):
     config_params = ConfigReader().parse_vars(
-        ["RECV_QUEUE"]
+        [
+            "RECV_QUEUE", 
+            "DATA_CLUSTER_WRITE",
+            "DATA_CLUSTER_READ"
+        ]
     )
 
     worker = PlaceReceiver(
         config_params["RECV_QUEUE"],
-        queue
+        queue,
+        config_params["DATA_CLUSTER_WRITE"],
+        config_params["DATA_CLUSTER_READ"]        
     )
 
     worker.start()

@@ -11,7 +11,10 @@ def main_process():
         "SEND_QUEUE",
         "MASTER_SEND_QUEUE",
         "SEND_REQUEST_QUEUE",
-        "STATUS_QUEUE"]
+        "STATUS_QUEUE",
+        "DATA_CLUSTER_WRITE",
+        "DATA_CLUSTER_READ"
+        ]
     )
 
     working = True

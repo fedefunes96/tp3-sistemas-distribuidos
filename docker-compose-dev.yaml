@@ -308,6 +308,8 @@ services:
       - RECV_QUEUE=places
       - WORKER_ID=place_manager
       - WORKER_TYPE=place_manager
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node      
     networks:
       - test-network    
    

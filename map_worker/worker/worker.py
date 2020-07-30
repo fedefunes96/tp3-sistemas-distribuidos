@@ -3,9 +3,19 @@ from map_controller.map_controller import MapController
 from named_point.named_point import NamedPoint
 from point.point import Point
 from protocol_initialize.protocol_initialize import ProtocolInitialize
+from secure_data.secure_data import SecureData
 
 class Worker:
-    def __init__(self, recv_queue, send_queue, master_queue, recv_init_queue, status_queue, data_cluster_write, data_cluster_read):
+    def __init__(
+        self,
+        recv_queue,
+        send_queue,
+        master_queue,
+        recv_init_queue,
+        status_queue,
+        data_cluster_write,
+        data_cluster_read
+    ):
         self.map_controller = MapController(
             recv_queue,
             send_queue,
@@ -18,10 +28,11 @@ class Worker:
 
         self.initialize_protocol = ProtocolInitialize(
             recv_init_queue,
-            self.process_places,
-            data_cluster_write,
-            data_cluster_read
+            self.process_places
         )
+
+        self.cluster_reader = SecureData(data_cluster_write, data_cluster_read)
+
         self.places = []
 
     def process_places(self, msg):
