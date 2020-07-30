@@ -14,12 +14,16 @@ class Protocol:
         self.receiver = self.connection.create_direct_receiver(recv_queue)
         self.status_sender = self.connection.create_direct_sender(status_queue)
 
-    def start_connection(self, callback_top, callback_date, callback_count):
+    def start_connection(self, callback_top, callback_date, callback_count, already_read):
         self.callback_top = callback_top
         self.callback_date = callback_date
         self.callback_count = callback_count
 
-        self.receiver.start_receiving(self.data_read)
+        self.actual += already_read
+
+        if self.actual < self.expected:
+            self.receiver.start_receiving(self.data_read)
+
         self.connection.close()
 
     def data_read(self, msg_type, msg):

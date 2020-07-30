@@ -2,19 +2,31 @@ from protocol.protocol import Protocol
 import json
 
 from duplicate_filter.duplicate_filter import DuplicateFilter
+from secure_data.secure_data import SecureData
 
 WRITE_FILE = 'summary/summary.txt'
+DIRECTORY_NAME = "resume_data"
+CITIES_TOTAL_NAME = "cities_total_name"
+DATES_TOTAL_NAME = "dates_total_name"
+COUNT_TOTAL_NAME = "count_total_name"
+
 
 class SummaryController:
     def __init__(self, recv_queue, status_queue, data_cluster_write, data_cluster_read):
         self.protocol = Protocol(recv_queue, status_queue)
         self.duplicate_filter = DuplicateFilter(data_cluster_write, data_cluster_read)
+        self.secure_data = SecureData(data_cluster_write, data_cluster_read)
+        self.read_from_file = 0
 
     def start(self):
+        self.read_cities_file()
+        self.read_dates_file()
+        self.read_total_file()
         self.protocol.start_connection(
             self.top_cities_read,
             self.date_data_read,
-            self.count_read
+            self.count_read,
+            self.read_from_file
         )
 
         self.write_summary()
@@ -26,6 +38,7 @@ class SummaryController:
             return
         self.top_cities = json.loads(top_cities_str)
 
+        self.secure_data.write_to_file(DIRECTORY_NAME, CITIES_TOTAL_NAME, json.dumps(self.top_cities))
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
 
     def date_data_read(self, msg):
@@ -35,6 +48,7 @@ class SummaryController:
             return
         self.date_data = json.loads(date_data_str)
 
+        self.secure_data.write_to_file(DIRECTORY_NAME, DATES_TOTAL_NAME, json.dumps(self.date_data))
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
 
     def count_read(self, msg):
@@ -44,8 +58,9 @@ class SummaryController:
             return
         self.percentage = float(percentage) * 100
 
+        self.secure_data.write_to_file(DIRECTORY_NAME, COUNT_TOTAL_NAME, str(self.percentage))
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
-    
+
     def write_summary(self):
         print("Starting to write file")
         with open(WRITE_FILE, 'w') as file:
@@ -59,7 +74,7 @@ class SummaryController:
                     str(self.date_data[date][1]) +
                     "\n"
                 )
-            
+
             file.write("\nTop 3 cities - totale positivi\n")
             for place in self.top_cities:
                 file.write(
@@ -71,3 +86,21 @@ class SummaryController:
 
             file.write("\nPorcentuale Deceduti=")
             file.write(str(self.percentage) + "%")
+
+    def read_cities_file(self):
+        data = self.secure_data.read_file(DIRECTORY_NAME, CITIES_TOTAL_NAME)
+        if data is not None and data != "":
+            self.top_cities = json.loads(data)
+            self.read_from_file += 1
+
+    def read_dates_file(self):
+        data = self.secure_data.read_file(DIRECTORY_NAME, DATES_TOTAL_NAME)
+        if data is not None and data != "":
+            self.date_data = json.loads(data)
+            self.read_from_file += 1
+
+    def read_total_file(self):
+        data = self.secure_data.read_file(DIRECTORY_NAME, COUNT_TOTAL_NAME)
+        if data is not None and data != "":
+            self.percentage = float(data)
+            self.read_from_file += 1
