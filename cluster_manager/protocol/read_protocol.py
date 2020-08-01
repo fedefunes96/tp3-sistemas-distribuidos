@@ -1,19 +1,12 @@
 from middleware.connection import Connection
+from middleware.secure_connection.secure_rpc_receiver import SecureRpcReceiver
 
 class ReadProtocol:
     def __init__(self, recv_queue):
-        #Temp solution
-        conn = False
-
-        while conn == False:
-            try:
-                self.connection = Connection()
-                conn = True
-            except:
-                pass   
+        self.connection = Connection()
             
-        self.receiver = self.connection.create_rpc_receiver(recv_queue)
-
+        self.receiver = SecureRpcReceiver(recv_queue, self.connection)
+        
     def start_receiving(self, callback):
         self.callback = callback
 

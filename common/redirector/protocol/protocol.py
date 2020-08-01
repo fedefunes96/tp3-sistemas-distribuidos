@@ -5,18 +5,20 @@ import time
 
 from middleware.connection import Connection
 from communication.message_types import NORMAL, EOF, STOP, FINISHED
+from middleware.secure_connection.secure_direct_sender import SecureDirectSender
+from middleware.secure_connection.secure_distributed_receiver import SecureDistributedReceiver
 
 class Protocol:
     def __init__(self, recv_queue, send_queues, master_send_queue, status_queue):
         self.connection = Connection()
-        self.receiver = self.connection.create_distributed_work_receiver(recv_queue)
-        self.status_sender = self.connection.create_direct_sender(status_queue)
+        self.receiver = SecureDistributedReceiver(recv_queue, self.connection)
+        self.status_sender = SecureDirectSender(status_queue, self.connection)
         self.senders = {}
 
         for queue in send_queues:
-            self.senders[queue] = self.connection.create_direct_sender(queue)
+            self.senders[queue] = SecureDirectSender(queue, self.connection)
 
-        self.master_sender = self.connection.create_direct_sender(master_send_queue)
+        self.master_sender = SecureDirectSender(master_send_queue, self.connection  )
 
     def start_connection(self, callback, callback_eof):
         self.callback = callback

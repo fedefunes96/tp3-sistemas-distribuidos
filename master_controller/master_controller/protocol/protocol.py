@@ -1,7 +1,9 @@
 from middleware.connection import Connection
 
 from communication.message_types import EOF, STOP, FINISHED
-
+from middleware.secure_connection.secure_direct_sender import SecureDirectSender
+from middleware.secure_connection.secure_direct_receiver import SecureDirectReceiver
+from middleware.secure_connection.secure_distributed_sender import SecureDistributedSender
 
 class Protocol:
     def __init__(self, recv_queue, send_queue, total_workers, status_queue):
@@ -10,9 +12,9 @@ class Protocol:
 
         self.total_workers = total_workers
 
-        self.status_sender = self.connection.create_direct_sender(status_queue)
-        self.receiver = self.connection.create_direct_receiver(recv_queue)
-        self.sender = self.connection.create_distributed_work_sender(send_queue)
+        self.status_sender = SecureDirectSender(status_queue, self.connection)
+        self.receiver = SecureDirectReceiver(recv_queue, self.connection)
+        self.sender = SecureDistributedSender(send_queue, self.connection)
 
     def start_connection(self):
         self.receiver.start_receiving(self.data_read)

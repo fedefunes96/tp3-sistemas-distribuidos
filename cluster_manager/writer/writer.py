@@ -1,3 +1,5 @@
+import os
+
 class Writer:
     def write_file(self, write_in, tmp_file, data, mode):
         print("Going to write: " + data + " in file:" + write_in)

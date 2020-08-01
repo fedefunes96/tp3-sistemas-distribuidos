@@ -14,9 +14,20 @@ from middleware.rpc_sender import RpcSender
 
 class Connection:
     def __init__(self):
-        self.connection = pika.BlockingConnection(
-                pika.ConnectionParameters(host='rabbitmq')
-            )
+        self.force_connect()
+
+    def force_connect(self):
+        #Force connection
+        conn = False
+
+        while conn == False:
+            try:
+                self.connection = pika.BlockingConnection(
+                    pika.ConnectionParameters(host='rabbitmq')
+                )
+                conn = True
+            except:
+                pass        
 
     def reserve_queue_topic(self, topic, queue):
         channel = self.connection.channel()

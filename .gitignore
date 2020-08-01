@@ -4,3 +4,6 @@ reader/data
 summary_controller/summary
 .idea
 */target
+cluster_manager/data_a
+cluster_manager/data_b
+cluster_manager/data_c

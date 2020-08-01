@@ -10,23 +10,27 @@ def main_process():
         ["RECV_QUEUE",
         "SEND_QUEUE",
         "MASTER_SEND_QUEUE",
-        "TOPIC_PLACES",
+        "SEND_REQUEST_QUEUE",
         "STATUS_QUEUE",
-         "DATA_CLUSTER_WRITE",
-         "DATA_CLUSTER_READ"]
+        "DATA_CLUSTER_WRITE",
+        "DATA_CLUSTER_READ"
+        ]
     )
 
-    worker = Worker(
-        config_params["RECV_QUEUE"],
-        [config_params["SEND_QUEUE"]],
-        config_params["MASTER_SEND_QUEUE"],
-        config_params["TOPIC_PLACES"],
-        config_params["STATUS_QUEUE"],
-        config_params["DATA_CLUSTER_WRITE"],
-        config_params["DATA_CLUSTER_READ"]
-    )
+    working = True
 
-    worker.start()    
+    while working:
+        worker = Worker(
+            config_params["RECV_QUEUE"],
+            [config_params["SEND_QUEUE"]],
+            config_params["MASTER_SEND_QUEUE"],
+            config_params["SEND_REQUEST_QUEUE"],
+            config_params["STATUS_QUEUE"],
+            config_params["DATA_CLUSTER_WRITE"],
+            config_params["DATA_CLUSTER_READ"]
+        )
+
+        working = worker.start()
 
 def main():
     params = ConfigReader().parse_vars(["STATUS_QUEUE", "WORKERS", "WORKER_ID", "WORKER_TYPE"])
