@@ -1,15 +1,17 @@
 from middleware.connection import Connection
 
 from communication.message_types import NORMAL, EOF, STOP, FINISHED
+from middleware.secure_connection.secure_direct_sender import SecureDirectSender
+from middleware.secure_connection.secure_direct_receiver import SecureDirectReceiver
 
 class Protocol:
     def __init__(self, recv_queue, send_queue, total_workers, status_queue):
         self.connection = Connection()
 
         self.pending_connections = total_workers
-        self.receiver = self.connection.create_direct_receiver(recv_queue)
-        self.sender = self.connection.create_direct_sender(send_queue)
-        self.status_sender = self.connection.create_direct_sender(status_queue)
+        self.receiver = SecureDirectReceiver(recv_queue, self.connection)
+        self.sender = SecureDirectSender(send_queue, self.connection)
+        self.status_sender = SecureDirectSender(status_queue, self.connection)
 
         self.send_queue = send_queue
 

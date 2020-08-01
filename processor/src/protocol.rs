@@ -1,5 +1,5 @@
 use std::sync::mpsc::Sender;
-use amiquip::{Connection, Channel, Queue, QueueDeclareOptions, ConsumerMessage, ConsumerOptions, Exchange, Publish, ExchangeType, ExchangeDeclareOptions, AmqpProperties};
+use amiquip::{Connection, Channel, Queue, QueueDeclareOptions, ConsumerMessage, ConsumerOptions, Exchange, Publish, /*ExchangeType, ExchangeDeclareOptions,*/ AmqpProperties};
 
 pub struct Protocol {
     connection: Option<Connection>,
@@ -80,9 +80,10 @@ impl Protocol {
     }
 
     pub fn send_places_message(&self, message: String, type_: String) {
-        let exchange = self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap();
-        let properties = AmqpProperties::default().with_type_(type_);
-        exchange.publish(Publish::with_properties(message.as_bytes(), "", properties)).unwrap();
+        //let exchange = self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap();
+        //let properties = AmqpProperties::default().with_type_(type_);
+        //exchange.publish(Publish::with_properties(message.as_bytes(), "", properties)).unwrap();
+        self.send_message_to_queue(message.clone(), self.topic_places.clone(), type_.clone());
     }
 
     pub fn send_case_message(&self, message: String, type_: String) {

@@ -1,11 +1,12 @@
 from middleware.connection import Connection
 from communication.message_types import RESTART, REQUEST_PLACES
+from middleware.secure_connection.secure_rpc_receiver import SecureRpcReceiver
 
 class RequesterProtocol:
     def __init__(self, recv_queue):
         self.connection = Connection()
 
-        self.receiver = self.connection.create_rpc_receiver(recv_queue)
+        self.receiver = SecureRpcReceiver(recv_queue, self.connection)
     
     def start_connection(self, callback):
         self.callback = callback

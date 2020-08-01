@@ -19,6 +19,7 @@ class PlaceReceiver:
         #Receive a place, save it in storage
         self.places.append((place, latitude, longitude))
         self.cluster_reader.write_to_file("tmp", "places.txt", json.dumps(self.places))
+        print("Write finished")
         #pass
     
     def process_results(self):

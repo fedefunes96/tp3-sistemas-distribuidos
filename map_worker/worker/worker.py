@@ -4,6 +4,7 @@ from named_point.named_point import NamedPoint
 from point.point import Point
 from protocol_initialize.protocol_initialize import ProtocolInitialize
 from secure_data.secure_data import SecureData
+import json
 
 class Worker:
     def __init__(
@@ -35,14 +36,15 @@ class Worker:
 
         self.places = []
 
-    def process_places(self, msg):
-        point = NamedPoint(region, float(longitude), float(latitude))
+    def process_places(self, region, longitude, latitude):
+        point = NamedPoint(region, longitude, latitude)
         self.places.append(point)
     
     def read_places(self):
         result = self.cluster_reader.read_file("tmp", "places.txt")
 
         for row in json.loads(result):
+            print(row)
             self.process_places(row[0], float(row[1]), float(row[2]))
 
     def start(self):

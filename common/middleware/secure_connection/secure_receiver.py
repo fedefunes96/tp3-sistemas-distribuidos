@@ -12,7 +12,7 @@ class SecureReceiver:
                 self.receiver.start_receiving(data_read)
                 receiving = False
             except:
-                self.connection.force_connection()
+                self.connection.force_connect()
 
     def create_channel(self):
         raise NotImplementedError

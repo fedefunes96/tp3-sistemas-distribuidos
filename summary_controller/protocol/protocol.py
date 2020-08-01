@@ -2,7 +2,8 @@ from middleware.connection import Connection
 import json
 
 from communication.message_types import EOF, TOP_CITIES, DATE_RESULTS, TOTAL_COUNT, STOP, FINISHED
-
+from middleware.secure_connection.secure_direct_receiver import SecureDirectReceiver
+from middleware.secure_connection.secure_direct_sender import SecureDirectSender
 
 class Protocol:
     def __init__(self, recv_queue, status_queue):
@@ -11,8 +12,8 @@ class Protocol:
         self.expected = 3
         self.actual = 0
 
-        self.receiver = self.connection.create_direct_receiver(recv_queue)
-        self.status_sender = self.connection.create_direct_sender(status_queue)
+        self.receiver = SecureDirectReceiver(recv_queue, self.connection)
+        self.status_sender = SecureDirectSender(status_queue, self.connection)
 
     def start_connection(self, callback_top, callback_date, callback_count):
         self.callback_top = callback_top

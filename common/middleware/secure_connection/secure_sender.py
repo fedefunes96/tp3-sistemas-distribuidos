@@ -12,7 +12,7 @@ class SecureSender:
                 self.sender.send(msg_type, msg)
                 sent = True
             except:
-                self.connection.force_connection()
+                self.connection.force_connect()
 
     def create_channel(self):
         raise NotImplementedError
