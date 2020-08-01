@@ -20,15 +20,6 @@ class NodeRaiser:
         print("Trying to raise: {}".format(process))
 
         result = subprocess.run(
-            ['docker', 'ps'],
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-
-        print('Command executed. Result={}. Output=\n{}.\n Error={}'.format(result.returncode, result.stdout, result.stderr))
-
-        result = subprocess.run(
             ['docker', 'stop', process],
             check=False,
             stdout=subprocess.PIPE,

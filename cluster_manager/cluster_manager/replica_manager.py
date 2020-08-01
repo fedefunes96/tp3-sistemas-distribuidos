@@ -21,6 +21,12 @@ class ReplicaManager:
     def requested_replica_append(self, folder_to_write, file_to_write, data):
         write_in = self.folder + "/" + folder_to_write + "/" + file_to_write
         tmp_file = self.folder + "/" + folder_to_write + "/" + TMP_FILE_NAME
+        
+        try:
+            os.mkdir(self.folder + "/" + folder_to_write)
+            print("Directory created (Didnt exist)")
+        except OSError as error:
+            pass
 
         try:
             copyfile(write_in, tmp_file)
@@ -35,6 +41,16 @@ class ReplicaManager:
         write_in = self.folder + "/" + folder_to_write + "/" + file_to_write
         tmp_file = self.folder + "/" + folder_to_write + "/" + TMP_FILE_NAME
 
+        print("Requested replica")
+
+        try:
+            os.mkdir(self.folder + "/" + folder_to_write)
+            print("Directory created (Didnt exist)")
+        except OSError as error:
+            pass
+
         self.writer.write_file(write_in, tmp_file, data, 'w')
+
+        print("Replicated successfully")
 
         return WRITE_OK

@@ -15,6 +15,11 @@ FINISHED = "FINISHED"
 #General purpose messages
 STOP = "STOP"
 
+#Places message
+READY = "READY"
+RESTART = "RESTART"
+REQUEST_PLACES = "REQUEST_PLACES"
+
 #Leadership
 ELECTION = "ELECTION"
 LEADER = "LEADER"

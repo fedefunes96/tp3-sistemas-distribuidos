@@ -20,11 +20,11 @@ class RpcReceiver(Receiver):
             on_message_callback=self.data_received
         )
     
-    def reply(self, id, reply_to, msg):
+    def reply(self, cor_id, reply_to, msg):
         self.channel.basic_publish(
             exchange='',
             routing_key=reply_to,
-            properties=pika.BasicProperties(correlation_id = id),
+            properties=pika.BasicProperties(correlation_id = cor_id),
             body=str(msg)
         )
 

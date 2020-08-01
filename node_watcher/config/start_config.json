@@ -10,5 +10,6 @@
     "master_count_worker": "master_count_worker",
     "date_sorter_worker": "date_sorter",
     "top_cities_worker": "top_cities",
-    "summary_worker": "summary_worker"
+    "summary_worker": "summary_worker",
+    "place_manager": "place_manager"
 }
