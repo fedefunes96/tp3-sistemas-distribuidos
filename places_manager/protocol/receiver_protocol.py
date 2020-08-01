@@ -26,4 +26,4 @@ class ReceiverProtocol:
         else:
             print("Place received: {}".format(msg))
             [conn_id, msg_id, region, latitude, longitude] = msg.split(",")
-            self.callback(region, latitude, longitude)
+            self.callback(conn_id, region, latitude, longitude)

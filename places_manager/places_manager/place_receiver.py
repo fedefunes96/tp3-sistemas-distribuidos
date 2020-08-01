@@ -15,10 +15,10 @@ class PlaceReceiver:
     def start(self):
         self.protocol.start_connection(self.data_read, self.process_results)
 
-    def data_read(self, place, latitude, longitude):
+    def data_read(self, conn_id, place, latitude, longitude):
         #Receive a place, save it in storage
         self.places.append((place, latitude, longitude))
-        self.cluster_reader.write_to_file("tmp", "places.txt", json.dumps(self.places))
+        self.cluster_reader.write_to_file(conn_id, "places.txt", json.dumps(self.places))
         print("Write finished")
         #pass
     
