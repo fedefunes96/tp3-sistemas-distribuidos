@@ -22,11 +22,6 @@ class NodeChecker:
             try:
                 [status, worker_id, worker_type] = self.update_queue.get_nowait()
 
-                #Status says process is dead
-                if status == DEAD:
-                    #(TODO) Remove worker so that it raises up eventually
-                    pass
-
                 if status == FINISHED:
                     # self.dead_queue.close()
                     pass
@@ -42,6 +37,17 @@ class NodeChecker:
                         worker_id,
                         actual_time
                     )
+
+                #Status says process is dead
+                if status == DEAD:
+                    #(TODO) Remove worker so that it raises up eventually
+                    node = self.worker_manager.remove_worker(
+                        worker_id,
+                        worker_type
+                    )
+                    print("Sending dead node to raise: {} {}".format(node.id, node.type))
+                    self.dead_queue.put([node.id, node.type])
+
             except:
                 pass
             finally:

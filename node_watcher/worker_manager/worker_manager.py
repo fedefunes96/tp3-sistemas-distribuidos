@@ -25,3 +25,8 @@ class WorkerManager:
         self.workers = [x for x in self.workers if x not in old_workers]
 
         return old_workers
+
+    def remove_worker(self, worker_id):
+        worker = self.workers.remove(Worker(worker_id, worker_type))
+
+        return worker
