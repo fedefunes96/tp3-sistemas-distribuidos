@@ -5,6 +5,7 @@ from collections import Counter
 
 from duplicate_filter.duplicate_filter import DuplicateFilter
 
+COUNT_MSG_ID = "count_resumer"
 
 class Worker:
     def __init__(self, recv_queue, send_queue, status_queue, data_cluster_write, data_cluster_read):
@@ -32,6 +33,6 @@ class Worker:
     def process_results(self):
         result = self.total_deceduti / self.total_positivi
 
-        msg = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + str(result)
+        msg = self.connection_id + "@@" + COUNT_MSG_ID + "@@" + str(result)
 
         self.protocol.send_data(msg)

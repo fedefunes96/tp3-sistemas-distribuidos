@@ -53,7 +53,7 @@ class Worker:
         conn_id = self.initialize_protocol.start_connection()
         #Read places
         self.read_places(conn_id)
-        #print("All places received")
+        print("All places received")
         self.map_controller.start()
 
     def process_data(self, latitude, longitude):

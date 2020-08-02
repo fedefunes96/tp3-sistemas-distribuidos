@@ -6,6 +6,7 @@ from collections import Counter
 
 from duplicate_filter.duplicate_filter import DuplicateFilter
 
+TOP_MSG_ID = "top_cities"
 
 class TopCitiesController:
     def __init__(self, recv_queue, send_queue, total_workers, status_queue, data_cluster_write, data_cluster_read):
@@ -31,6 +32,6 @@ class TopCitiesController:
     
     def process_results(self):
         self.top_cities = dict(Counter(self.cities_data).most_common(3))
-        data = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + json.dumps(self.top_cities)
+        data = self.connection_id + "@@" + TOP_MSG_ID + "@@" + json.dumps(self.top_cities)
 
         self.protocol.send_data(data)
