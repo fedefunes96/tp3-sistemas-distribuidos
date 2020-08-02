@@ -31,6 +31,7 @@ class Worker:
             self.positives_per_city[place] = 0
             
         self.positives_per_city[place] += 1
+        print("Positive of {}".format(place))
 
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
     

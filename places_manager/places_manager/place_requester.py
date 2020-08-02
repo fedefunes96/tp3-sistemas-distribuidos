@@ -7,9 +7,11 @@ class PlaceRequester:
 
         self.accept_request_queue = accept_request_queue
 
+        self.conn_id = None
+
     def start(self):
         #Wait until receiver receives all places
-        _tmp = self.accept_request_queue.get()
+        self.conn_id = self.accept_request_queue.get()
 
         self.protocol = RequesterProtocol(
             self.recv_request_queue
@@ -21,4 +23,4 @@ class PlaceRequester:
         return True
 
     def request_places_ready(self):
-        return READY
+        return self.conn_id

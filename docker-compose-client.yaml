@@ -6,7 +6,7 @@ services:
     entrypoint: cargo run
     restart: on-failure
     environment:
-      - PROCESSOR_QUANTITY=${TOTAL_PROCESSORS}
+      - PROCESSOR_QUANTITY=1
       - LOG_LEVEL=INFO
       - RABBITMQ_ADDR=amqp://guest:guest@rabbitmq:5672
       - PROCESSOR_QUEUE=reader_q

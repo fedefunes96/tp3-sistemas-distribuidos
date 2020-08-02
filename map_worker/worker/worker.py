@@ -40,8 +40,9 @@ class Worker:
         point = NamedPoint(region, longitude, latitude)
         self.places.append(point)
     
-    def read_places(self):
-        result = self.cluster_reader.read_file("tmp", "places.txt")
+    def read_places(self, conn_id):
+        print("Reading places from {}".format(conn_id))
+        result = self.cluster_reader.read_file(conn_id, "places.txt")
 
         for row in json.loads(result):
             print(row)
@@ -49,9 +50,9 @@ class Worker:
 
     def start(self):
         #Block until places has been saved
-        self.initialize_protocol.start_connection()
+        conn_id = self.initialize_protocol.start_connection()
         #Read places
-        self.read_places()
+        self.read_places(conn_id)
         #print("All places received")
         self.map_controller.start()
 

@@ -22,8 +22,9 @@ class ProtocolInitialize:
         #self.connection.close()
 
         #Wait for answer
-        _answer = self.sender.send(REQUEST_PLACES)
+        conn_id = self.sender.send(REQUEST_PLACES)
         print("Places are available")
+        return conn_id
 
     '''def data_read(self, msg_type, msg):
         if msg_type == STOP:
