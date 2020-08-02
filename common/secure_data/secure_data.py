@@ -12,13 +12,13 @@ class SecureData:
     
     def write_to_file(self, folder_to_write, file_to_write, data):
         print("Sending data: {}".format(data))
-        msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + WRITE
+        '''msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + WRITE
         print("Sending msg: {}".format(msg))
         recv_msg = self.sender_write.send(msg)
         print("Received: {}".format(recv_msg))
 
         if recv_msg == FAILED:
-            raise WriteError() 
+            raise WriteError()'''
     
     def append_to_file(self, folder_to_write, file_to_write, data):
         msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + APPEND
