@@ -9,6 +9,7 @@ class SecureRpcSender(SecureSender):
             try:
                 self.sender = self.create_channel()
                 return self.sender.send(msg, timeout)
-            except:
+            except Exception as e:
+                print(e)
                 print("RPC Send raised exception")
                 self.connection.force_connect()

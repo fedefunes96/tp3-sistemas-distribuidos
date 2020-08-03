@@ -2,7 +2,15 @@ import csv
 from count_redirector.count_redirector import CountRedirector
 
 class Worker:
-    def __init__(self, recv_queue, send_queue, master_queue, status_queue, data_cluster_write, data_cluster_read):
+    def __init__(self,
+        recv_queue,
+        send_queue,
+        master_queue,
+        status_queue,
+        data_cluster_write,
+        data_cluster_read,
+        worker_id
+    ):
         self.redirector = CountRedirector(
             recv_queue,
             send_queue,
@@ -11,7 +19,8 @@ class Worker:
             self.no_more_data,
             status_queue,
             data_cluster_write,
-            data_cluster_read
+            data_cluster_read,
+            worker_id
         )
 
         self.total_deceduti = 0

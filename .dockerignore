@@ -1,0 +1,8 @@
+reader/target/**/*
+reader/target
+
+processor/target/**/*
+processor/target
+
+stopper/target/**/*
+stopper/target

@@ -11,7 +11,8 @@ class SecureSender:
                 self.sender = self.create_channel()
                 self.sender.send(msg_type, msg)
                 sent = True
-            except:
+            except Exception as e:
+                print(e)
                 self.connection.force_connect()
 
     def create_channel(self):

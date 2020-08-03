@@ -1,5 +1,6 @@
 from middleware.connection import Connection
 from middleware.secure_connection.secure_rpc_receiver import SecureRpcReceiver
+import json
 
 class ReadProtocol:
     def __init__(self, recv_queue):
@@ -13,7 +14,8 @@ class ReadProtocol:
         self.receiver.start_receiving(self.data_read)
 
     def data_read(self, reply_to, cor_id, msg):
-        [folder_to_read, file_to_read] = msg.split('@@')
+        #[folder_to_read, file_to_read] = msg.split('@@')
+        [folder_to_read, file_to_read] = json.loads(msg)
 
         reply = self.callback(folder_to_read, file_to_read)
 

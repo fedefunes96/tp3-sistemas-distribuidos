@@ -1,6 +1,7 @@
 from middleware.connection import Connection
 from communication.message_types import APPEND, WRITE, WRITE_OK, FAILED
 from middleware.secure_connection.secure_rpc_receiver import SecureRpcReceiver
+import json
 
 class ReplicaProtocol:
     def __init__(self, recv_queue):
@@ -16,7 +17,8 @@ class ReplicaProtocol:
         self.receiver.start_receiving(self.data_read)
 
     def data_read(self, reply_to, cor_id, msg):
-        [folder_to_read, file_to_read, data, mode] = msg.split('@@')
+        #[folder_to_read, file_to_read, data, mode] = msg.split('@@')
+        [folder_to_read, file_to_read, data, mode] = json.loads(msg)
 
         if mode == APPEND:
             reply = self.callback_app(folder_to_read, file_to_read, data)
