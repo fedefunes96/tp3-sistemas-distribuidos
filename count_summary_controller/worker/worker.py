@@ -1,11 +1,10 @@
-import uuid
-
 from protocol.protocol import Protocol
 from collections import Counter
 
 from duplicate_filter.duplicate_filter import DuplicateFilter
 
 COUNT_MSG_ID = "count_resumer"
+STAGE = "count_resume"
 
 class Worker:
     def __init__(self, recv_queue, send_queue, status_queue, data_cluster_write, data_cluster_read):
@@ -20,7 +19,7 @@ class Worker:
 
     def data_read(self, msg):
         [connection_id, message_id, positivi, deceduti] = msg.split(',')
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
         self.connection_id = connection_id
@@ -28,7 +27,7 @@ class Worker:
         self.total_positivi += int(positivi)
         self.total_deceduti += int(deceduti)
 
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def process_results(self):
         result = self.total_deceduti / self.total_positivi

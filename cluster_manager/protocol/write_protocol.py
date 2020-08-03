@@ -3,6 +3,7 @@ from communication.message_types import WRITE_OK, FAILED, APPEND, WRITE
 import os
 from middleware.secure_connection.secure_rpc_receiver import SecureRpcReceiver
 from middleware.secure_connection.secure_rpc_sender import SecureRpcSender
+import json
 
 class WriteProtocol:
     def __init__(self, recv_queue, send_queues):
@@ -25,12 +26,13 @@ class WriteProtocol:
     
     def replicate_data(self, folder_to_write, file_to_write, data, mode):
         pending_ack = len(self.senders)
-        msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + mode
+        msg = [folder_to_write, file_to_write, data, mode]
+        #msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + mode
         
         for sender in self.senders:
             print("Sending replica to: {}".format(sender))
             try:
-                answer = sender.send(msg)
+                answer = sender.send(json.dumps(msg))
 
                 print("Received answer: {}".format(answer))
 
@@ -51,7 +53,8 @@ class WriteProtocol:
 
     def data_read(self, reply_to, cor_id, msg):
         print("Received {}".format(msg))
-        [folder_to_read, file_to_read, data, operation] = msg.split('@@')
+        #[folder_to_read, file_to_read, data, operation] = msg.split('@@')
+        [folder_to_read, file_to_read, data, operation] = json.loads(msg)
 
         if operation == APPEND:
             reply = self.callback_app(folder_to_read, file_to_read, data)

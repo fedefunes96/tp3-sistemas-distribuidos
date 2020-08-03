@@ -10,7 +10,8 @@ class SecureRpcReceiver(SecureReceiver):
         while tries_before_giving_up > 0:
             try:
                 self.receiver.reply(cor_id, reply_to, msg)
-            except:
+            except Exception as e:
+                print(e)
                 self.connection.force_connect()
             finally:
                 tries_before_giving_up -= 1

@@ -4,6 +4,7 @@ import json
 from duplicate_filter.duplicate_filter import DuplicateFilter
 
 FOLDER_WRITE = 'summary/'
+STAGE = "summary"
 
 class SummaryController:
     def __init__(self, recv_queue, status_queue, data_cluster_write, data_cluster_read):
@@ -25,14 +26,14 @@ class SummaryController:
         if self.conn_id == None:
             self.conn_id = connection_id
 
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
 
         print("Received: {}".format(top_cities_str))
         self.top_cities = json.loads(top_cities_str)
 
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def date_data_read(self, msg):
         [connection_id, message_id, date_data_str] = msg.split("@@")
@@ -40,13 +41,13 @@ class SummaryController:
         if self.conn_id == None:
             self.conn_id = connection_id
 
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
 
         self.date_data = json.loads(date_data_str)
 
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def count_read(self, msg):
         [connection_id, message_id, percentage] = msg.split("@@")
@@ -54,13 +55,13 @@ class SummaryController:
         if self.conn_id == None:
             self.conn_id = connection_id
 
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
 
         self.percentage = float(percentage) * 100
 
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
     
     def write_summary(self):
         print("Starting to write file {}".format(FOLDER_WRITE + 'summary_' + self.conn_id + '.txt'))

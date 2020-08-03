@@ -20,6 +20,7 @@ class ReadManager:
             content = f.read()
             f.close()
         except FileNotFoundError:
+            print("File not found: {}".format(read_in))
             pass
 
         return content

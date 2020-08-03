@@ -26,11 +26,13 @@ class ReplicaManager:
             os.mkdir(self.folder + "/" + folder_to_write)
             print("Directory created (Didnt exist)")
         except OSError as error:
+            print(error)
             pass
 
         try:
             copyfile(write_in, tmp_file)
         except FileNotFoundError:
+            print("File not found: {}".format(tmp_file))
             pass
     
         self.writer.write_file(write_in, tmp_file, data, 'a')
@@ -47,6 +49,7 @@ class ReplicaManager:
             os.mkdir(self.folder + "/" + folder_to_write)
             print("Directory created (Didnt exist)")
         except OSError as error:
+            print(error)
             pass
 
         self.writer.write_file(write_in, tmp_file, data, 'w')

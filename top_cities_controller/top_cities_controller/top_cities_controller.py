@@ -6,6 +6,7 @@ from collections import Counter
 
 from duplicate_filter.duplicate_filter import DuplicateFilter
 
+STAGE = "top_cities"
 TOP_MSG_ID = "top_cities"
 
 class TopCitiesController:
@@ -22,13 +23,13 @@ class TopCitiesController:
 
     def data_read(self, msg):
         [connection_id, message_id, data_str] = msg.split("@@")
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
         self.connection_id = connection_id
         data = json.loads(data_str)
         self.cities_data.update(data)
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
     
     def process_results(self):
         self.top_cities = dict(Counter(self.cities_data).most_common(3))

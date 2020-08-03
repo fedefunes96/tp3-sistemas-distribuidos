@@ -39,17 +39,20 @@ class WriteManager:
         return self.protocol.replicate_data(folder_to_write, file_to_write, data, WRITE)
 
     def requested_append(self, folder_to_write, file_to_write, data):
+        print("REQUESTED APPEND")
         write_in = self.folder + "/" + folder_to_write + "/" + file_to_write
         tmp_file = self.folder + "/" + folder_to_write + "/" + TMP_FILE_NAME
 
         try:
             os.mkdir(self.folder + "/" + folder_to_write)
         except OSError as error:
+            print(error)
             pass
 
         try:
             copyfile(write_in, tmp_file)
         except FileNotFoundError:
+            print("File not found: {}".format(tmp_file))
             pass
 
         self.writer.write_file(write_in, tmp_file, data, 'a')

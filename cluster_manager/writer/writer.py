@@ -12,3 +12,4 @@ class Writer:
 
         #Is atomic
         os.rename(tmp_file, write_in)
+        print("Writer finished working")
