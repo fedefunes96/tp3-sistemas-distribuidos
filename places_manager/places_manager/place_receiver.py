@@ -12,15 +12,20 @@ class PlaceReceiver:
 
         self.places = []
 
+        self.conn_id = None
+
     def start(self):
         self.protocol.start_connection(self.data_read, self.process_results)
 
     def data_read(self, conn_id, place, latitude, longitude):
         #Receive a place, save it in storage
+        if self.conn_id == None:
+            self.conn_id = conn_id
+            
         self.places.append((place, latitude, longitude))
         self.cluster_reader.write_to_file(conn_id, "places.txt", json.dumps(self.places))
         print("Write finished")
     
     def process_results(self):
         #Let the requester know that it can answer messages from map workers
-        self.accept_request_queue.put(0)
+        self.accept_request_queue.put(self.conn_id)

@@ -5,20 +5,23 @@ from communication.message_types import EOF, TOP_CITIES, DATE_RESULTS, TOTAL_COU
 from middleware.secure_connection.secure_direct_receiver import SecureDirectReceiver
 from middleware.secure_connection.secure_direct_sender import SecureDirectSender
 
+EXPECTED_EOF = 3
+
 class Protocol:
     def __init__(self, recv_queue, status_queue):
         self.connection = Connection()
 
-        self.expected = 3
+        self.expected = EXPECTED_EOF
         self.actual = 0
 
         self.receiver = SecureDirectReceiver(recv_queue, self.connection)
         self.status_sender = SecureDirectSender(status_queue, self.connection)
 
-    def start_connection(self, callback_top, callback_date, callback_count, already_read):
+    def start_connection(self, callback_top, callback_date, callback_count, callback_all_data, already_read):
         self.callback_top = callback_top
         self.callback_date = callback_date
         self.callback_count = callback_count
+        self.callback_all_data = callback_all_data
 
         self.actual += already_read
 
@@ -32,7 +35,9 @@ class Protocol:
             self.actual += 1
 
             if self.actual == self.expected:
-                self.receiver.close()
+                #self.receiver.close()
+                self.callback_all_data()
+                self.actual = 0
         elif msg_type == TOP_CITIES:
             print("Received TOP CITIES")
             self.callback_top(msg)

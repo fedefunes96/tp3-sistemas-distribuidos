@@ -43,7 +43,7 @@ services:
       - RECV_QUEUE=eof_map
       - SEND_QUEUE=map_city
       - STATUS_QUEUE=health_status_queue
-      - TOTAL_WORKERS=${TOTAL_MAP_WORKERS}
+      - TOTAL_WORKERS=2
       - WORKER_ID=master_map_worker
       - WORKER_TYPE=master_map_worker
       - RECV_RESUME_QUEUE=master_map
@@ -154,7 +154,7 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=eof_date
       - SEND_QUEUE=date_redirector_worker
-      - TOTAL_WORKERS=${TOTAL_DATE_WORKERS}
+      - TOTAL_WORKERS=1
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=master_date_worker
       - WORKER_TYPE=master_date_worker
@@ -241,7 +241,7 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=eof_count
       - SEND_QUEUE=count_controller_worker
-      - TOTAL_WORKERS=${TOTAL_COUNT_WORKERS}
+      - TOTAL_WORKERS=1
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=master_count_worker
       - WORKER_TYPE=master_count_worker

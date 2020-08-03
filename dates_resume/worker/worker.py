@@ -7,6 +7,7 @@ from duplicate_filter.duplicate_filter import DuplicateFilter
 from secure_data.secure_data import SecureData
 
 REDUCER_NAME = "dates_resume"
+DATE_MSG_ID = "dates_resume_jan"
 
 class Worker:
     def __init__(self, recv_queue, send_queue, master_queue, status_queue, data_cluster_write, data_cluster_read):
@@ -47,5 +48,5 @@ class Worker:
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
 
     def process_results(self):
-        msg = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + json.dumps(self.results_per_date)
+        msg = self.connection_id + "@@" + DATE_MSG_ID + "@@" + json.dumps(self.results_per_date)
         self.protocol.send_data(msg)

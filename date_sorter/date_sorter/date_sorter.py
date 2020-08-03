@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 from duplicate_filter.duplicate_filter import DuplicateFilter
 
+DATE_MSG_ID = "date_sorter"
 
 class DateSorter:
     def __init__(self, recv_queue, send_queue, total_workers, status_queue, data_cluster_write, data_cluster_read):
@@ -30,5 +31,5 @@ class DateSorter:
         self.duplicate_filter.insert_message(connection_id, message_id, msg)
     
     def process_results(self):
-        data = self.connection_id + "@@" + str(uuid.uuid4()) + "@@" + json.dumps(self.date_data)
+        data = self.connection_id + "@@" + DATE_MSG_ID + "@@" + json.dumps(self.date_data)
         self.protocol.send_data(data)
