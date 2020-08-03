@@ -46,8 +46,11 @@ class Worker:
 
         places = json.loads(result)
 
+        #for place in places:
+        #    self.process_places(place[0], float(place[1]), float(place[2]))
+
         for place in places:
-            print(place)
+            print("{} {} {}".format(place, float(places[place][0]), float(places[place][1])))
             self.process_places(place, float(places[place][0]), float(places[place][1]))
 
     def start(self):

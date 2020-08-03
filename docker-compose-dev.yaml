@@ -47,7 +47,7 @@ services:
       - WORKER_ID=master_map_worker
       - WORKER_TYPE=master_map_worker
       - RECV_RESUME_QUEUE=master_map
-      - SEND_RESUME_QUEUE=cities_resume
+      - SEND_RESUME_QUEUE=cities_resume  
     networks:
       - test-network
 
