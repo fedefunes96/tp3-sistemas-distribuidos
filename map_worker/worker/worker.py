@@ -44,9 +44,11 @@ class Worker:
         print("Reading places from {}".format(conn_id))
         result = self.cluster_reader.read_file(conn_id, "places.txt")
 
-        for row in json.loads(result):
-            print(row)
-            self.process_places(row[0], float(row[1]), float(row[2]))
+        places = json.loads(result)
+
+        for place in places:
+            print(place)
+            self.process_places(place, float(places[place][0]), float(places[place][1]))
 
     def start(self):
         #Block until places has been saved
