@@ -28,8 +28,12 @@ class Worker:
             print("Duplicated message: " + message_id)
             return
         if connection_id != self.connection_id:
-            self.total_positivi = int(self.secure_data.read_file(connection_id, REDUCER_NAME_POSITIVES))
-            self.total_deceduti = int(self.secure_data.read_file(connection_id, REDUCER_NAME_DEATHS))
+            old_positive_data = self.secure_data.read_file(connection_id, REDUCER_NAME_POSITIVES)
+            if old_positive_data is not None and old_positive_data != "":
+                self.total_positivi = int(old_positive_data)
+            old_death_data = self.secure_data.read_file(connection_id, REDUCER_NAME_DEATHS)
+            if old_death_data is not None and old_death_data != "":
+                self.total_deceduti = int(old_death_data)
 
         self.connection_id = connection_id
 

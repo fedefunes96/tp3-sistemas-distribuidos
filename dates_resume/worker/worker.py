@@ -33,7 +33,9 @@ class Worker:
             print("Duplicated message: " + message_id)
             return
         if connection_id != self.connection_id:
-            self.results_per_date = json.loads(self.secure_data.read_file(connection_id, REDUCER_NAME))
+            old_data = self.secure_data.read_file(connection_id, REDUCER_NAME)
+            if old_data is not None and old_data != "":
+                self.results_per_date = json.loads(old_data)
 
         self.connection_id = connection_id
         if date not in self.results_per_date:

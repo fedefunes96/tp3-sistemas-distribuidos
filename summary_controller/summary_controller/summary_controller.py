@@ -6,9 +6,9 @@ from secure_data.secure_data import SecureData
 
 FOLDER_WRITE = 'summary/'
 DIRECTORY_NAME = "resume_data"
-CITIES_TOTAL_NAME = "cities_total_name"
-DATES_TOTAL_NAME = "dates_total_name"
-COUNT_TOTAL_NAME = "count_total_name"
+CITIES_TOTAL_NAME = "cities_total_name.txt"
+DATES_TOTAL_NAME = "dates_total_name.txt"
+COUNT_TOTAL_NAME = "count_total_name.txt"
 
 
 class SummaryController:
@@ -102,6 +102,9 @@ class SummaryController:
 
             file.write("\nPorcentuale Deceduti=")
             file.write(str(self.percentage) + "%")
+        self.secure_data.write_to_file(DIRECTORY_NAME, CITIES_TOTAL_NAME, "")
+        self.secure_data.write_to_file(DIRECTORY_NAME, COUNT_TOTAL_NAME, "")
+        self.secure_data.write_to_file(DIRECTORY_NAME, DATES_TOTAL_NAME, "")
 
     def read_cities_file(self):
         data = self.secure_data.read_file(DIRECTORY_NAME, CITIES_TOTAL_NAME)
