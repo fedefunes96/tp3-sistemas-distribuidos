@@ -48,6 +48,8 @@ class Protocol:
         self.receiver.start_receiving(self.data_read)
 
     def send_data(self, data):
+        #Unique message so that if this fails, the next one that raises will
+        #send the same id        
         data_to_send = self.connection_id + "@@" + PLACE_MSG_ID + "@@" + json.dumps(data)
 
         self.sender.send(NORMAL, data_to_send)
@@ -61,7 +63,9 @@ class Protocol:
             self.status_sender.send(FINISHED, FINISHED)
             return
 
-        [connection_id, message_id, place] = msg.split(",")
+        data_recv = msg.split(",")
+
+        [connection_id, message_id] = data_recv[:2]
 
         if self.state_saver.is_duplicated(connection_id, message_id):
             print("Duplicated message: {}".format(msg))
@@ -80,6 +84,7 @@ class Protocol:
             print("Ended processing")
             self.callback_eof()
         else:
+            [place] = data_recv[2:]
             self.callback(place)
 
         data_to_save = self.callback_save()
