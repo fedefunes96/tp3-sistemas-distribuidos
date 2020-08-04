@@ -17,13 +17,11 @@ class Protocol:
         self.receiver = SecureDirectReceiver(recv_queue, self.connection)
         self.status_sender = SecureDirectSender(status_queue, self.connection)
 
-    def start_connection(self, callback_top, callback_date, callback_count, callback_all_data, already_read):
+    def start_connection(self, callback_top, callback_date, callback_count, callback_all_data):
         self.callback_top = callback_top
         self.callback_date = callback_date
         self.callback_count = callback_count
         self.callback_all_data = callback_all_data
-
-        self.actual += already_read
 
         if self.actual < self.expected:
             self.receiver.start_receiving(self.data_read)
@@ -32,12 +30,7 @@ class Protocol:
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
-            self.actual += 1
-
-            if self.actual == self.expected:
-                #self.receiver.close()
-                self.callback_all_data()
-                self.actual = 0
+            self.add_already_read()
         elif msg_type == TOP_CITIES:
             print("Received TOP CITIES")
             self.callback_top(msg)
@@ -51,3 +44,13 @@ class Protocol:
             print("Received STOP")
             self.receiver.close()
             self.status_sender.send(FINISHED, FINISHED)
+
+    def add_already_read(self):
+        self.actual += 1
+        if self.actual == self.expected:
+            self.finish_processing()
+
+    def finish_processing(self):
+        self.callback_all_data()
+        self.actual = 0
+

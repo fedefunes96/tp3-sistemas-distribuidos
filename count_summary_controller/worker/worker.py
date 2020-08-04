@@ -4,8 +4,8 @@ from collections import Counter
 from duplicate_filter.duplicate_filter import DuplicateFilter
 from secure_data.secure_data import SecureData
 
-REDUCER_NAME_POSITIVES = "count_resume_positives"
-REDUCER_NAME_DEATHS = "count_resume_deaths"
+STATE_POSITIVES_FILE = "count_resume_positives.txt"
+STATE_DEATHS_FILE = "count_resume_deaths.txt"
 COUNT_MSG_ID = "count_resumer"
 STAGE = "count_resume"
 
@@ -27,10 +27,10 @@ class Worker:
             print("Duplicated message: " + message_id)
             return
         if connection_id != self.connection_id:
-            old_positive_data = self.secure_data.read_file(connection_id, REDUCER_NAME_POSITIVES)
+            old_positive_data = self.secure_data.read_file(connection_id + "/" + STAGE, STATE_POSITIVES_FILE)
             if old_positive_data is not None and old_positive_data != "":
                 self.total_positivi = int(old_positive_data)
-            old_death_data = self.secure_data.read_file(connection_id, REDUCER_NAME_DEATHS)
+            old_death_data = self.secure_data.read_file(connection_id + "/" + STAGE, STATE_DEATHS_FILE)
             if old_death_data is not None and old_death_data != "":
                 self.total_deceduti = int(old_death_data)
 
@@ -39,8 +39,8 @@ class Worker:
         self.total_positivi += int(positivi)
         self.total_deceduti += int(deceduti)
 
-        self.secure_data.write_to_file(connection_id, REDUCER_NAME_POSITIVES, str(self.total_positivi))
-        self.secure_data.write_to_file(connection_id, REDUCER_NAME_DEATHS, str(self.total_deceduti))
+        self.secure_data.write_to_file(connection_id + "/" + STAGE, STATE_POSITIVES_FILE, str(self.total_positivi))
+        self.secure_data.write_to_file(connection_id + "/" + STAGE, STATE_DEATHS_FILE, str(self.total_deceduti))
         self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def process_results(self):

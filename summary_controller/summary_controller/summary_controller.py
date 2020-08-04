@@ -17,26 +17,22 @@ class SummaryController:
         self.protocol = Protocol(recv_queue, status_queue)
         self.duplicate_filter = DuplicateFilter(data_cluster_write, data_cluster_read)
         self.secure_data = SecureData(data_cluster_write, data_cluster_read)
-        self.read_from_file = 0
         self.conn_id = None
 
     def start(self):
-        self.read_cities_file()
-        self.read_dates_file()
-        self.read_total_file()
         self.protocol.start_connection(
             self.top_cities_read,
             self.date_data_read,
             self.count_read,
-            self.write_summary,
-            self.read_from_file
+            self.write_summary
         )
 
     def top_cities_read(self, msg):
         [connection_id, message_id, top_cities_str] = msg.split("@@")
 
-        if self.conn_id == None:
+        if self.conn_id != connection_id:
             self.conn_id = connection_id
+            self.read_all_files()
 
         if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
@@ -51,8 +47,9 @@ class SummaryController:
     def date_data_read(self, msg):
         [connection_id, message_id, date_data_str] = msg.split("@@")
 
-        if self.conn_id == None:
+        if self.conn_id != connection_id:
             self.conn_id = connection_id
+            self.read_all_files()
 
         if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
@@ -66,8 +63,9 @@ class SummaryController:
     def count_read(self, msg):
         [connection_id, message_id, percentage] = msg.split("@@")
 
-        if self.conn_id == None:
+        if self.conn_id != connection_id:
             self.conn_id = connection_id
+            self.read_all_files()
 
         if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
@@ -103,24 +101,29 @@ class SummaryController:
 
             file.write("\nPorcentuale Deceduti=")
             file.write(str(self.percentage) + "%")
-        self.secure_data.write_to_file(DIRECTORY_NAME, CITIES_TOTAL_NAME, "")
-        self.secure_data.write_to_file(DIRECTORY_NAME, COUNT_TOTAL_NAME, "")
-        self.secure_data.write_to_file(DIRECTORY_NAME, DATES_TOTAL_NAME, "")
+        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, CITIES_TOTAL_NAME, "")
+        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, COUNT_TOTAL_NAME, "")
+        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, DATES_TOTAL_NAME, "")
+
+    def read_all_files(self):
+        self.read_cities_file()
+        self.read_dates_file()
+        self.read_total_file()
 
     def read_cities_file(self):
-        data = self.secure_data.read_file(DIRECTORY_NAME, CITIES_TOTAL_NAME)
+        data = self.secure_data.read_file(self.conn_id + "/" + DIRECTORY_NAME, CITIES_TOTAL_NAME)
         if data is not None and data != "":
             self.top_cities = json.loads(data)
-            self.read_from_file += 1
+            self.protocol.add_already_read()
 
     def read_dates_file(self):
-        data = self.secure_data.read_file(DIRECTORY_NAME, DATES_TOTAL_NAME)
+        data = self.secure_data.read_file(self.conn_id + "/" + DIRECTORY_NAME, DATES_TOTAL_NAME)
         if data is not None and data != "":
             self.date_data = json.loads(data)
-            self.read_from_file += 1
+            self.protocol.add_already_read()
 
     def read_total_file(self):
-        data = self.secure_data.read_file(DIRECTORY_NAME, COUNT_TOTAL_NAME)
+        data = self.secure_data.read_file(self.conn_id + "/" + DIRECTORY_NAME, COUNT_TOTAL_NAME)
         if data is not None and data != "":
             self.percentage = float(data)
-            self.read_from_file += 1
+            self.protocol.add_already_read()

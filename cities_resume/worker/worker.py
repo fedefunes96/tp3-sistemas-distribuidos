@@ -7,7 +7,7 @@ from duplicate_filter.duplicate_filter import DuplicateFilter
 
 from secure_data.secure_data import SecureData
 
-REDUCER_NAME = "cities_resume"
+STATE_FILE = "cities_resume.txt"
 STAGE = "cities_resume"
 PLACE_MSG_ID = "cities_resume_a_places"
 
@@ -34,7 +34,7 @@ class Worker:
             print("Duplicated message: " + message_id)
             return
         if connection_id != self.connection_id:
-            old_data = self.secure_data.read_file(connection_id, REDUCER_NAME)
+            old_data = self.secure_data.read_file(connection_id + "/" + STAGE, STATE_FILE)
             if old_data is not None and old_data != "":
                 self.positives_per_city = json.loads(old_data)
         self.connection_id = connection_id
@@ -45,7 +45,7 @@ class Worker:
         self.positives_per_city[place] += 1
         print("Positive of {}".format(place))
 
-        self.secure_data.write_to_file(connection_id, REDUCER_NAME, json.dumps(self.positives_per_city))
+        self.secure_data.write_to_file(connection_id + "/" + STAGE, STATE_FILE, json.dumps(self.positives_per_city))
         self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def process_results(self):
