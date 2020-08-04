@@ -12,13 +12,13 @@ from state_saver.state_saver import StateSaver
 
 STAGE = "cities_resume"
 PLACE_MSG_ID = "cities_resume_a_places"
+EOF_MSG_ID = "cities_resume_a_eof"
 
 class Protocol:
     def __init__(
         self,
         recv_queue,
         send_queue,
-        master_queue,
         status_queue,
         data_cluster_write,
         data_cluster_read
@@ -27,7 +27,6 @@ class Protocol:
 
         self.receiver = SecureDirectReceiver(recv_queue, self.connection)
         self.sender = SecureDirectSender(send_queue, self.connection)
-        self.master_sender = SecureDirectSender(master_queue, self.connection)
         self.state_saver = StateSaver(STAGE, data_cluster_write, data_cluster_read)
 
         self.connection_id = None
@@ -49,21 +48,21 @@ class Protocol:
 
     def send_data(self, data):
         #Unique message so that if this fails, the next one that raises will
-        #send the same id        
-        data_to_send = self.connection_id + "@@" + PLACE_MSG_ID + "@@" + json.dumps(data)
+        #send the same id
+        data_to_send = [self.connection_id, PLACE_MSG_ID, json.dumps(data)]
+        eof_to_send = [self.connection_id, EOF_MSG_ID]
 
-        self.sender.send(NORMAL, data_to_send)
-        self.sender.send(EOF, "")
+        self.sender.send(NORMAL, json.dumps(data_to_send))
+        self.sender.send(EOF, json.dumps(eof_to_send))
 
     def data_read(self, msg_type, msg):
         if msg_type == STOP:
             self.receiver.close()
             self.sender.send(STOP, STOP)
-            self.master_sender.send(STOP, STOP)
             self.status_sender.send(FINISHED, FINISHED)
             return
 
-        data_recv = msg.split(",")
+        data_recv = json.loads(msg)
 
         [connection_id, message_id] = data_recv[:2]
 

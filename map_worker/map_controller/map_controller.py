@@ -1,4 +1,5 @@
 import uuid
+import json
 
 from redirector.redirector import Redirector
 from state_saver.state_saver import StateSaver
@@ -29,8 +30,8 @@ class MapController(Redirector):
         print("Place determined: {}".format(place))
 
         #new_data = connection_id + "," + str(uuid.uuid4()) + "," + place
-        new_data = connection_id + "," + message_id + "," + place
-        self.redirect_data(new_data, self.send_queues[0])
+        new_data = [connection_id, message_id, place]
+        self.redirect_data(json.dumps(new_data), self.send_queues[0])
         #Dont need to save anything more than messages
         self.state_saver.save_state(connection_id, message_id, '')
         print("Data sent")

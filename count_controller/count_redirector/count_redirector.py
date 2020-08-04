@@ -1,5 +1,5 @@
 from redirector.redirector import Redirector
-
+import json
 from state_saver.state_saver import StateSaver
 
 STAGE = "count_worker"
@@ -57,7 +57,7 @@ class CountRedirector(Redirector):
         self.state_saver.save_state(connection_id, message_id, data_to_save)
 
     def eof_received(self, msg):
-        [connection_id, message_id, eof_msg] = msg.split(',')
+        [connection_id, message_id, eof_msg] = json.loads(msg)
 
         if self.state_saver.is_duplicated(connection_id, message_id):
             print("Duplicated message: {}".format(msg))
@@ -79,5 +79,6 @@ class CountRedirector(Redirector):
         self.state_saver.save_state(connection_id, message_id, data_to_save)        
 
     def send_data(self, positives, deceased):
-        msg = self.connection_id + "," + self.worker_id + "," + str(positives) + "," + str(deceased)
-        self.redirect_data(msg, self.send_queue)
+        msg = [self.connection_id, self.worker_id, positives, deceased]
+        
+        self.redirect_data(json.dumps(msg), self.send_queue)

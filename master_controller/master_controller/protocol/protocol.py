@@ -4,6 +4,7 @@ from communication.message_types import EOF, STOP, FINISHED
 from middleware.secure_connection.secure_direct_sender import SecureDirectSender
 from middleware.secure_connection.secure_direct_receiver import SecureDirectReceiver
 from middleware.secure_connection.secure_distributed_sender import SecureDistributedSender
+import json
 
 class Protocol:
     def __init__(self, recv_queue, send_queue, total_workers, status_queue):
@@ -30,8 +31,12 @@ class Protocol:
 
     def send_eof(self, msg):
         print("Sending EOF to workers: {}".format(msg))
+
+        [conn_id, msg_id, eof] = msg.split(',')
+        new_msg = [conn_id, msg_id, eof]
+
         for i in range(0, self.total_workers):
-            self.sender.send(EOF, msg)
+            self.sender.send(EOF, json.dumps(new_msg))
 
     def send_stop(self):
         for i in range(0, self.total_workers):

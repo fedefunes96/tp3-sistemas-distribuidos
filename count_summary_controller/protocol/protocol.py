@@ -12,6 +12,7 @@ from state_saver.state_saver import StateSaver
 
 STAGE = "count_resume"
 COUNT_MSG_ID = "count_resumer"
+EOF_MSG_ID = "count_resumer_eof"
 
 class Protocol:
     def __init__(
@@ -53,7 +54,7 @@ class Protocol:
             self.status_sender.send(FINISHED, FINISHED)
             return
 
-        data_recv = msg.split(",")
+        data_recv = json.loads(msg)
 
         [connection_id, message_id] = data_recv[:2]
 
@@ -82,7 +83,8 @@ class Protocol:
         self.state_saver.save_state(connection_id, message_id, data_to_save)
 
     def send_data(self, data):
-        data_to_send = self.connection_id + "@@" + COUNT_MSG_ID + "@@" + str(data)
+        data_to_send = [self.connection_id, COUNT_MSG_ID, data]
+        eof_to_send = [self.connection_id, EOF_MSG_ID]
 
-        self.sender.send(TOTAL_COUNT, data_to_send)
-        self.sender.send(EOF, '')
+        self.sender.send(TOTAL_COUNT, json.dumps(data_to_send))
+        self.sender.send(EOF, json.dumps(eof_to_send))

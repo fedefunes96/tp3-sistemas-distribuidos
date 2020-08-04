@@ -1,4 +1,5 @@
 import uuid
+import json
 
 from redirector.redirector import Redirector
 from state_saver.state_saver import StateSaver
@@ -20,9 +21,9 @@ class DateRedirector(Redirector):
             return
 
         #new_data = connection_id + "," + str(uuid.uuid4()) + "," + date + ',' + result
-        new_data = connection_id + "," + message_id + "," + date + ',' + result
+        new_data = [connection_id, message_id, date, result]
 
-        self.redirect_data(new_data, self.send_queues[0])
+        self.redirect_data(json.dumps(new_data), self.send_queues[0])
 
         #Dont need to save anything more than messages
         self.state_saver.save_state(connection_id, message_id, '')

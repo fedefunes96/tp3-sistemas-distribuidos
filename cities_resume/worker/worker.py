@@ -6,11 +6,10 @@ from protocol.protocol import Protocol
 from secure_data.secure_data import SecureData
 
 class Worker:
-    def __init__(self, recv_queue, send_queue, master_queue, status_queue, data_cluster_write, data_cluster_read):
+    def __init__(self, recv_queue, send_queue, status_queue, data_cluster_write, data_cluster_read):
         self.protocol = Protocol(
             recv_queue,
             send_queue,
-            master_queue,
             status_queue,
             data_cluster_write,
             data_cluster_read
