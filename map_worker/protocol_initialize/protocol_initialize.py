@@ -13,28 +13,11 @@ class ProtocolInitialize:
         self.callback = callback
 
         self.sender = self.connection.create_rpc_sender(send_queue)
-
-        #self.receiver = self.connection.create_topic_receiver(recv_queue)
     
     def start_connection(self):
         print("Waiting for places")
-        #self.receiver.start_receiving(self.data_read)
-        #self.connection.close()
 
         #Wait for answer
         conn_id = self.sender.send(REQUEST_PLACES)
         print("Places are available")
         return conn_id
-
-    '''def data_read(self, msg_type, msg):
-        if msg_type == STOP:
-            self.receiver.close()
-        elif msg_type == EOF:
-            self.receiver.close()
-        else:
-            print("Got message: " + msg)
-            self.callback(msg)
-
-    def close(self):
-        self.receiver.close()
-        self.connection.close()'''

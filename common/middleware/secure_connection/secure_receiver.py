@@ -11,7 +11,8 @@ class SecureReceiver:
                 self.receiver = self.create_channel()
                 self.receiver.start_receiving(data_read)
                 receiving = False
-            except:
+            except Exception as e:
+                print(e)
                 self.connection.force_connect()
 
     def create_channel(self):

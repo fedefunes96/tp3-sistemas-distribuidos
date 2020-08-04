@@ -5,6 +5,7 @@ from duplicate_filter.duplicate_filter import DuplicateFilter
 from secure_data.secure_data import SecureData
 
 FOLDER_WRITE = 'summary/'
+STAGE = "summary"
 DIRECTORY_NAME = "resume_data"
 CITIES_TOTAL_NAME = "cities_total_name.txt"
 DATES_TOTAL_NAME = "dates_total_name.txt"
@@ -37,7 +38,7 @@ class SummaryController:
         if self.conn_id == None:
             self.conn_id = connection_id
 
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
 
@@ -45,7 +46,7 @@ class SummaryController:
         self.top_cities = json.loads(top_cities_str)
 
         self.secure_data.write_to_file(DIRECTORY_NAME, CITIES_TOTAL_NAME, json.dumps(self.top_cities))
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def date_data_read(self, msg):
         [connection_id, message_id, date_data_str] = msg.split("@@")
@@ -53,14 +54,14 @@ class SummaryController:
         if self.conn_id == None:
             self.conn_id = connection_id
 
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
 
         self.date_data = json.loads(date_data_str)
 
         self.secure_data.write_to_file(DIRECTORY_NAME, DATES_TOTAL_NAME, json.dumps(self.date_data))
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def count_read(self, msg):
         [connection_id, message_id, percentage] = msg.split("@@")
@@ -68,14 +69,14 @@ class SummaryController:
         if self.conn_id == None:
             self.conn_id = connection_id
 
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
 
         self.percentage = float(percentage) * 100
 
         self.secure_data.write_to_file(DIRECTORY_NAME, COUNT_TOTAL_NAME, str(self.percentage))
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def write_summary(self):
         print("Starting to write file {}".format(FOLDER_WRITE + 'summary_' + self.conn_id + '.txt'))

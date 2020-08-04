@@ -8,6 +8,7 @@ from secure_data.secure_data import SecureData
 
 REDUCER_NAME = "dates_resume"
 DATE_MSG_ID = "dates_resume_jan"
+STAGE = "date_resume"
 
 class Worker:
     def __init__(self, recv_queue, send_queue, master_queue, status_queue, data_cluster_write, data_cluster_read):
@@ -29,7 +30,7 @@ class Worker:
 
     def data_read(self, msg):
         [connection_id, message_id, date, result] = msg.split(',')
-        if self.duplicate_filter.message_exists(connection_id, message_id):
+        if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
             print("Duplicated message: " + message_id)
             return
         if connection_id != self.connection_id:
@@ -47,7 +48,7 @@ class Worker:
             self.results_per_date[date][1] += 1
 
         self.secure_data.write_to_file(connection_id, REDUCER_NAME, json.dumps(self.results_per_date))
-        self.duplicate_filter.insert_message(connection_id, message_id, msg)
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def process_results(self):
         msg = self.connection_id + "@@" + DATE_MSG_ID + "@@" + json.dumps(self.results_per_date)

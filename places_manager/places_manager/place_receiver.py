@@ -10,7 +10,8 @@ class PlaceReceiver:
 
         self.accept_request_queue = accept_request_queue
 
-        self.places = []
+        self.places = {}
+        #self.places = []
 
         self.conn_id = None
 
@@ -21,8 +22,10 @@ class PlaceReceiver:
         #Receive a place, save it in storage
         if self.conn_id == None:
             self.conn_id = conn_id
-            
-        self.places.append((place, latitude, longitude))
+        
+        self.places[place] = (latitude, longitude)
+        #self.places.append((place, latitude, longitude))
+        
         self.cluster_reader.write_to_file(conn_id, "places.txt", json.dumps(self.places))
         print("Write finished")
     
