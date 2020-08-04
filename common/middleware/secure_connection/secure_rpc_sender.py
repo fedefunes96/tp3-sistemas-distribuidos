@@ -1,15 +1,24 @@
-from middleware.secure_connection.secure_sender import SecureSender
+#from middleware.secure_connection.secure_sender import SecureSender
+from middleware.exceptions.rpc_timeout import RPCTimeout
 
-class SecureRpcSender(SecureSender):
+class SecureRpcSender:#(SecureSender):
+    def __init__(self, queue, connection):
+        self.queue = queue
+        self.connection = connection
+        self.sender = self.create_channel()
+
     def create_channel(self):
         return self.connection.create_rpc_sender(self.queue)
 
-    def send(self, msg, timeout=None):
+    def send(self, msg, timeout=10):
         while True:
             try:
-                self.sender = self.create_channel()
                 return self.sender.send(msg, timeout)
+            except RPCTimeout as e:
+                print("Rpc Timeout, try again")
+                continue
             except Exception as e:
                 print(e)
                 print("RPC Send raised exception")
                 self.connection.force_connect()
+                self.sender = self.create_channel()
