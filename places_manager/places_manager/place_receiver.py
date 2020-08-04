@@ -28,7 +28,6 @@ class PlaceReceiver:
         
         self.cluster_reader.write_to_file(conn_id, "places.txt", json.dumps(self.places))
         print("Write finished")
-        #pass
     
     def process_results(self):
         #Let the requester know that it can answer messages from map workers

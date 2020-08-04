@@ -9,9 +9,7 @@ class DuplicateFilter:
         folder = connection_id + "/" + stage
         response = self.secure_data.read_file(folder, message_id)
         return response is not None and response != ""
-        #return False
 
     def insert_message(self, connection_id, stage, message_id, content):
         folder = connection_id + "/" + stage
         self.secure_data.write_to_file(folder, message_id, content)
-        #pass
