@@ -25,7 +25,7 @@ class CountRedirector(Redirector):
         self.callback(result)
         self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
-    def eof_received(self):
+    def eof_received(self, msg):
         self.callback_eof()
 
     def send_data(self, positives, deceased):

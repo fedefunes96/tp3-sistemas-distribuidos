@@ -14,7 +14,7 @@ class Redirector:
     def data_received(self, data):
         raise NotImplementedError
 
-    def eof_received(self):
+    def eof_received(self, msg):
         pass
 
     def redirect_data(self, data, queue):

@@ -26,11 +26,12 @@ class Protocol:
             self.status_sender.send(FINISHED, FINISHED)
             self.close()
         elif msg_type == EOF:
-            self.send_eof()
+            self.send_eof(msg)
 
-    def send_eof(self):
+    def send_eof(self, msg):
+        print("Sending EOF to workers: {}".format(msg))
         for i in range(0, self.total_workers):
-            self.sender.send(EOF, '')
+            self.sender.send(EOF, msg)
 
     def send_stop(self):
         for i in range(0, self.total_workers):

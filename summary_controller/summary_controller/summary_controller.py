@@ -41,7 +41,7 @@ class SummaryController:
         print("Received: {}".format(top_cities_str))
         self.top_cities = json.loads(top_cities_str)
 
-        self.secure_data.write_to_file(DIRECTORY_NAME, CITIES_TOTAL_NAME, json.dumps(self.top_cities))
+        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, CITIES_TOTAL_NAME, json.dumps(self.top_cities))
         self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def date_data_read(self, msg):
@@ -57,7 +57,7 @@ class SummaryController:
 
         self.date_data = json.loads(date_data_str)
 
-        self.secure_data.write_to_file(DIRECTORY_NAME, DATES_TOTAL_NAME, json.dumps(self.date_data))
+        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, DATES_TOTAL_NAME, json.dumps(self.date_data))
         self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def count_read(self, msg):
@@ -73,7 +73,7 @@ class SummaryController:
 
         self.percentage = float(percentage) * 100
 
-        self.secure_data.write_to_file(DIRECTORY_NAME, COUNT_TOTAL_NAME, str(self.percentage))
+        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, COUNT_TOTAL_NAME, str(self.percentage))
         self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
 
     def write_summary(self):
@@ -101,9 +101,9 @@ class SummaryController:
 
             file.write("\nPorcentuale Deceduti=")
             file.write(str(self.percentage) + "%")
-        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, CITIES_TOTAL_NAME, "")
-        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, COUNT_TOTAL_NAME, "")
-        self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, DATES_TOTAL_NAME, "")
+        #self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, CITIES_TOTAL_NAME, "")
+        #self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, COUNT_TOTAL_NAME, "")
+        #self.secure_data.write_to_file(self.conn_id + "/" + DIRECTORY_NAME, DATES_TOTAL_NAME, "")
 
     def read_all_files(self):
         self.read_cities_file()

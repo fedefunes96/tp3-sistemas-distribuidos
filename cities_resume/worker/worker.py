@@ -17,17 +17,44 @@ class Worker:
             recv_queue,
             send_queue,
             master_queue,
-            status_queue
+            status_queue,
+            data_cluster_write,
+            data_cluster_read
         )
         self.positives_per_city = {}
-        self.duplicate_filter = DuplicateFilter(data_cluster_write, data_cluster_read)
-        self.secure_data = SecureData(data_cluster_write, data_cluster_read)
-        self.connection_id = None
+        #self.duplicate_filter = DuplicateFilter(data_cluster_write, data_cluster_read)
+        #self.secure_data = SecureData(data_cluster_write, data_cluster_read)
+        #self.connection_id = None
 
     def start(self):
-        self.protocol.start_connection(self.data_read, self.process_results)
+        self.protocol.start_connection(
+            self.data_read,
+            self.process_results,
+            self.load_data,
+            self.reset_data,
+            self.save_data
+        )
 
-    def data_read(self, msg):
+    def data_read(self, place):
+        if place not in self.positives_per_city:
+            self.positives_per_city[place] = 0
+            
+        self.positives_per_city[place] += 1
+        print("Positive of {}".format(place))
+
+        #self.secure_data.write_to_file(connection_id + "/" + STAGE, STATE_FILE, json.dumps(self.positives_per_city))
+        #self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
+
+    def load_data(self, positives_per_city):
+        self.positives_per_city = positives_per_city
+
+    def reset_data(self):
+        self.positives_per_city = {}
+
+    def save_data(self):
+        return self.positives_per_city
+
+    '''def data_read(self, msg):
         [connection_id, message_id, place] = msg.split(",")
 
         if self.duplicate_filter.message_exists(connection_id, STAGE, message_id):
@@ -46,10 +73,11 @@ class Worker:
         print("Positive of {}".format(place))
 
         self.secure_data.write_to_file(connection_id + "/" + STAGE, STATE_FILE, json.dumps(self.positives_per_city))
-        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")
+        self.duplicate_filter.insert_message(connection_id, STAGE, message_id, ".")'''
 
     def process_results(self):
         #Unique message so that if this fails, the next one that raises will
         #send the same id
-        data = self.connection_id + "@@" + PLACE_MSG_ID + "@@" + json.dumps(self.positives_per_city)
-        self.protocol.send_data(data)
+        #data = self.connection_id + "@@" + PLACE_MSG_ID + "@@" + json.dumps(self.positives_per_city)
+
+        self.protocol.send_data(self.positives_per_city)

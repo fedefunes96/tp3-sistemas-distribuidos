@@ -46,12 +46,16 @@ impl Protocol {
         self.send_message_to_queue(message, self.processor_queue.as_str());
     }
 
-    pub fn send_places_end_of_file(&self) {
-        self.send_message_to_queue(String::from("EOF"), self.processor_places_queue.as_str());
+    pub fn send_places_end_of_file(&self, connection_id: String) {
+        let message_id = Uuid::new_v4();
+        let message = format!("{},{},{}", connection_id, message_id, String::from("EOF"));
+        self.send_message_to_queue(message, self.processor_places_queue.as_str());
     }
 
-    pub fn send_cases_end_of_file(&self) {
-        self.send_message_to_queue(String::from("EOF"), self.processor_queue.as_str());
+    pub fn send_cases_end_of_file(&self, connection_id: String) {
+        let message_id = Uuid::new_v4();
+        let message = format!("{},{},{}", connection_id, message_id, String::from("EOF"));        
+        self.send_message_to_queue(message, self.processor_queue.as_str());
     }
 
     fn send_message_to_queue(&self, message: String, queue: &str) {

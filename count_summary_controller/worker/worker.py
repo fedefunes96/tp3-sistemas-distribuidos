@@ -16,7 +16,7 @@ class Worker:
         self.total_deceduti = 0
         self.duplicate_filter = DuplicateFilter(data_cluster_write, data_cluster_read)
         self.secure_data = SecureData(data_cluster_write, data_cluster_read)
-        self.connection_id = ""
+        self.connection_id = None
 
     def start(self):
         self.protocol.start_connection(self.data_read, self.process_results)
