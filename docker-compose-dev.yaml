@@ -9,6 +9,7 @@ services:
       - test-network
 
   processor:
+    container_name: processor_worker
     image: processor:latest
     entrypoint: cargo run
     restart: on-failure
@@ -51,7 +52,8 @@ services:
     networks:
       - test-network
 
-  map_worker:  
+  map_worker:
+    container_name: map_worker_1
     image: map_worker:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -163,7 +165,8 @@ services:
     networks:
       - test-network
   
-  date_redirector_worker:  
+  date_redirector_worker:
+    container_name: date_worker_1
     image: date_redirector_worker:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -250,7 +253,8 @@ services:
     networks:
       - test-network
   
-  count_controller_worker:  
+  count_controller_worker:
+    container_name: count_worker_1
     image: count_controller_worker:latest
     entrypoint: python3 /main.py
     restart: on-failure

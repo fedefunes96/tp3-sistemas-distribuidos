@@ -5,6 +5,7 @@ import time
 
 from middleware.connection import Connection
 from communication.message_types import NORMAL, EOF, STOP, READY, REQUEST_PLACES
+from middleware.secure_connection.secure_rpc_sender import SecureRpcSender
 
 class ProtocolInitialize:
     def __init__(self, send_queue, callback):
@@ -12,7 +13,8 @@ class ProtocolInitialize:
 
         self.callback = callback
 
-        self.sender = self.connection.create_rpc_sender(send_queue)
+        #self.sender = self.connection.create_rpc_sender(send_queue)
+        self.sender = SecureRpcSender(send_queue, self.connection)
     
     def start_connection(self):
         print("Waiting for places")
