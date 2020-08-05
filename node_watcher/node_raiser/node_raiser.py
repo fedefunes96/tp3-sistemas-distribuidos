@@ -3,8 +3,9 @@ import os
 import sys
 
 class NodeRaiser:
-    def __init__(self, dead_queue):
+    def __init__(self, dead_queue, raise_queue):
         self.dead_queue = dead_queue
+        self.raise_queue = raise_queue
 
     def start(self):
         while True:
@@ -36,3 +37,6 @@ class NodeRaiser:
         )
 
         print('Command executed. Result={}. Output={}. Error={}'.format(result.returncode, result.stdout, result.stderr))
+
+        #Send new node raised
+        self.raise_queue.put([worker_id, worker_type])
