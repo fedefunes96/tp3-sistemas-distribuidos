@@ -12,15 +12,13 @@ pub struct Protocol {
     eof_date_queue: String,
     eof_count_queue: String,
     topic_places: String,
-    receiver_queue: String,
-    receiver_places_queue: String
+    receiver_queue: String
 }
 
 impl Protocol {
 
     pub fn new(host: String,
                receiver_queue: String,
-               receiver_places_queue: String,
                map_queue: String,
                date_queue: String,
                count_queue: String,
@@ -40,34 +38,28 @@ impl Protocol {
             eof_count_queue,
             topic_places,
             receiver_queue,
-            receiver_places_queue,
             ..Default::default()
         }
 
     }
 
     pub fn connect(& mut self) {
-        match Connection::insecure_open(self.host.as_str()) {
-            Ok(conn) => {
-                let mut connection = conn;
-                self.channel.replace(connection.open_channel(None).unwrap());
-                self.connection.replace(connection);
-            },
-            Err(_) => self.connect()
+        loop {
+            match Connection::insecure_open(self.host.as_str()) {
+                Ok(conn) => {
+                    let mut connection = conn;
+                    self.channel.replace(connection.open_channel(None).unwrap());
+                    self.connection.replace(connection);
+                    break;
+                },
+                Err(_) => {}
+            }
         }
     }
 
-    pub fn process_places(& mut self, sender: Sender<String>) {
-        self.read_from_queue(self.receiver_places_queue.clone(), sender)
-    }
-
-    pub fn process_cases(& mut self, sender: Sender<String>) {
+    pub fn process_cases(& mut self, sender: Sender<(String, String)>) {
         self.read_from_queue(self.receiver_queue.clone(), sender)
     }
-
-    /*pub fn send_no_more_places(&self) {
-        self.send_places_message(String::from("EOF"), String::from("EOF"));
-    }*/
 
     pub fn send_stop_places(& mut self) {
         self.send_places_message(String::from("STOP"), String::from("STOP"));
@@ -109,7 +101,7 @@ impl Protocol {
         self.channel.replace(channel);
     }
 
-    fn read_from_queue(&self, queue: String, sender: Sender<String>) {
+    fn read_from_queue(&self, queue: String, sender: Sender<(String, String)>) {
         let options = QueueDeclareOptions {
             durable: true,
             ..QueueDeclareOptions::default()
@@ -120,7 +112,8 @@ impl Protocol {
             match message {
                 ConsumerMessage::Delivery(delivery) => {
                     let body = String::from_utf8_lossy(&delivery.body);
-                    sender.send(body.to_string()).unwrap();
+                    let type_ = delivery.properties.type_().as_ref().unwrap();
+                    sender.send((body.to_string(), type_.to_string())).unwrap();
 
                     let msg: Vec<&str> = body.split(',').collect();
 
@@ -157,8 +150,7 @@ impl Default for Protocol {
             eof_count_queue: String::from(""),
             host: String::from(""),
             topic_places: String::from(""),
-            receiver_queue: String::from(""),
-            receiver_places_queue: String::from("")
+            receiver_queue: String::from("")
         }
     }
 }

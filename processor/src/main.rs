@@ -12,7 +12,6 @@ fn main() {
 
     let host = env::var("RABBITMQ_ADDR").unwrap();
     let reader_queue = env::var("READER_QUEUE").unwrap();
-    let reader_places_queue = env::var("READER_PLACES_QUEUE").unwrap();
     let map_queue = env::var("QUEUE_MAP").unwrap();
     let date_queue = env::var("QUEUE_DATE").unwrap();
     let count_queue = env::var("QUEUE_COUNT").unwrap();
@@ -24,7 +23,6 @@ fn main() {
     let mut processor = processor::Processor::new(
         host,
         reader_queue,
-        reader_places_queue,
         map_queue,
         date_queue,
         count_queue,
@@ -42,8 +40,6 @@ fn main() {
             break;
         }
         info!("Starting to process places");
-        processor.process_places(Arc::clone(&should_stop));
-        info!("Finished processing places");
         processor.process_cases(Arc::clone(&should_stop));
         info!("Finished processing cases");
         if should_stop.load(Ordering::Relaxed) {
