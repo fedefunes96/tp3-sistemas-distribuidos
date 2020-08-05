@@ -36,18 +36,6 @@ impl Processor {
         self.protocol.connect();
     }
 
-    /*pub fn process_places(&mut self, should_stop: Arc<AtomicBool>) {
-        let (sender, receiver) = channel();
-        self.protocol.process_places(sender);
-        for message in receiver.iter() {
-            if !self.process_place(message.clone()) {
-                should_stop.store(true, Ordering::Relaxed);
-                break;
-            }
-        }
-        info!("Finished processing regions");
-    }*/
-
     pub fn process_cases(&mut self, should_stop: Arc<AtomicBool>) {
         let (sender, receiver) = channel();
         self.protocol.process_cases(sender);

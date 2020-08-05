@@ -101,34 +101,41 @@ impl Protocol {
         self.channel.replace(channel);
     }
 
-    fn read_from_queue(&self, queue: String, sender: Sender<(String, String)>) {
+    fn read_from_queue(& mut self, queue: String, sender: Sender<(String, String)>) {
         let options = QueueDeclareOptions {
             durable: true,
             ..QueueDeclareOptions::default()
         };
-        let queue = self.channel.as_ref().unwrap().queue_declare(queue.as_str(), options).unwrap();
-        let consumer = queue.consume(ConsumerOptions::default()).unwrap();
-        for (_, message) in consumer.receiver().iter().enumerate() {
-            match message {
-                ConsumerMessage::Delivery(delivery) => {
-                    let body = String::from_utf8_lossy(&delivery.body);
-                    let type_ = delivery.properties.type_().as_ref().unwrap();
-                    sender.send((body.to_string(), type_.to_string())).unwrap();
+        let channel_taken = self.channel.take();
+        let channel = channel_taken.unwrap();
+        let queue = channel.queue_declare(queue.as_str(), options).unwrap();
+        match queue.consume(ConsumerOptions::default()) {
+            Ok(consumer) => {
+                for (_, message) in consumer.receiver().iter().enumerate() {
+                    match message {
+                        ConsumerMessage::Delivery(delivery) => {
+                            let body = String::from_utf8_lossy(&delivery.body);
+                            let type_ = delivery.properties.type_().as_ref().unwrap();
+                            sender.send((body.to_string(), type_.to_string())).unwrap();
 
-                    let msg: Vec<&str> = body.split(',').collect();
+                            let msg: Vec<&str> = body.split(',').collect();
 
-                    if body == "STOP" || msg[2] == "EOF" {
-                        consumer.ack(delivery).unwrap();
-                        break;
+                            if body == "STOP" || msg[2] == "EOF" {
+                                consumer.ack(delivery).unwrap();
+                                break;
+                            }
+                            consumer.ack(delivery).unwrap();
+                        }
+                        _ => {
+                            break;
+                        }
                     }
-                    consumer.ack(delivery).unwrap();
                 }
-                other => {
-                    info!("Consumer ended: {:?}", other);
-                    break;
-                }
-            }
+            },
+            Err(_) => self.connect()
         }
+
+        self.channel.replace(channel);
     }
 
     pub fn close(&mut self) {
