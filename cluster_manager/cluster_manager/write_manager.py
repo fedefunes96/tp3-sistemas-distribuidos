@@ -25,7 +25,8 @@ class WriteManager:
         print("Requested write")
 
         try:
-            os.mkdir(self.folder + "/" + folder_to_write)
+            #os.mkdir(self.folder + "/" + folder_to_write)
+            os.makedirs(self.folder + "/" + folder_to_write)
             print("Directory created (Didnt exist)")
         except OSError as error:
             pass

@@ -18,6 +18,7 @@ docker-image:
 	docker build -f ./count_summary_controller/Dockerfile -t "count_summary_controller:latest" .
 	docker build -f ./processor/Dockerfile -t "processor:latest" .
 	docker build -f ./places_manager/Dockerfile -t "places_manager:latest" .
+	docker build -f ./coordinator_manager/Dockerfile -t "coordinator_manager:latest" .
 .PHONY: docker-image
 
 client-image:

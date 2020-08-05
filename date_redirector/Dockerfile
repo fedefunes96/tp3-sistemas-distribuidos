@@ -8,5 +8,6 @@ COPY common/communication /communication
 COPY common/status_checker /status_checker
 COPY common/secure_data /secure_data
 COPY common/state_saver /state_saver
+COPY common/coordinator /coordinator
 
 ENTRYPOINT ["/bin/sh"]

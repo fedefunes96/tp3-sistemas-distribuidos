@@ -2,6 +2,7 @@ class SecureReceiver:
     def __init__(self, queue, connection):
         self.queue = queue
         self.connection = connection
+        self.receiver = None
 
     def start_receiving(self, data_read):
         receiving = True

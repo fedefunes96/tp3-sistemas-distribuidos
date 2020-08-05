@@ -28,14 +28,21 @@ def resume_master_process():
         ["RECV_RESUME_QUEUE",
         "SEND_RESUME_QUEUE",
         "TOTAL_WORKERS",
-        "STATUS_QUEUE"]
+        "STATUS_QUEUE",
+        "WORKER_ID",
+        "DATA_CLUSTER_WRITE",
+        "DATA_CLUSTER_READ"
+        ]
     )
 
     master_controller = ResumeMasterController(
         config_params["RECV_RESUME_QUEUE"],
         config_params["SEND_RESUME_QUEUE"],
         int(config_params["TOTAL_WORKERS"]),
-        config_params["STATUS_QUEUE"]
+        config_params["STATUS_QUEUE"],
+        config_params["WORKER_ID"],
+        config_params["DATA_CLUSTER_WRITE"],
+        config_params["DATA_CLUSTER_READ"]
     )
 
     master_controller.start()    

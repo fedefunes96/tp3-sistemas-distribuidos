@@ -4,16 +4,21 @@ import json
 from redirector.redirector import Redirector
 from state_saver.state_saver import StateSaver
 
-STAGE = "map_worker"
-
 class MapController(Redirector):
-    def __init__(self, recv_queue, send_queues, master_send_queue, apply_func, status_queue, data_cluster_write,
-                 data_cluster_read):
+    def __init__(self, recv_queue, send_queues, master_send_queue, apply_func, status_queue, global_saver, single_saver, my_id):
         self.apply_func = apply_func
         self.send_queues = send_queues
-        self.state_saver = StateSaver(STAGE, data_cluster_write, data_cluster_read)
+        self.my_id = my_id
+        self.state_saver = global_saver
 
-        Redirector.__init__(self, recv_queue, send_queues, master_send_queue, status_queue)
+        Redirector.__init__(self,
+            recv_queue,
+            send_queues,
+            master_send_queue,
+            status_queue,
+            single_saver,
+            my_id
+        )
 
     def data_received(self, data):
         [connection_id, message_id, date, latitude, longitude, result] = data.split(",")

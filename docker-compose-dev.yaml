@@ -49,6 +49,8 @@ services:
       - WORKER_TYPE=master_map_worker
       - RECV_RESUME_QUEUE=master_map
       - SEND_RESUME_QUEUE=cities_resume  
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node      
     networks:
       - test-network
 
@@ -160,7 +162,9 @@ services:
       - WORKER_ID=master_date_worker
       - WORKER_TYPE=master_date_worker
       - RECV_RESUME_QUEUE=master_date
-      - SEND_RESUME_QUEUE=dates_resume      
+      - SEND_RESUME_QUEUE=dates_resume
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
   
@@ -247,7 +251,9 @@ services:
       - WORKER_ID=master_count_worker
       - WORKER_TYPE=master_count_worker
       - RECV_RESUME_QUEUE=master_count
-      - SEND_RESUME_QUEUE=count_summary      
+      - SEND_RESUME_QUEUE=count_summary  
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node
     networks:
       - test-network
   
@@ -313,8 +319,32 @@ services:
       - DATA_CLUSTER_WRITE=write_data_node
       - DATA_CLUSTER_READ=read_data_node      
     networks:
+      - test-network
+
+  coordinator_manager:
+    container_name: coordinator_manager
+    image: coordinator_manager:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PYTHONUNBUFFERED=1
+      - STATUS_QUEUE=health_status_queue
+      - RECV_QUEUE=coordinator_queue
+      - WORKER_ID=coordinator_manager
+      - WORKER_TYPE=coordinator_manager
+      - DATA_CLUSTER_WRITE=write_data_node
+      - DATA_CLUSTER_READ=read_data_node 
+      - TOTAL_DATE_WORKERS=1
+      - TOTAL_COUNT_WORKERS=1
+      - TOTAL_MAP_WORKERS=1
+      - TOTAL_SINGLE_MAP_WORKERS=2
+    networks:
       - test-network    
-   
+
 networks:
   test-network:
       name: ${COMPOSE_PROJECT_NAME}-network
