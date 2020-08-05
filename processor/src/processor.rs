@@ -62,7 +62,7 @@ impl Processor {
         info!("Finished processing cases");
     }
 
-    fn process_place(&self, body: String) -> bool {
+    fn process_place(& mut self, body: String) -> bool {
         if body == "STOP" {
             self.protocol.send_stop_places();
             return false;
@@ -75,7 +75,7 @@ impl Processor {
         return true;
     }
 
-    fn process_case(&self, body: String) -> bool {
+    fn process_case(& mut self, body: String) -> bool {
         if body == "STOP" {
             self.protocol.send_stop_cases();
             return false;

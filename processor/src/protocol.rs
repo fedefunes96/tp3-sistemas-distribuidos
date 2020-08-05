@@ -1,5 +1,5 @@
 use std::sync::mpsc::Sender;
-use amiquip::{Connection, Channel, Queue, QueueDeclareOptions, ConsumerMessage, ConsumerOptions, Exchange, Publish, /*ExchangeType, ExchangeDeclareOptions,*/ AmqpProperties};
+use amiquip::{Connection, Channel, QueueDeclareOptions, ConsumerMessage, ConsumerOptions, Exchange, Publish, AmqpProperties};
 
 pub struct Protocol {
     connection: Option<Connection>,
@@ -47,70 +47,74 @@ impl Protocol {
     }
 
     pub fn connect(& mut self) {
-        let mut connection = Connection::insecure_open(self.host.as_str()).unwrap();
-
-        self.channel = Some(connection.open_channel(None).unwrap());
-        self.connection = Some(connection);
+        match Connection::insecure_open(self.host.as_str()) {
+            Ok(conn) => {
+                let mut connection = conn;
+                self.channel.replace(connection.open_channel(None).unwrap());
+                self.connection.replace(connection);
+            },
+            Err(_) => self.connect()
+        }
     }
 
-    pub fn process_places(&self, sender: Sender<String>) {
-        let options = QueueDeclareOptions {
-            durable: true,
-            ..QueueDeclareOptions::default()
-        };
-        let queue = self.channel.as_ref().unwrap().queue_declare(self.receiver_places_queue.as_str(), options).unwrap();
-        self.read_from_queue(&queue, sender)
+    pub fn process_places(& mut self, sender: Sender<String>) {
+        self.read_from_queue(self.receiver_places_queue.clone(), sender)
     }
 
-    pub fn process_cases(&self, sender: Sender<String>) {
-        let options = QueueDeclareOptions {
-            durable: true,
-            ..QueueDeclareOptions::default()
-        };
-        let queue = self.channel.as_ref().unwrap().queue_declare(self.receiver_queue.as_str(), options).unwrap();
-        self.read_from_queue(&queue, sender)
+    pub fn process_cases(& mut self, sender: Sender<String>) {
+        self.read_from_queue(self.receiver_queue.clone(), sender)
     }
 
-    pub fn send_no_more_places(&self) {
+    pub fn send_no_more_places(& mut self) {
         self.send_places_message(String::from("EOF"), String::from("EOF"));
     }
 
-    pub fn send_stop_places(&self) {
+    pub fn send_stop_places(& mut self) {
         self.send_places_message(String::from("STOP"), String::from("STOP"));
     }
 
-    pub fn send_places_message(&self, message: String, type_: String) {
-        //let exchange = self.channel.as_ref().unwrap().exchange_declare(ExchangeType::Fanout, self.topic_places.as_str(), ExchangeDeclareOptions::default()).unwrap();
-        //let properties = AmqpProperties::default().with_type_(type_);
-        //exchange.publish(Publish::with_properties(message.as_bytes(), "", properties)).unwrap();
+    pub fn send_places_message(& mut self, message: String, type_: String) {
         self.send_message_to_queue(message.clone(), self.topic_places.clone(), type_.clone());
     }
 
-    pub fn send_case_message(&self, message: String, type_: String) {
+    pub fn send_case_message(& mut self, message: String, type_: String) {
         self.send_message_to_queue(message.clone(), self.count_queue.clone(), type_.clone());
         self.send_message_to_queue(message.clone(), self.map_queue.clone(), type_.clone());
         self.send_message_to_queue(message.clone(), self.date_queue.clone(), type_.clone());
     }
 
-    pub fn send_no_more_cases(&self) {
+    pub fn send_no_more_cases(& mut self) {
         self.send_message_to_queue(String::from("EOF"), self.eof_map_queue.clone(), String::from("EOF"));
         self.send_message_to_queue(String::from("EOF"), self.eof_count_queue.clone(), String::from("EOF"));
         self.send_message_to_queue(String::from("EOF"), self.eof_date_queue.clone(), String::from("EOF"));
     }
 
-    pub fn send_stop_cases(&self) {
+    pub fn send_stop_cases(& mut self) {
         self.send_message_to_queue(String::from("STOP"), self.eof_map_queue.clone(), String::from("STOP"));
         self.send_message_to_queue(String::from("STOP"), self.eof_count_queue.clone(), String::from("STOP"));
         self.send_message_to_queue(String::from("STOP"), self.eof_date_queue.clone(), String::from("STOP"));
     }
 
-    fn send_message_to_queue(&self, message: String, queue: String, type_: String) {
-        let exchange = Exchange::direct(self.channel.as_ref().unwrap());
+    fn send_message_to_queue(& mut self, message: String, queue: String, type_: String) {
+        let channel_taken = self.channel.take();
+        let channel = channel_taken.unwrap();
+        let exchange = Exchange::direct(&channel);
         let properties = AmqpProperties::default().with_type_(type_);
-        exchange.publish(Publish::with_properties(message.as_bytes(), queue, properties)).unwrap();
+        loop {
+            match exchange.publish(Publish::with_properties(message.clone().as_bytes(), queue.clone(), properties.clone())) {
+                Ok(()) => break,
+                Err(_) => self.connect()
+            }
+        }
+        self.channel.replace(channel);
     }
 
-    fn read_from_queue(&self, queue: &Queue, sender: Sender<String>) {
+    fn read_from_queue(&self, queue: String, sender: Sender<String>) {
+        let options = QueueDeclareOptions {
+            durable: true,
+            ..QueueDeclareOptions::default()
+        };
+        let queue = self.channel.as_ref().unwrap().queue_declare(queue.as_str(), options).unwrap();
         let consumer = queue.consume(ConsumerOptions::default()).unwrap();
         for (_, message) in consumer.receiver().iter().enumerate() {
             match message {
