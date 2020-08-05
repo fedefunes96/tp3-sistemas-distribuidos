@@ -34,7 +34,7 @@ impl Reader {
         }
         info!("Finished processing regions");
         for _ in 0..self.processor_quantity {
-            self.protocol.send_places_end_of_file();
+            self.protocol.send_places_end_of_file(connection_id.clone());
         }
         info!("Finished sending EOFs");
     }
@@ -50,7 +50,7 @@ impl Reader {
         }
         info!("Finished processing cases");
         for _ in 0..self.processor_quantity {
-            self.protocol.send_cases_end_of_file();
+            self.protocol.send_cases_end_of_file(connection_id.clone());
         }
         info!("Finished sending EOFs");
     }

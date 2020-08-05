@@ -67,8 +67,11 @@ impl Processor {
             self.protocol.send_stop_places();
             return false;
         }
-        if body == "EOF" {
-            self.protocol.send_no_more_places();
+
+        let msg: Vec<&str> = body.split(',').collect();
+
+        if msg[2] == "EOF" {
+            self.protocol.send_places_message(body.clone(), String::from("EOF"));
         } else {
             self.protocol.send_places_message(body.clone(), String::from("NORMAL"));
         }
@@ -80,8 +83,11 @@ impl Processor {
             self.protocol.send_stop_cases();
             return false;
         }
-        if body == "EOF" {
-            self.protocol.send_no_more_cases();
+
+        let msg: Vec<&str> = body.split(',').collect();
+
+        if msg[2] == "EOF" {
+            self.protocol.send_no_more_cases(body.clone(), String::from("EOF"));
         } else {
             self.protocol.send_case_message(body.clone(), String::from("NORMAL"));
         }
