@@ -124,3 +124,11 @@ data-node-logs:
 	COMPOSE_PROJECT_NAME=data_node \
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-cluster.yaml logs -f
 .PHONY: data-node-logs
+
+system-run: docker-compose-up node-run data-node-run
+
+.PHONY: system-run
+
+system-stop: node-stop data-node-stop docker-compose-down
+
+.PHONY: system-stop

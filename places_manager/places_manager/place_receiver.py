@@ -32,3 +32,6 @@ class PlaceReceiver:
     def process_results(self):
         #Let the requester know that it can answer messages from map workers
         self.accept_request_queue.put(self.conn_id)
+
+        #Reset places for another connection
+        self.places = {}
