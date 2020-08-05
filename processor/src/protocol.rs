@@ -65,9 +65,9 @@ impl Protocol {
         self.read_from_queue(self.receiver_queue.clone(), sender)
     }
 
-    pub fn send_no_more_places(& mut self) {
+    /*pub fn send_no_more_places(&self) {
         self.send_places_message(String::from("EOF"), String::from("EOF"));
-    }
+    }*/
 
     pub fn send_stop_places(& mut self) {
         self.send_places_message(String::from("STOP"), String::from("STOP"));
@@ -83,10 +83,10 @@ impl Protocol {
         self.send_message_to_queue(message.clone(), self.date_queue.clone(), type_.clone());
     }
 
-    pub fn send_no_more_cases(& mut self) {
-        self.send_message_to_queue(String::from("EOF"), self.eof_map_queue.clone(), String::from("EOF"));
-        self.send_message_to_queue(String::from("EOF"), self.eof_count_queue.clone(), String::from("EOF"));
-        self.send_message_to_queue(String::from("EOF"), self.eof_date_queue.clone(), String::from("EOF"));
+    pub fn send_no_more_cases(& mut self, message: String, type_: String) {
+        self.send_message_to_queue(message.clone(), self.eof_map_queue.clone(), type_.clone());
+        self.send_message_to_queue(message.clone(), self.eof_count_queue.clone(), type_.clone());
+        self.send_message_to_queue(message.clone(), self.eof_date_queue.clone(), type_.clone());
     }
 
     pub fn send_stop_cases(& mut self) {
@@ -121,7 +121,10 @@ impl Protocol {
                 ConsumerMessage::Delivery(delivery) => {
                     let body = String::from_utf8_lossy(&delivery.body);
                     sender.send(body.to_string()).unwrap();
-                    if body == "STOP" || body == "EOF" {
+
+                    let msg: Vec<&str> = body.split(',').collect();
+
+                    if body == "STOP" || msg[2] == "EOF" {
                         consumer.ack(delivery).unwrap();
                         break;
                     }

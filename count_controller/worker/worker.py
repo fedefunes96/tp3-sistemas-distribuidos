@@ -20,7 +20,10 @@ class Worker:
             status_queue,
             data_cluster_write,
             data_cluster_read,
-            worker_id
+            worker_id,
+            self.load_data,
+            self.reset_data,
+            self.save_data
         )
 
         self.total_deceduti = 0
@@ -37,3 +40,14 @@ class Worker:
             self.total_positivi += 1
         else:
             self.total_deceduti += 1
+
+    def load_data(self, data):
+        self.total_positivi = data[0]
+        self.total_deceduti = data[1]
+
+    def reset_data(self):
+        self.total_deceduti = 0
+        self.total_positivi = 0
+
+    def save_data(self):
+        return [self.total_positivi, self.total_deceduti]

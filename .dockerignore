@@ -6,3 +6,8 @@ processor/target
 
 stopper/target/**/*
 stopper/target
+
+reader/data
+
+cluster_manager/data_a/**/*
+cluster_manager/data_a

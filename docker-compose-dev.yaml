@@ -90,7 +90,6 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=cities_resume
       - SEND_QUEUE=top_cities
-      - MASTER_SEND_QUEUE=resume_master
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=city_resumer
       - WORKER_TYPE=city_resumer_am
@@ -200,7 +199,6 @@ services:
       - PYTHONUNBUFFERED=1
       - RECV_QUEUE=dates_resume
       - SEND_QUEUE=date_sorter
-      - MASTER_SEND_QUEUE=resume_date_master
       - STATUS_QUEUE=health_status_queue
       - WORKER_ID=date_resumer
       - WORKER_TYPE=date_resumer_jan

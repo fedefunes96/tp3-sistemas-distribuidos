@@ -27,6 +27,7 @@ class ProcessManager:
 
         update_queue = Queue()
         dead_queue = Queue()
+        raise_queue = Queue()
 
         health_p = Process(
             target=self.health_process,
@@ -35,12 +36,12 @@ class ProcessManager:
 
         checker_p = Process(
             target=self.system_checker_process,
-            args=(update_queue, dead_queue)
+            args=(update_queue, dead_queue, raise_queue)
         )
 
         raiser_p = Process(
             target=self.raiser_process,
-            args=(dead_queue, )
+            args=(dead_queue, raise_queue)
         )
       
         self.processes.append(health_p)
@@ -58,20 +59,22 @@ class ProcessManager:
             
         self.processes = []
 
-    def system_checker_process(self, update_queue, dead_queue):
+    def system_checker_process(self, update_queue, dead_queue, raise_queue):
         print("Starting checker process")
         checker = NodeChecker(
             update_queue,
             dead_queue,
+            raise_queue,
             CONFIG_FILE
         )
 
         checker.start()
 
-    def raiser_process(self, dead_queue):
+    def raiser_process(self, dead_queue, raise_queue):
         print("Starting raiser process")
         raiser = NodeRaiser(
-            dead_queue
+            dead_queue,
+            raise_queue
         )
 
         raiser.start()       

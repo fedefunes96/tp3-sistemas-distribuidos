@@ -33,16 +33,16 @@ class Protocol:
     def send_data(self, data, where):
         self.senders[where].send(NORMAL, data)
     
-    def send_master_ended(self):
-        self.master_sender.send(EOF, "")
+    def send_master_ended(self, msg):
+        self.master_sender.send(EOF, msg)
 
     def send_master_stop(self):
         self.master_sender.send(STOP, "")
 
     def data_read(self, msg_type, msg):
         if msg_type == EOF:
-            self.callback_eof()
-            self.send_master_ended()
+            self.callback_eof(msg)
+            self.send_master_ended(msg)
             print("Ended processing")
         elif msg_type == STOP:
             self.receiver.close()

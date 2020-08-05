@@ -8,6 +8,7 @@ class Protocol:
     def __init__(self, recv_queue, send_queue, total_workers, status_queue):
         self.connection = Connection()
 
+        self.total_workers = total_workers
         self.pending_connections = total_workers
         self.receiver = SecureDirectReceiver(recv_queue, self.connection)
         self.sender = SecureDirectSender(send_queue, self.connection)
@@ -23,8 +24,9 @@ class Protocol:
         if msg_type == EOF:
             self.pending_connections -= 1
             if self.pending_connections == 0:
-                print("Ended processing")
-                self.sender.send(EOF, '')
+                print("Ended processing {}".format(msg))
+                self.sender.send(EOF, msg)
+                self.pending_connections = self.total_workers
         elif msg_type == STOP:
             self.receiver.close()
             self.sender.send(STOP, '')
