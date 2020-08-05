@@ -10,7 +10,6 @@ pub struct Processor {
 impl Processor {
     pub fn new(host: String,
                receiver_queue: String,
-               receiver_places_queue: String,
                map_queue: String,
                date_queue: String,
                count_queue: String,
@@ -22,7 +21,6 @@ impl Processor {
             protocol: Protocol::new(
                 host,
                 receiver_queue,
-                receiver_places_queue,
                 map_queue,
                 date_queue,
                 count_queue,
@@ -38,31 +36,27 @@ impl Processor {
         self.protocol.connect();
     }
 
-    pub fn process_places(&mut self, should_stop: Arc<AtomicBool>) {
-        let (sender, receiver) = channel();
-        self.protocol.process_places(sender);
-        for message in receiver.iter() {
-            if !self.process_place(message.clone()) {
-                should_stop.store(true, Ordering::Relaxed);
-                break;
-            }
-        }
-        info!("Finished processing regions");
-    }
-
     pub fn process_cases(&mut self, should_stop: Arc<AtomicBool>) {
         let (sender, receiver) = channel();
         self.protocol.process_cases(sender);
-        for message in receiver.iter() {
-            if !self.process_case(message.clone()) {
+        for (message, type_) in receiver.iter() {
+            if !self.process(message.clone(), type_) {
                 should_stop.store(true, Ordering::Relaxed);
                 break;
             }
         }
-        info!("Finished processing cases");
+        info!("Finished processing messages");
     }
 
-    fn process_place(&self, body: String) -> bool {
+    fn process(& mut self, body: String, type_: String) -> bool {
+        return match type_.as_str() {
+            "PLACE" => { self.process_place(body) }
+            "CASE" => { self.process_case(body) }
+            _ => { true }
+        }
+    }
+
+    fn process_place(& mut self, body: String) -> bool {
         if body == "STOP" {
             self.protocol.send_stop_places();
             return false;
@@ -78,7 +72,7 @@ impl Processor {
         return true;
     }
 
-    fn process_case(&self, body: String) -> bool {
+    fn process_case(& mut self, body: String) -> bool {
         if body == "STOP" {
             self.protocol.send_stop_cases();
             return false;

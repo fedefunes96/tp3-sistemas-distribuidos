@@ -13,9 +13,8 @@ impl Reader {
 
     pub fn new(host: String,
         processor_queue: String,
-        processor_places_queue: String,
         processor_quantity: u32) -> Reader {
-        Reader { protocol: Protocol::new(host, processor_queue, processor_places_queue), processor_quantity }
+        Reader { protocol: Protocol::new(host, processor_queue), processor_quantity }
     }
 
     pub fn connect(&mut self) {
