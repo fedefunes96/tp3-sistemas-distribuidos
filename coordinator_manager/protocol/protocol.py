@@ -41,7 +41,7 @@ class Protocol:
             self.receiver.reply(cor_id, reply_to, READY)
             self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "READY"]))
         elif msg_type == NEW_CLIENT:
-            reply = self.callback_new_client()
+            reply = self.callback_new_client(conn_id)
             print("Replying to client: {}".format(reply))
             self.receiver.reply(cor_id, reply_to, reply)
             print("Replied successfully")
