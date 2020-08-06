@@ -9,7 +9,7 @@ services:
       - test-network
 
   processor:
-    container_name: processor_worker
+    container_name: processor_worker_1
     image: processor:latest
     entrypoint: cargo run
     restart: on-failure
@@ -25,6 +25,9 @@ services:
       - EOF_COUNT=eof_count
       - EOF_DATE=eof_date
       - TOPIC_PLACES=places
+      - STATUS_QUEUE=health_status_queue
+      - WORKER_ID=processor_worker_1
+      - WORKER_TYPE=processor_worker
     depends_on:
       - rabbitmq
     networks:

@@ -48,7 +48,7 @@ class Protocol:
             self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "BLOCKED"]))
 
     def restart_all_senders(self, conn_id):
-        self.place_manager_sender.send(RESTART)
+        self.place_manager_sender.send(json.dumps([RESTART, conn_id]))
 
         for sender in self.senders:
             sender.send(RESTART, conn_id)

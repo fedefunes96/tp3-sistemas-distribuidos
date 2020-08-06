@@ -24,11 +24,14 @@ class Protocol:
         self.state_saver = state_saver
         self.my_id = my_id
 
+        print("Creating RabbitMQ Queue: {}".format(self.recv_queue))
+        self.receiver = SecureDistributedReceiver(self.recv_queue, self.connection)
+
     def start_connection(self, callback, callback_eof):
         self.callback = callback
         self.callback_eof = callback_eof
 
-        self.receiver = SecureDistributedReceiver(self.recv_queue, self.connection)
+        #self.receiver = SecureDistributedReceiver(self.recv_queue, self.connection)
 
         self.receiver.start_receiving(self.data_read)
     
@@ -46,6 +49,7 @@ class Protocol:
         self.master_sender.send(STOP, "")
 
     def data_read(self, msg_type, msg):
+        print("Received: {}".format(msg))
         if msg_type == STOP:
             self.receiver.close()
             self.send_master_stop()
@@ -67,5 +71,4 @@ class Protocol:
             self.state_saver.save_state("STATE", connection_id, "WAITING")
             self.receiver.close()
         else:
-            print("Received MESSSS: {}".format(msg))
             self.callback(msg)
