@@ -758,6 +758,7 @@ version = "0.1.0"
 dependencies = [
  "amiquip",
  "log",
+ "rand",
  "simple_logger",
 ]
 

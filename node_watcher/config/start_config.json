@@ -12,6 +12,6 @@
     "top_cities_worker": "top_cities",
     "summary_worker": "summary_worker",
     "place_manager": "place_manager",
-    "processor_worker": "processor_worker",
-    "coordinator_manager": "coordinator_manager"
+    "coordinator_manager": "coordinator_manager",
+    "processor_worker_1": "processor_worker"
 }

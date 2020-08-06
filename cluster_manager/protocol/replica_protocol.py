@@ -24,7 +24,7 @@ class ReplicaProtocol:
             reply = self.callback_app(folder_to_read, file_to_read, data)
             self.receiver.reply(cor_id, reply_to, reply)
         elif mode == WRITE:
-            #reply = self.callback_wr(folder_to_read, file_to_read, data)
+            reply = self.callback_wr(folder_to_read, file_to_read, data)
             reply = WRITE_OK
             print("Replying to writer: {}".format(reply))
             self.receiver.reply(cor_id, reply_to, reply)
