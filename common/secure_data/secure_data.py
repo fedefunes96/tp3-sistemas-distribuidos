@@ -23,6 +23,8 @@ class SecureData:
         if recv_msg == FAILED:
             print("Write error")
             raise WriteError()
+        
+        print("WRITE SUCCESSFULL")
     
     def append_to_file(self, folder_to_write, file_to_write, data):
         #msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + APPEND
