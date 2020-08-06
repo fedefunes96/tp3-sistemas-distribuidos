@@ -7,6 +7,8 @@ import json
 from middleware.connection import Connection
 from communication.message_types import NORMAL, EOF, DATE_RESULTS, STOP, FINISHED
 from state_saver.state_saver import StateSaver
+from middleware.secure_connection.secure_direct_receiver import SecureDirectReceiver
+from middleware.secure_connection.secure_direct_sender import SecureDirectSender
 
 DATE_MSG_ID = "date_sorter"
 STAGE = "date_sorter"
@@ -27,9 +29,9 @@ class Protocol:
         self.total_workers = total_workers
         self.pending_connections = total_workers
 
-        self.receiver = self.connection.create_direct_receiver(recv_queue)
-        self.sender = self.connection.create_direct_sender(send_queue)
-        self.status_sender = self.connection.create_direct_sender(status_queue)
+        self.receiver = SecureDirectReceiver(recv_queue, self.connection)
+        self.sender = SecureDirectSender(send_queue, self.connection)
+        self.status_sender = SecureDirectSender(status_queue, self.connection)
 
         self.state_saver = StateSaver(STAGE, data_cluster_write, data_cluster_read)
 
