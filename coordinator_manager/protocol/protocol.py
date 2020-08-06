@@ -31,22 +31,23 @@ class Protocol:
         [conn_id, msg_type] = json.loads(msg)
         print("Received {}".format(msg))
 
-        if self.state_saver.is_duplicated("STATE", conn_id):
-            print("Duplicated message: {}".format(conn_id))
+        duplicate_message_id = conn_id + "-" + msg_type
+        if self.state_saver.is_duplicated("STATE", duplicate_message_id):
+            print("Duplicated message: {}".format(duplicate_message_id))
             return
 
         if msg_type == RESTART:
-            self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "RESTART"]))
+            self.state_saver.save_state("STATE", duplicate_message_id, json.dumps([conn_id, "RESTART"]))
             self.callback_restart(conn_id)
             self.receiver.reply(cor_id, reply_to, READY)
-            self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "READY"]))
+            self.state_saver.save_state("STATE", duplicate_message_id, json.dumps([conn_id, "READY"]))
         elif msg_type == NEW_CLIENT:
             reply = self.callback_new_client(conn_id)
             print("Replying to client: {}".format(reply))
             print("Replying to queue: {}".format(reply_to))
             self.receiver.reply(cor_id, reply_to, reply)
             print("Replied successfully")
-            self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "BLOCKED"]))
+            self.state_saver.save_state("STATE", duplicate_message_id, json.dumps([conn_id, "BLOCKED"]))
 
     def restart_all_senders(self, conn_id):
         self.place_manager_sender.send(json.dumps([RESTART, conn_id]))

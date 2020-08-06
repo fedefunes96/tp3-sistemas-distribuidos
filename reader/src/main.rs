@@ -31,6 +31,7 @@ fn main() {
     info!("Finished processing regions");
     thread::sleep(time::Duration::from_millis(2*1000));
     reader.process_cases("data/data.csv", connection_id.clone());
+    thread::sleep(time::Duration::from_millis(10*1000));
     info!("Finished processing data");
 }
 

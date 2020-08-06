@@ -30,8 +30,10 @@ impl Protocol {
     }
 
     pub fn can_process(&self, coordinator_queue: String, message: String) -> bool {
-        self.send_message_to_queue(message, &coordinator_queue, String::from("NEW_CLIENT"));
-        return self.read_one_message_from_queue(coordinator_queue);
+        let corr_id = Uuid::new_v4().to_string();
+        let reply_to = String::from("client_coordination_queue");
+        self.send_rpc_message_to_queue(message, &coordinator_queue, String::from("NEW_CLIENT"), reply_to.clone(), corr_id);
+        return self.read_one_message_from_queue(reply_to);
     }
 
     pub fn process_place(&self, region: String, latitude: f64, longitude: f64, connection_id: String) {
@@ -62,6 +64,12 @@ impl Protocol {
 
     fn send_message_to_queue(&self, message: String, queue: &str, type_: String) {
         let properties = AmqpProperties::default().with_type_(type_);
+        let exchange = Exchange::direct(self.channel.as_ref().unwrap());
+        exchange.publish(Publish::with_properties(message.clone().as_bytes(), queue.clone(), properties.clone())).unwrap();
+    }
+
+    fn send_rpc_message_to_queue(&self, message: String, queue: &str, type_: String, reply_to: String, corr_id: String) {
+        let properties = AmqpProperties::default().with_type_(type_).with_correlation_id(corr_id).with_reply_to(reply_to);
         let exchange = Exchange::direct(self.channel.as_ref().unwrap());
         exchange.publish(Publish::with_properties(message.clone().as_bytes(), queue.clone(), properties.clone())).unwrap();
     }

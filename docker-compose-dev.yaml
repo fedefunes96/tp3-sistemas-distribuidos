@@ -70,7 +70,6 @@ services:
       - MASTER_SEND_QUEUE=master_map
       - STATUS_QUEUE=health_status_queue
       - SEND_REQUEST_QUEUE=place_manager_request
-      #- TOPIC_PLACES=places
       - WORKERS=2
       - WORKER_ID=map_worker_1
       - WORKER_TYPE=map_worker
