@@ -10,7 +10,7 @@ class SecureRpcSender:#(SecureSender):
     def create_channel(self):
         return self.connection.create_rpc_sender(self.queue)
 
-    def send(self, msg, timeout=10):
+    def send(self, msg, timeout=20):
         while True:
             try:
                 return self.sender.send(msg, timeout)
