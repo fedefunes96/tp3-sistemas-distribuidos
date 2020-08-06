@@ -9,12 +9,19 @@ DATES_TOTAL_NAME = "dates_total_name.txt"
 COUNT_TOTAL_NAME = "count_total_name.txt"
 
 class SummaryController:
-    def __init__(self, recv_queue, status_queue, data_cluster_write, data_cluster_read):
+    def __init__(self,
+        recv_queue,
+        status_queue,
+        data_cluster_write,
+        data_cluster_read,
+        coordinator_queue
+    ):
         self.protocol = Protocol(
             recv_queue,
             status_queue,
             data_cluster_write,
-            data_cluster_read
+            data_cluster_read,
+            coordinator_queue
         )
 
         self.top_cities = None

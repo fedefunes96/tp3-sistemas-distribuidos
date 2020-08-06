@@ -139,6 +139,7 @@ services:
       - WORKER_TYPE=summary_worker
       - DATA_CLUSTER_WRITE=write_data_node
       - DATA_CLUSTER_READ=read_data_node
+      - COORDINATOR_QUEUE=coordinator_queue
     volumes:
       - ./summary_controller/summary:/summary
     networks:
@@ -342,6 +343,7 @@ services:
       - TOTAL_COUNT_WORKERS=1
       - TOTAL_MAP_WORKERS=1
       - TOTAL_SINGLE_MAP_WORKERS=2
+      - PLACE_MANAGER_QUEUE=place_manager_request
     networks:
       - test-network    
 

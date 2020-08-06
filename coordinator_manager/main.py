@@ -9,7 +9,7 @@ def main_process():
     config_params = ConfigReader().parse_vars(
         ["RECV_QUEUE", "TOTAL_DATE_WORKERS", "TOTAL_MAP_WORKERS",
         "TOTAL_SINGLE_MAP_WORKERS", "TOTAL_COUNT_WORKERS",
-        "DATA_CLUSTER_WRITE", "DATA_CLUSTER_READ"]
+        "DATA_CLUSTER_WRITE", "DATA_CLUSTER_READ", "PLACE_MANAGER_QUEUE"]
     )
 
     senders = []
@@ -24,13 +24,12 @@ def main_process():
         for j in range(0, int(config_params["TOTAL_SINGLE_MAP_WORKERS"])):
             senders.append("map_worker_" + str(i + 1) + "__" + str(j))   
 
-    senders.append("place_manager_request")
-
     worker = CoordinatorManager(
         config_params["RECV_QUEUE"],
         senders,
         config_params["DATA_CLUSTER_WRITE"],
-        config_params["DATA_CLUSTER_READ"]
+        config_params["DATA_CLUSTER_READ"],
+        config_params["PLACE_MANAGER_QUEUE"]
     )
 
     worker.start()

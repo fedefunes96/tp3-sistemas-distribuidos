@@ -38,4 +38,5 @@ class Worker:
             self.coordinator.wait_to_work()
             self.single_saver.save_state("STATE", "", "READY")
         else:
+            print("Starting to receive")
             self.date_redirector.start()

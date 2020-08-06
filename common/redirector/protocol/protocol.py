@@ -64,8 +64,8 @@ class Protocol:
             self.send_master_ended(msg)
 
             print("Ended processing")
-            self.receiver.close()
-
             self.state_saver.save_state("STATE", connection_id, "WAITING")
-        else:            
+            self.receiver.close()
+        else:
+            print("Received MESSSS: {}".format(msg))
             self.callback(msg)

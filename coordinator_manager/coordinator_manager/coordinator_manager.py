@@ -11,11 +11,12 @@ class CoordinatorManager:
         recv_queue,
         send_queues,
         data_cluster_write,
-        data_cluster_read
+        data_cluster_read,
+        place_manager_queue
     ):
         self.state_saver = StateSaver(STAGE, data_cluster_write, data_cluster_read)
 
-        self.protocol = Protocol(recv_queue, send_queues, self.state_saver)
+        self.protocol = Protocol(recv_queue, send_queues, self.state_saver, place_manager_queue)
         self.working = False
 
     def start(self):

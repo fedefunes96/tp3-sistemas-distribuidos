@@ -26,6 +26,9 @@ class Coordinator:
             print("Duplicated message: {} {}".format(conn_id, msg_type))
             return
 
+        
+        print("Receive to start working")
+
         if msg_type == RESTART:
             self.receiver.close()
 

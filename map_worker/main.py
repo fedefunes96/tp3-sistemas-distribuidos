@@ -17,8 +17,6 @@ def main_process(my_id):
         ]
     )
 
-    working = True
-
     worker = Worker(
         config_params["RECV_QUEUE"],
         [config_params["SEND_QUEUE"]],
@@ -30,8 +28,8 @@ def main_process(my_id):
         my_id
     )
     
-    while working:
-        working = worker.start()
+    while True:
+        worker.start()
 
 def generate_worker_id(sub_id, main_id):
     return main_id + "__" + sub_id
