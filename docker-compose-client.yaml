@@ -11,6 +11,7 @@ services:
       - RABBITMQ_ADDR=amqp://guest:guest@rabbitmq:5672
       - PROCESSOR_QUEUE=reader_q
       - PROCESSOR_PLACES_QUEUE=reader_places_q
+      - COORDINATOR_QUEUE=coordinator_queue
     volumes:
       - ./reader/data:/data
     networks:

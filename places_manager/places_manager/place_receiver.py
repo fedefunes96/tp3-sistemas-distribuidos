@@ -32,7 +32,6 @@ class PlaceReceiver:
                 print("Starting to receive places")
                 conn_id = self.protocol.start_connection(
                     self.data_read,
-                    #self.process_results,
                     self.load_data,
                     self.reset_data,
                     self.save_data      
@@ -60,7 +59,6 @@ class PlaceReceiver:
             print("Starting to receive places")
             conn_id = self.protocol.start_connection(
                 self.data_read,
-                #self.process_results,
                 self.load_data,
                 self.reset_data,
                 self.save_data      

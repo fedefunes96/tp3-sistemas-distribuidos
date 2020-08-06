@@ -11,8 +11,7 @@ class RequesterProtocol:
         self.receiver = SecureRpcReceiver(recv_queue, self.connection)
         self.state_saver = state_saver
 
-    def start_connection(self, connection_id):#, callback):
-        #self.callback = callback
+    def start_connection(self, connection_id):
         self.connection_id = connection_id
 
         self.receiver.start_receiving(self.data_read)
