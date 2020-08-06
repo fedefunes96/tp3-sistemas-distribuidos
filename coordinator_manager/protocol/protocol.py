@@ -18,7 +18,8 @@ class Protocol:
         for queue in send_queues:
             self.senders.append(SecureDirectSender(queue, self.connection))
         
-        self.place_manager_sender = SecureRpcSender(place_manager_queue, self.connection)
+        #self.place_manager_sender = SecureRpcSender(place_manager_queue, self.connection)
+        self.place_manager_sender = SecureRpcSender(place_manager_queue, Connection())
 
     def start_receiving(self, callback_restart, callback_new_client):
         self.callback_restart = callback_restart
@@ -35,9 +36,10 @@ class Protocol:
             return
 
         if msg_type == RESTART:
+            self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "RESTART"]))
             self.callback_restart(conn_id)
             self.receiver.reply(cor_id, reply_to, READY)
-            self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "RESTART"]))
+            self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "READY"]))
         elif msg_type == NEW_CLIENT:
             reply = self.callback_new_client()
             print("Replying to client: {}".format(reply))
@@ -47,6 +49,6 @@ class Protocol:
 
     def restart_all_senders(self, conn_id):
         self.place_manager_sender.send(RESTART)
-        
+
         for sender in self.senders:
             sender.send(RESTART, conn_id)

@@ -14,6 +14,7 @@ class RequesterProtocol:
         self.receiver.start_receiving(self.data_read)
 
     def data_read(self, reply_to, cor_id, msg):
+        #(TODO) Duplicate filter
         if msg == RESTART:
             #Close and it will be raised eternally
             self.receiver.reply(cor_id, reply_to, RESTART)

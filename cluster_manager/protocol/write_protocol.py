@@ -14,8 +14,8 @@ class WriteProtocol:
 
         for queue in send_queues:
             print("Linking senders to: {}".format(queue))
-            #self.senders.append(self.connection.create_rpc_sender(queue))
-            self.senders.append(SecureRpcSender(queue, self.connection))
+            #self.senders.append(SecureRpcSender(queue, self.connection))
+            self.senders.append(SecureRpcSender(queue, Connection()))
 
     def start_receiving(self, callback_app, callback_wr):
         self.callback_app = callback_app
