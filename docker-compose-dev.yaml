@@ -12,7 +12,6 @@ services:
     container_name: processor_worker_1
     image: processor:latest
     entrypoint: cargo run
-    restart: on-failure
     environment:
       - RABBITMQ_ADDR=amqp://guest:guest@rabbitmq:5672
       - LOG_LEVEL=INFO
@@ -37,7 +36,6 @@ services:
     container_name: master_map_worker
     image: master_controller:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -61,7 +59,6 @@ services:
     container_name: map_worker_1
     image: map_worker:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -86,7 +83,6 @@ services:
     container_name: city_resumer
     image: cities_resume:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -107,7 +103,6 @@ services:
     container_name: top_cities_worker
     image: top_cities_controller:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -129,7 +124,6 @@ services:
     container_name: summary_worker
     image: summary_controller:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -152,7 +146,6 @@ services:
     container_name: master_date_worker
     image: master_controller:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -176,7 +169,6 @@ services:
     container_name: date_worker_1
     image: date_redirector_worker:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -198,7 +190,6 @@ services:
     container_name: date_resumer
     image: dates_resume:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -219,7 +210,6 @@ services:
     container_name: date_sorter_worker
     image: date_sorter:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -241,7 +231,6 @@ services:
     container_name: master_count_worker
     image: master_controller:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -265,7 +254,6 @@ services:
     container_name: count_worker_1
     image: count_controller_worker:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -287,7 +275,6 @@ services:
     container_name: count_resumer
     image: count_summary_controller:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 
@@ -308,7 +295,6 @@ services:
     container_name: place_manager
     image: places_manager:latest
     entrypoint: python3 /main.py
-    restart: on-failure
     depends_on:
       - rabbitmq
     links: 

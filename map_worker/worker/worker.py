@@ -59,10 +59,11 @@ class Worker:
         result = self.cluster_reader.read_file(conn_id, "places.txt")
 
         places = json.loads(result)
-
         #for place in places:
         #    self.process_places(place[0], float(place[1]), float(place[2]))
 
+        # Restart places
+        self.places = []
         for place in places:
             print("{} {} {}".format(place, float(places[place][0]), float(places[place][1])))
             self.process_places(place, float(places[place][0]), float(places[place][1]))
@@ -86,5 +87,4 @@ class Worker:
 
     def process_data(self, latitude, longitude):
         point = Point(longitude, latitude)
-
-        return point.closest_point(self.places).name        
+        return point.closest_point(self.places).name
