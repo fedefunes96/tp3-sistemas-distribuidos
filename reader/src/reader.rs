@@ -21,6 +21,12 @@ impl Reader {
         self.protocol.connect();
     }
 
+    pub fn can_process(&mut self, coordinator_queue: String, connection_id: String) -> bool {
+        let message = format!("[\"{}\",\"NEW_CLIENT\"]", connection_id);
+        return self.protocol.can_process(coordinator_queue, message);
+
+    }
+
     pub fn process_places(&self, route: &str, connection_id: String) {
         let mut file = File::open(route).unwrap();
         let mut contents = String::new();
