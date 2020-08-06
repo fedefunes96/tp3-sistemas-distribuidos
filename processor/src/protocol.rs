@@ -92,6 +92,14 @@ impl Protocol {
         let channel = channel_taken.unwrap();
         let exchange = Exchange::direct(&channel);
         let properties = AmqpProperties::default().with_type_(type_);
+
+        let options = QueueDeclareOptions {
+            durable: true,
+            ..QueueDeclareOptions::default()
+        };
+
+        let _queue = channel.queue_declare(queue.as_str(), options).unwrap();
+
         loop {
             match exchange.publish(Publish::with_properties(message.clone().as_bytes(), queue.clone(), properties.clone())) {
                 Ok(()) => break,
