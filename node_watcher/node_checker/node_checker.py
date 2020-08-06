@@ -33,7 +33,7 @@ class NodeChecker:
                     print("Adding node: {} {}".format(worker_id, worker_type))
                     self.worker_manager.add_worker(worker_id, worker_type)
                 else:
-                    #print("Updating node: {} {}".format(worker_id, worker_type))
+                    print("Updating node: {} {} {}".format(worker_id, worker_type, status))
                     self.worker_manager.update_timestamp_worker(
                         worker_id,
                         actual_time
