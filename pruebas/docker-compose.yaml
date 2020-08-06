@@ -1,0 +1,22 @@
+version: '3.5'
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    ports:
+      - 15672:15672
+    networks:
+      - test-network
+  
+  pruebas:
+    container_name: pruebas
+    build: .
+    entrypoint: python3 /main.py
+    environment:
+      - PYTHONUNBUFFERED=1    
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    name: ${COMPOSE_PROJECT_NAME}-network
