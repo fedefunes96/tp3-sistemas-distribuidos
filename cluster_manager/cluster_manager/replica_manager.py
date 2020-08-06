@@ -23,7 +23,7 @@ class ReplicaManager:
         tmp_file = self.folder + "/" + folder_to_write + "/" + TMP_FILE_NAME
         
         try:
-            os.mkdir(self.folder + "/" + folder_to_write)
+            os.makedirs(self.folder + "/" + folder_to_write)
             print("Directory created (Didnt exist)")
         except OSError as error:
             print(error)
@@ -46,10 +46,10 @@ class ReplicaManager:
         print("Requested replica")
 
         try:
-            os.mkdir(self.folder + "/" + folder_to_write)
+            os.makedirs(self.folder + "/" + folder_to_write)
             print("Directory created (Didnt exist)")
         except OSError as error:
-            print(error)
+            print("{} - Replica node".format(error))
             pass
 
         self.writer.write_file(write_in, tmp_file, data, 'w')
