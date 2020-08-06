@@ -10,8 +10,7 @@ class Point:
         closest_point = None
 
         for point in points:
-            new_dist = haversine_distance(self.lon, self.lat, point.lon, point.lat)
-
+            new_dist = haversine_distance(self.lon, self.lat, point.lat, point.lon)
             if distance == -1 or new_dist < distance:
                 distance = new_dist
                 closest_point = point
