@@ -3,6 +3,12 @@ class SecureReceiver:
         self.queue = queue
         self.connection = connection
 
+        #Provisory to create RabbitMQ queues
+        #try:
+        #    self.receiver = self.create_channel()
+        #except:
+        #    pass
+
     def start_receiving(self, data_read):
         receiving = True
 

@@ -1,6 +1,7 @@
 import pika
 import uuid
 import time
+from threading import Thread
 
 from middleware.exceptions.rpc_timeout import RPCTimeout
 

@@ -11,8 +11,9 @@ def main_process():
         "SEND_QUEUE",
         "MASTER_SEND_QUEUE",
         "STATUS_QUEUE",
-         "DATA_CLUSTER_WRITE",
-         "DATA_CLUSTER_READ"]
+        "DATA_CLUSTER_WRITE",
+        "DATA_CLUSTER_READ",
+        "WORKER_ID"]
     )
 
     worker = Worker(
@@ -21,10 +22,12 @@ def main_process():
         config_params["MASTER_SEND_QUEUE"],
         config_params["STATUS_QUEUE"],
         config_params["DATA_CLUSTER_WRITE"],
-        config_params["DATA_CLUSTER_READ"]
+        config_params["DATA_CLUSTER_READ"],
+        config_params["WORKER_ID"]
     )
 
-    worker.start()
+    while True:
+        worker.start()
 
 def main():
     p = Process(target=main_process)

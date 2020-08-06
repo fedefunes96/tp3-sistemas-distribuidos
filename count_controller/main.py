@@ -28,9 +28,9 @@ def main_process():
         config_params["DATA_CLUSTER_READ"],
         config_params["WORKER_ID"]
     )
-
-    worker.start()
-
+    
+    while True:
+        worker.start()
 
 def main():
     p = Process(target=main_process)

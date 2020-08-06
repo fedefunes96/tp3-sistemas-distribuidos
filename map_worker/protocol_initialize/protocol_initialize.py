@@ -2,6 +2,7 @@ import pika
 import sys
 import random
 import time
+import json
 
 from middleware.connection import Connection
 from communication.message_types import NORMAL, EOF, STOP, READY, REQUEST_PLACES
@@ -20,6 +21,6 @@ class ProtocolInitialize:
         print("Waiting for places")
 
         #Wait for answer
-        conn_id = self.sender.send(REQUEST_PLACES)
+        conn_id = self.sender.send(json.dumps([REQUEST_PLACES, ""]))
         print("Places are available")
         return conn_id

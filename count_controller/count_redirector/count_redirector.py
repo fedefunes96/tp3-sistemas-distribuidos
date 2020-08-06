@@ -2,8 +2,6 @@ from redirector.redirector import Redirector
 import json
 from state_saver.state_saver import StateSaver
 
-STAGE = "count_worker"
-
 class CountRedirector(Redirector):
     def __init__(
         self,
@@ -13,8 +11,8 @@ class CountRedirector(Redirector):
         callback,
         callback_eof,
         status_queue,
-        data_cluster_write,
-        data_cluster_read,
+        global_saver,
+        single_saver,
         worker_id,
         callback_load,
         callback_reset,
@@ -30,9 +28,16 @@ class CountRedirector(Redirector):
         self.connection_id = None
         self.worker_id = worker_id
 
-        self.state_saver = StateSaver(STAGE, data_cluster_write, data_cluster_read)
+        self.state_saver = global_saver
 
-        Redirector.__init__(self, recv_queue, [send_queue], master_send_queue, status_queue)
+        Redirector.__init__(self,
+            recv_queue,
+            [send_queue],
+            master_send_queue,
+            status_queue,
+            single_saver,
+            worker_id
+        )
 
     def data_received(self, data):
         [connection_id, message_id, date, latitude, longitude, result] = data.split(",")

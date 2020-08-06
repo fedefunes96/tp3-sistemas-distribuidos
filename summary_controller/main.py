@@ -11,14 +11,17 @@ def main_process():
         ["RECV_QUEUE",
          "STATUS_QUEUE",
          "DATA_CLUSTER_WRITE",
-         "DATA_CLUSTER_READ"]
+         "DATA_CLUSTER_READ",
+         "COORDINATOR_QUEUE"
+        ]
     )
 
     master_controller = SummaryController(
         config_params["RECV_QUEUE"],
         config_params["STATUS_QUEUE"],
         config_params["DATA_CLUSTER_WRITE"],
-        config_params["DATA_CLUSTER_READ"]
+        config_params["DATA_CLUSTER_READ"],
+        config_params["COORDINATOR_QUEUE"]
     )
 
     master_controller.start()

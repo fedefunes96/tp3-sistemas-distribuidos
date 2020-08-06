@@ -1,9 +1,10 @@
 from middleware.connection import Connection
 import json
 
-from communication.message_types import EOF, TOP_CITIES, DATE_RESULTS, TOTAL_COUNT, STOP, FINISHED
+from communication.message_types import EOF, TOP_CITIES, DATE_RESULTS, TOTAL_COUNT, STOP, FINISHED, RESTART 
 from middleware.secure_connection.secure_direct_receiver import SecureDirectReceiver
 from middleware.secure_connection.secure_direct_sender import SecureDirectSender
+from middleware.secure_connection.secure_rpc_sender import SecureRpcSender
 from state_saver.state_saver import StateSaver
 
 EXPECTED_EOF = 3
@@ -15,7 +16,8 @@ class Protocol:
             recv_queue,
             status_queue,
             data_cluster_write,
-            data_cluster_read
+            data_cluster_read,
+            coordinator_queue
         ):
         self.connection = Connection()
 
@@ -24,6 +26,8 @@ class Protocol:
 
         self.receiver = SecureDirectReceiver(recv_queue, self.connection)
         self.status_sender = SecureDirectSender(status_queue, self.connection)
+        #self.coordinator_sender = SecureRpcSender(coordinator_queue, self.connection)
+        self.coordinator_sender = SecureRpcSender(coordinator_queue, Connection())
 
         self.state_saver = StateSaver(STAGE, data_cluster_write, data_cluster_read)
 
@@ -87,6 +91,7 @@ class Protocol:
 
             if self.actual == self.expected:
                 self.callback_all_data(self.connection_id)
+                self.reset_coordinator()
                 print("Ended processing")
         elif msg_type == TOP_CITIES:
             print("Received TOP CITIES")
@@ -104,3 +109,7 @@ class Protocol:
         data_to_save = [self.callback_save(), self.actual]
 
         self.state_saver.save_state(connection_id, message_id, data_to_save)
+
+    def reset_coordinator(self):
+        _tmp = self.coordinator_sender.send(json.dumps([self.connection_id, RESTART]))
+        print("Received: {}".format(_tmp))

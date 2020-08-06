@@ -25,4 +25,5 @@ class SecureRpcReceiver(SecureReceiver):
     #    self.receiver.start_receiving(data_read)
 
     def restart_queue(self):
-        self.receiver.restart_queue()
+        if self.receiver != None:
+            self.receiver.restart_queue()

@@ -14,8 +14,8 @@ class WriteProtocol:
 
         for queue in send_queues:
             print("Linking senders to: {}".format(queue))
-            #self.senders.append(self.connection.create_rpc_sender(queue))
-            self.senders.append(SecureRpcSender(queue, self.connection))
+            #self.senders.append(SecureRpcSender(queue, self.connection))
+            self.senders.append(SecureRpcSender(queue, Connection()))
 
     def start_receiving(self, callback_app, callback_wr):
         self.callback_app = callback_app
@@ -52,7 +52,7 @@ class WriteProtocol:
         return FAILED
 
     def data_read(self, reply_to, cor_id, msg):
-        print("Received {}".format(msg))
+        #print("Received {}".format(msg))
         #[folder_to_read, file_to_read, data, operation] = msg.split('@@')
         [folder_to_read, file_to_read, data, operation] = json.loads(msg)
 
