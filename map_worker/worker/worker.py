@@ -59,8 +59,6 @@ class Worker:
         result = self.cluster_reader.read_file(conn_id, "places.txt")
 
         places = json.loads(result)
-        #for place in places:
-        #    self.process_places(place[0], float(place[1]), float(place[2]))
 
         # Restart places
         self.places = []

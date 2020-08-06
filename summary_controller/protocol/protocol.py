@@ -26,7 +26,6 @@ class Protocol:
 
         self.receiver = SecureDirectReceiver(recv_queue, self.connection)
         self.status_sender = SecureDirectSender(status_queue, self.connection)
-        #self.coordinator_sender = SecureRpcSender(coordinator_queue, self.connection)
         self.coordinator_sender = SecureRpcSender(coordinator_queue, Connection())
 
         self.state_saver = StateSaver(STAGE, data_cluster_write, data_cluster_read)

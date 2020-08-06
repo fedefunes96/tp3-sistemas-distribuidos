@@ -34,7 +34,6 @@ class MapController(Redirector):
 
         print("Place determined: {}".format(place))
 
-        #new_data = connection_id + "," + str(uuid.uuid4()) + "," + place
         new_data = [connection_id, message_id, place]
         self.redirect_data(json.dumps(new_data), self.send_queues[0])
         #Dont need to save anything more than messages

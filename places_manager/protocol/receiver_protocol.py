@@ -17,14 +17,12 @@ class ReceiverProtocol:
     def start_connection(
         self,
         callback,
-        #callback_eof,
         callback_load,
         callback_reset,
         callback_save        
     ):
         print("Starting to receive places")
         self.callback = callback
-        #self.callback_eof = callback_eof
         self.callback_load = callback_load
         self.callback_reset = callback_reset
         self.callback_save = callback_save
@@ -56,7 +54,6 @@ class ReceiverProtocol:
             self.connection_id = connection_id
 
         if msg_type == EOF:
-            #self.callback_eof()
             self.receiver.close()
             self.state_saver.save_state("STATE", "", json.dumps([self.connection_id, "REQUESTER"]))
         else:

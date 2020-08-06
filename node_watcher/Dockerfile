@@ -1,7 +1,6 @@
 FROM rabbitmq-python-base:0.0.1
 
 RUN apt update
-#RUN apt upgrade -y
 RUN apt-get install -y \
     apt-transport-https \
     ca-certificates \

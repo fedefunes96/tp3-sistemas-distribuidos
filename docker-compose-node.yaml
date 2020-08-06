@@ -1,12 +1,5 @@
 version: '3.5'
 services:
-  #rabbitmq:
-  #  container_name: rabbitmq
-  #  image: rabbitmq:latest
-  #  ports:
-  #    - 15672:15672
-  #  networks:
-  #    - test-network
 
   node_watcher_a:
     container_name: node_watcher_a

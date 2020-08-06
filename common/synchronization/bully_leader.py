@@ -8,7 +8,7 @@ from socket import error, timeout
 WAIT_TIME_PER_CHECK = [3, 6] #Seconds
 
 class BullyLeader:
-    def __init__(self, my_node, port, nodes_ids):#, callback_leader):
+    def __init__(self, my_node, port, nodes_ids):
         self.my_node = my_node
         self.port = port
         self.nodes_ids = sorted(nodes_ids)

@@ -88,7 +88,6 @@ node-image:
 .PHONY: node-image
 
 node-run: node-image
-	#./run.sh
 	COMPOSE_PROJECT_NAME=node \
 	SERVER_NAME=server \
 	docker-compose -p COMPOSE_PROJECT_NAME -f docker-compose-node.yaml up -d --build

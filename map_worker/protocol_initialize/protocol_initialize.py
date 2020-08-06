@@ -14,7 +14,6 @@ class ProtocolInitialize:
 
         self.callback = callback
 
-        #self.sender = self.connection.create_rpc_sender(send_queue)
         self.sender = SecureRpcSender(send_queue, self.connection)
     
     def start_connection(self):

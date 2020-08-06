@@ -30,9 +30,6 @@ class Protocol:
     def start_connection(self, callback, callback_eof):
         self.callback = callback
         self.callback_eof = callback_eof
-
-        #self.receiver = SecureDistributedReceiver(self.recv_queue, self.connection)
-
         self.receiver.start_receiving(self.data_read)
     
     def send_data(self, data, where):
@@ -40,7 +37,6 @@ class Protocol:
     
     def send_master_ended(self, msg):
         data_recv = json.loads(msg)
-        #[conn_id, msg_id, eof] => [conn_id, my_id, eof]
         data_recv[1] = self.my_id
 
         self.master_sender.send(EOF, json.dumps(data_recv))

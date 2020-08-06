@@ -16,7 +16,6 @@ class NodeRaiser:
             self.raise_node(worker_id, worker_type)
 
     def raise_node(self, worker_id, worker_type):
-        #process = "dockerfromdocker_" + worker_id
         process = worker_id
         print("Trying to raise: {}".format(process))
 

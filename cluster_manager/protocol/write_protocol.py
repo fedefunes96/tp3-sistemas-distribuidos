@@ -14,7 +14,6 @@ class WriteProtocol:
 
         for queue in send_queues:
             print("Linking senders to: {}".format(queue))
-            #self.senders.append(SecureRpcSender(queue, self.connection))
             self.senders.append(SecureRpcSender(queue, Connection()))
 
     def start_receiving(self, callback_app, callback_wr):
@@ -27,8 +26,7 @@ class WriteProtocol:
     def replicate_data(self, folder_to_write, file_to_write, data, mode):
         pending_ack = len(self.senders)
         msg = [folder_to_write, file_to_write, data, mode]
-        #msg = folder_to_write + "@@" + file_to_write + "@@" + data + "@@" + mode
-        
+
         for sender in self.senders:
             print("Sending replica to: {}".format(sender))
             try:
@@ -52,8 +50,6 @@ class WriteProtocol:
         return FAILED
 
     def data_read(self, reply_to, cor_id, msg):
-        #print("Received {}".format(msg))
-        #[folder_to_read, file_to_read, data, operation] = msg.split('@@')
         [folder_to_read, file_to_read, data, operation] = json.loads(msg)
 
         if operation == APPEND:

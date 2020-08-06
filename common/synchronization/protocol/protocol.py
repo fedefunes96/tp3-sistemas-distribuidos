@@ -119,8 +119,6 @@ class Protocol(threading.Thread):
 
                 self.handle_reply(self.connections[node])
 
-                #print("It replied: {}".format(node))
-
                 total_responses += 1
             except (timeout, error):
                 #Node failed to answer, remove its socket
@@ -130,7 +128,7 @@ class Protocol(threading.Thread):
 
                 print("Timeout on node: {}".format(node))
                 
-                if node == self.leader:# and not self.in_election:
+                if node == self.leader:
                     print("Timeout on leader node: {}".format(node))
                     self.start_election()
         

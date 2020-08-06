@@ -24,10 +24,7 @@ class NodeChecker:
                 [status, worker_id, worker_type] = self.update_queue.get_nowait()
 
                 if status == FINISHED:
-                    # self.dead_queue.close()
                     pass
-
-                #print("Updating timestamp: {} {}".format(worker_id, worker_type))
 
                 if not self.worker_manager.worker_exists(worker_id):
                     print("Adding node: {} {}".format(worker_id, worker_type))

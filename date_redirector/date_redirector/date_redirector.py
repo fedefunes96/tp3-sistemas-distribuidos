@@ -25,7 +25,6 @@ class DateRedirector(Redirector):
             print("Duplicated message: {}".format(message_id))
             return
 
-        #new_data = connection_id + "," + str(uuid.uuid4()) + "," + date + ',' + result
         new_data = [connection_id, message_id, date, result]
 
         self.redirect_data(json.dumps(new_data), self.send_queues[0])

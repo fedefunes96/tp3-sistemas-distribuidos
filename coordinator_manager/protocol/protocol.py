@@ -18,7 +18,6 @@ class Protocol:
         for queue in send_queues:
             self.senders.append(SecureDirectSender(queue, self.connection))
         
-        #self.place_manager_sender = SecureRpcSender(place_manager_queue, self.connection)
         self.place_manager_sender = SecureRpcSender(place_manager_queue, Connection())
 
     def start_receiving(self, callback_restart, callback_new_client):

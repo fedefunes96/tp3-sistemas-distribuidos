@@ -20,10 +20,6 @@ class SecureRpcReceiver(SecureReceiver):
         if tries_before_giving_up == 0:
             print("Gave up replying")
 
-    #def start_receiving(self, data_read):
-    #    self.receiver = self.create_channel()
-    #    self.receiver.start_receiving(data_read)
-
     def restart_queue(self):
         if self.receiver != None:
             self.receiver.restart_queue()

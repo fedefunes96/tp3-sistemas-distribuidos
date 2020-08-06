@@ -1,7 +1,6 @@
-#from middleware.secure_connection.secure_sender import SecureSender
 from middleware.exceptions.rpc_timeout import RPCTimeout
 
-class SecureRpcSender:#(SecureSender):
+class SecureRpcSender:
     def __init__(self, queue, connection):
         self.queue = queue
         self.connection = connection

@@ -5,9 +5,4 @@ class MasterController:
         self.protocol = Protocol(recv_queue, send_queue, total_workers, status_queue)
 
     def start(self):
-        #self.protocol.start_connection(self.data_read)
         self.protocol.start_connection()
-
-    #def data_read(self, data):
-    #   self.protocol.send_data(data)
-
