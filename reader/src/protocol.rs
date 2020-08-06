@@ -78,6 +78,7 @@ impl Protocol {
             match message {
                 ConsumerMessage::Delivery(delivery) => {
                     let body = String::from_utf8_lossy(&delivery.body);
+                    info!("Got message!");
                     if body == "READY" {
                         response.store(true, Ordering::Relaxed);
                     } else {

@@ -43,6 +43,7 @@ class Protocol:
         elif msg_type == NEW_CLIENT:
             reply = self.callback_new_client()
             print("Replying to client: {}".format(reply))
+            print("Replying to queue: {}".format(reply_to))
             self.receiver.reply(cor_id, reply_to, reply)
             print("Replied successfully")
             self.state_saver.save_state("STATE", conn_id, json.dumps([conn_id, "BLOCKED"]))
